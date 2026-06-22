@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Roster - Bright Future School</title>
+    <meta name="description" content="View and manage all students enrolled in a specific class at Bright Future School.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ═══════════ HERO BANNER ═══════════ */
+        .class-hero {
+            background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 55%, #0d9488 100%);
+            border-radius: 20px;
+            padding: 2rem 2.2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.8rem;
+        }
+        .class-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -40px;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            pointer-events: none;
+        }
+        .class-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; right: 80px;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            pointer-events: none;
+        }
+        .hero-stat {
+            background: rgba(255,255,255,0.12);
+            border-radius: 14px;
+            padding: 14px 18px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.18);
+            text-align: center;
+            flex: 1;
+            min-width: 80px;
+        }
+        .hero-stat .val { font-size: 1.55rem; font-weight: 700; line-height: 1; }
+        .hero-stat .lbl { font-size: 0.68rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.07em; margin-top: 3px; }
+
+        /* ═══════════ VIEW TOGGLE ═══════════ */
+        .view-toggle-group {
+            display: flex;
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--bg-secondary, #f8fafc);
+        }
+        .view-toggle-btn {
+            padding: 6px 14px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-muted, #64748b);
+            transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .view-toggle-btn.active {
+            background: var(--primary, #2563eb);
+            color: #fff;
+        }
+
+        /* ═══════════ FILTER PILLS ═══════════ */
+        .filter-pill {
+            padding: 0.32rem 1rem;
+            border-radius: 999px;
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            background: transparent;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            color: var(--text-muted, #64748b);
+        }
+        .filter-pill.active, .filter-pill:hover {
+            background: var(--primary, #2563eb);
+            color: #fff;
+            border-color: var(--primary, #2563eb);
+        }
+
+        /* ═══════════ CARD VIEW ═══════════ */
+        #rosterGrid { transition: opacity 0.25s ease; }
+
+        .student-card {
+            border-radius: 20px;
+            border: 1.5px solid var(--border-color, #e8edf5);
+            background: var(--card-bg, #fff);
+            padding: 0;
+            transition: all 0.26s cubic-bezier(.4,0,.2,1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+            height: 100%;
+            overflow: hidden;
+        }
+        .student-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(37,99,235,0.15);
+            border-color: rgba(37,99,235,0.3);
+        }
+
+        /* Card top colour banner */
+        .s-card-banner {
+            height: 64px;
+            background: var(--card-banner-bg, linear-gradient(135deg, #2563eb, #7c3aed));
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* Rank badge top-left on banner */
+        .rank-num {
+            position: absolute; top: 10px; left: 12px;
+            width: 22px; height: 22px; border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(6px);
+            color: #fff; font-size: 0.62rem; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255,255,255,0.35);
+        }
+
+        /* Status badge top-right on banner */
+        .s-status-badge {
+            position: absolute; top: 10px; right: 10px;
+            padding: 3px 9px; border-radius: 999px;
+            font-size: 0.62rem; font-weight: 700; letter-spacing: 0.04em;
+            backdrop-filter: blur(6px);
+        }
+        .s-status-badge.active  { background: rgba(34,197,94,0.22); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+        .s-status-badge.inactive{ background: rgba(239,68,68,0.22);  color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+
+        /* Avatar floats over the banner */
+        .s-avatar-wrap {
+            position: absolute; bottom: -34px; left: 50%;
+            transform: translateX(-50%);
+        }
+        .s-avatar {
+            width: 68px; height: 68px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--card-bg, #fff);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+            transition: transform 0.25s, box-shadow 0.25s;
+            display: block;
+        }
+        .student-card:hover .s-avatar {
+            transform: scale(1.07);
+            box-shadow: 0 8px 28px rgba(37,99,235,0.22);
+        }
+
+        /* Body below the banner */
+        .s-card-body {
+            padding: 44px 14px 14px;
+            display: flex; flex-direction: column;
+            align-items: center; flex: 1;
+        }
+        .s-name {
+            font-weight: 800; font-size: 0.9rem;
+            color: var(--text-primary, #0f172a); line-height: 1.25; margin-bottom: 2px;
+        }
+        .s-id {
+            font-size: 0.67rem; color: var(--text-muted, #94a3b8);
+            letter-spacing: 0.04em; margin-bottom: 8px;
+        }
+
+        /* Grade pill */
+        .s-grade-pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 12px; border-radius: 999px;
+            font-size: 0.72rem; font-weight: 700; margin-bottom: 10px;
+        }
+
+        /* Mini stats row inside card */
+        .s-stats-row {
+            display: flex; width: 100%; gap: 4px; margin-bottom: 12px;
+        }
+        .s-stat {
+            flex: 1; background: var(--bg-secondary, #f8fafc);
+            border-radius: 10px; padding: 7px 4px; text-align: center;
+        }
+        .s-stat .v { font-size: 0.78rem; font-weight: 800; color: var(--text-primary, #0f172a); line-height: 1; }
+        .s-stat .l { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted, #94a3b8); margin-top: 2px; }
+
+        /* Card actions */
+        .card-action-row {
+            display: flex; gap: 6px; width: 100%; margin-top: auto;
+        }
+        /* Icon-only action button shared */
+        .btn-icon-action {
+            flex: 1;
+            height: 36px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            background: var(--bg-secondary, #f8fafc);
+            color: var(--text-muted, #64748b);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.92rem;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            position: relative;
+        }
+        .btn-icon-action:hover { border-color: var(--primary,#2563eb); color: var(--primary,#2563eb); background: var(--primary-light,#eff6ff); }
+        .btn-icon-action.btn-profile  { background: var(--primary,#2563eb); color:#fff; border-color:var(--primary,#2563eb); }
+        .btn-icon-action.btn-profile:hover { background:#1d4ed8; }
+        .btn-icon-action.btn-toggle-active   { color:#16a34a; border-color:#86efac; background:#f0fdf4; }
+        .btn-icon-action.btn-toggle-active:hover   { background:#16a34a; color:#fff; border-color:#16a34a; }
+        .btn-icon-action.btn-toggle-inactive { color:#ef4444; border-color:#fca5a5; background:#fef2f2; }
+        .btn-icon-action.btn-toggle-inactive:hover { background:#ef4444; color:#fff; border-color:#ef4444; }
+
+        /* Tooltip on icon buttons */
+        .btn-icon-action[data-tip] { overflow: visible; }
+        .btn-icon-action[data-tip]::after {
+            content: attr(data-tip);
+            position: absolute; bottom: calc(100% + 6px); left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a; color: #fff;
+            font-size: 0.68rem; font-weight: 600; white-space: nowrap;
+            padding: 4px 8px; border-radius: 6px;
+            pointer-events: none; opacity: 0;
+            transition: opacity 0.15s ease;
+            z-index: 10;
+        }
+        .btn-icon-action[data-tip]:hover::after { opacity: 1; }
+
+        .btn-card-edit {
+            flex: 1; font-size: 0.76rem; font-weight: 700;
+            padding: 8px 10px; border-radius: 11px;
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            background: var(--bg-secondary, #f8fafc);
+            color: var(--text-primary, #0f172a);
+            transition: all 0.18s; cursor: pointer;
+        }
+        .btn-card-edit:hover { border-color: var(--primary, #2563eb); color: var(--primary, #2563eb); background: var(--primary-light, #eff6ff); }
+        .btn-card-profile {
+            flex: 1.5; font-size: 0.76rem; font-weight: 700;
+            padding: 8px 10px; border-radius: 11px;
+            background: var(--primary, #2563eb); color: #fff;
+            border: none; transition: all 0.18s; cursor: pointer;
+        }
+        .btn-card-profile:hover { background: #1d4ed8; }
+
+        .info-chip-row {
+            display: flex; gap: 5px; justify-content: center;
+            flex-wrap: wrap; margin-bottom: 10px;
+        }
+        .info-chip {
+            background: var(--bg-secondary, #f8fafc);
+            border-radius: 8px;
+            padding: 4px 9px;
+            font-size: 0.7rem;
+            color: var(--text-muted, #64748b);
+        }
+        .info-chip span { font-weight: 700; color: var(--text-primary, #0f172a); }
+
+        .s-divider { width: 100%; height: 1px; background: var(--border-color, #f1f5f9); margin: 8px 0; }
+
+        /* ═══════════ LIST VIEW ═══════════ */
+        #rosterList { display: none; }
+        .list-student-row {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1.5px solid var(--border-color, #e8edf5);
+            background: var(--card-bg, #fff);
+            margin-bottom: 9px;
+            transition: all 0.22s ease;
+            gap: 14px;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+        .list-student-row::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: var(--list-accent, #2563eb);
+            border-radius: 0 3px 3px 0;
+            opacity: 0;
+            transition: opacity 0.22s ease;
+        }
+        .list-student-row:hover {
+            border-color: rgba(37,99,235,0.28);
+            box-shadow: 0 6px 24px rgba(37,99,235,0.1);
+            transform: translateX(4px);
+        }
+        .list-student-row:hover::before { opacity: 1; }
+
+        .list-s-avatar {
+            width: 46px; height: 46px; border-radius: 50%;
+            object-fit: cover;
+            border: 2.5px solid var(--primary-light, #eff6ff);
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(37,99,235,0.12);
+        }
+        .list-rank {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--primary, #2563eb); color: #fff;
+            font-size: 0.65rem; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+        }
+        .list-s-name { font-weight: 800; font-size: 0.88rem; color: var(--text-primary, #0f172a); }
+        .list-s-meta { font-size: 0.7rem; color: var(--text-muted, #94a3b8); margin-top: 2px; }
+        .list-col { flex: 1; min-width: 0; font-size: 0.79rem; color: var(--text-muted, #64748b); }
+        .list-col strong { color: var(--text-primary, #0f172a); display: block; font-size: 0.82rem; font-weight: 700; }
+        .list-status-dot {
+            width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+            display: inline-block; margin-right: 5px;
+        }
+        .list-actions { display: flex; gap: 7px; flex-shrink: 0; }
+        .btn-list-action {
+            width: 34px; height: 34px;
+            border-radius: 9px; font-size: 0.88rem;
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            background: transparent; cursor: pointer; transition: all 0.18s;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: visible;
+        }
+        .btn-list-action[data-tip]::after {
+            content: attr(data-tip);
+            position: absolute; bottom: calc(100% + 6px); left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a; color: #fff;
+            font-size: 0.68rem; font-weight: 600; white-space: nowrap;
+            padding: 4px 8px; border-radius: 6px;
+            pointer-events: none; opacity: 0;
+            transition: opacity 0.15s ease;
+            z-index: 20;
+        }
+        .btn-list-action[data-tip]:hover::after { opacity: 1; }
+        .btn-list-edit { color: var(--text-muted, #64748b); }
+        .btn-list-edit:hover { border-color: var(--primary, #2563eb); color: var(--primary, #2563eb); background: var(--primary-light, #eff6ff); }
+        .btn-list-profile { background: var(--primary, #2563eb); color: #fff; border-color: var(--primary, #2563eb); }
+        .btn-list-profile:hover { background: #1d4ed8; border-color: #1d4ed8; }
+        .btn-list-toggle-on  { color:#16a34a; border-color:#86efac; background:#f0fdf4; }
+        .btn-list-toggle-on:hover  { background:#16a34a; color:#fff; border-color:#16a34a; }
+        .btn-list-toggle-off { color:#ef4444; border-color:#fca5a5; background:#fef2f2; }
+        .btn-list-toggle-off:hover { background:#ef4444; color:#fff; border-color:#ef4444; }
+
+        .list-header-row {
+            display: flex; align-items: center;
+            padding: 9px 18px;
+            border-radius: 12px;
+            background: var(--bg-secondary, #f8fafc);
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            margin-bottom: 9px;
+            gap: 14px;
+        }
+        .list-header-row span {
+            flex: 1; font-size: 0.68rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--text-muted, #94a3b8);
+        }
+        .list-header-row .lh-rank { width: 26px; flex: none; }
+        .list-header-row .lh-avatar { width: 46px; flex: none; }
+        .list-header-row .lh-actions { width: 130px; flex: none; }
+
+        /* ═══════════ PROFILE DRAWER ═══════════ */
+        .profile-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 1050;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(3px);
+        }
+        .profile-overlay.open { opacity: 1; pointer-events: all; }
+
+        .profile-drawer {
+            position: fixed;
+            top: 0; right: 0; bottom: 0;
+            width: 420px;
+            max-width: 95vw;
+            background: var(--card-bg, #fff);
+            z-index: 1051;
+            display: flex; flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+            box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+            border-radius: 20px 0 0 20px;
+        }
+        .profile-drawer.open { transform: translateX(0); }
+
+        .drawer-header {
+            padding: 0;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .drawer-hero-bg {
+            height: 120px;
+            background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+            border-radius: 20px 0 0 0;
+        }
+        .drawer-avatar-wrap {
+            position: absolute;
+            bottom: -42px;
+            left: 28px;
+        }
+        .drawer-avatar {
+            width: 84px; height: 84px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--card-bg, #fff);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .drawer-close-btn {
+            position: absolute;
+            top: 14px; right: 14px;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1rem;
+            transition: background 0.2s;
+            backdrop-filter: blur(6px);
+        }
+        .drawer-close-btn:hover { background: rgba(255,255,255,0.35); }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 60px 24px 24px;
+        }
+        .drawer-body::-webkit-scrollbar { width: 4px; }
+        .drawer-body::-webkit-scrollbar-track { background: transparent; }
+        .drawer-body::-webkit-scrollbar-thumb { background: var(--border-color, #e2e8f0); border-radius: 99px; }
+
+        .drawer-name { font-size: 1.2rem; font-weight: 800; color: var(--text-primary, #0f172a); }
+        .drawer-meta { font-size: 0.8rem; color: var(--text-muted, #94a3b8); margin-top: 2px; }
+
+        .drawer-tab-nav {
+            display: flex;
+            gap: 0;
+            border-radius: 12px;
+            background: var(--bg-secondary, #f8fafc);
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            padding: 3px;
+            margin: 18px 0 16px;
+        }
+        .drawer-tab-btn {
+            flex: 1; border: none; background: transparent;
+            border-radius: 9px;
+            padding: 7px 6px; font-size: 0.78rem; font-weight: 600;
+            cursor: pointer; color: var(--text-muted, #64748b);
+            transition: all 0.2s;
+        }
+        .drawer-tab-btn.active {
+            background: var(--card-bg, #fff);
+            color: var(--primary, #2563eb);
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+        }
+
+        .drawer-tab-panel { display: none; }
+        .drawer-tab-panel.active { display: block; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideInToast { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+
+        .info-table-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--border-color, #f1f5f9);
+            font-size: 0.82rem;
+        }
+        .info-table-row:last-child { border-bottom: none; }
+        .info-table-row .lbl { color: var(--text-muted, #94a3b8); }
+        .info-table-row .val { font-weight: 600; color: var(--text-primary, #0f172a); text-align: right; }
+
+        .grade-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: var(--bg-secondary, #f8fafc);
+            margin-bottom: 6px;
+            font-size: 0.82rem;
+        }
+        .grade-badge {
+            font-weight: 800; font-size: 1rem;
+            min-width: 36px; text-align: center;
+        }
+
+        .att-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 0; border-bottom: 1px solid var(--border-color, #f1f5f9);
+            font-size: 0.8rem;
+        }
+        .att-row:last-child { border-bottom: none; }
+        .att-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .att-day { font-weight: 600; min-width: 90px; color: var(--text-primary, #0f172a); }
+        .att-status { flex: 1; }
+
+        .drawer-footer {
+            padding: 14px 24px;
+            border-top: 1px solid var(--border-color, #e8edf5);
+            display: flex; gap: 10px; flex-shrink: 0;
+        }
+
+        /* ═══════════ EMPTY STATE ═══════════ */
+        .empty-state {
+            text-align: center; padding: 4rem 2rem;
+        }
+        .empty-icon-wrap {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: var(--primary-light, #eff6ff);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: var(--primary, #2563eb);
+            margin: 0 auto 1rem;
+        }
+
+        /* ═══════════ DARK THEME ═══════════ */
+        body.dark-theme .student-card { background: var(--card-bg); border-color: var(--border-color); }
+        body.dark-theme .s-card-body { background: var(--card-bg); }
+        body.dark-theme .s-stat { background: rgba(255,255,255,0.06); }
+        body.dark-theme .list-student-row { background: var(--card-bg); border-color: var(--border-color); }
+        body.dark-theme .profile-drawer { background: var(--card-bg); }
+        body.dark-theme .info-table-row { border-color: var(--border-color); }
+        body.dark-theme .drawer-hero-bg { border-radius: 20px 0 0 0; }
+        body.dark-theme .grade-item { background: rgba(255,255,255,0.05); }
+        body.dark-theme .view-toggle-group { background: rgba(255,255,255,0.05); border-color: var(--border-color); }
+        body.dark-theme .list-header-row { background: rgba(255,255,255,0.05); border-color: var(--border-color); }
+        body.dark-theme .drawer-tab-nav { background: rgba(255,255,255,0.06); border-color: var(--border-color); }
+        body.dark-theme .drawer-tab-btn.active { background: rgba(255,255,255,0.1); }
+        body.dark-theme .info-chip { background: rgba(255,255,255,0.08); }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand text-white">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <h5 class="mb-0 fw-bold">Bright Future</h5>
+                <small class="opacity-50">School SMS</small>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link active"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="fw-medium">Logout</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold" id="pageTitle">Class Roster</h4>
+                    <small class="text-muted" id="pageSubtitle">Loading class details...</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" id="rosterSearch" placeholder="Search students by name, ID or parent...">
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid p-4">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb small">
+                    <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="classes.html" class="text-decoration-none">Classes</a></li>
+                    <li class="breadcrumb-item active" id="breadcrumbClass">Class Roster</li>
+                </ol>
+            </nav>
+
+            <!-- Hero Banner -->
+            <div class="class-hero" id="classHero">
+                <div class="row align-items-center g-3 position-relative" style="z-index:1;">
+                    <div class="col-md-7">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div style="width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:1.4rem;backdrop-filter:blur(10px);">
+                                <i class="bi bi-door-open-fill"></i>
+                            </div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="heroClassName">Loading...</h3>
+                                <div class="opacity-75 small" id="heroClassMeta">—</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="https://i.pravatar.cc/40?img=2" id="heroTeacherAvatar" style="width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);" alt="">
+                                <div>
+                                    <div class="small fw-semibold" id="heroTeacher">—</div>
+                                    <div class="opacity-65" style="font-size:0.68rem;">Class Teacher</div>
+                                </div>
+                            </div>
+                            <span class="badge rounded-pill px-3 py-1" style="background:rgba(255,255,255,0.15);font-size:0.72rem;" id="heroRoom">—</span>
+                            <span class="badge rounded-pill px-3 py-1" style="background:rgba(255,255,255,0.15);font-size:0.72rem;" id="heroYear">—</span>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="d-flex gap-2 flex-wrap justify-content-md-end">
+                            <div class="hero-stat">
+                                <div class="val" id="heroStudentCount">—</div>
+                                <div class="lbl">Students</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="val" id="heroCapacity">—</div>
+                                <div class="lbl">Capacity</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="val" id="heroSubjects">—</div>
+                                <div class="lbl">Subjects</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ TOOLBAR ═══ -->
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+                <!-- Left: Count + Filters -->
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="text-muted small fw-medium" id="rosterCount">—</span>
+                    <div class="d-flex gap-2 ms-2 flex-wrap" id="statusFilters">
+                        <button class="filter-pill active" data-status="all">All</button>
+                        <button class="filter-pill" data-status="Active">Active</button>
+                        <button class="filter-pill" data-status="Inactive">Inactive</button>
+                    </div>
+                </div>
+                <!-- Right: View Toggle + Enroll -->
+                <div class="d-flex align-items-center gap-2">
+                    <!-- View Toggle -->
+                    <div class="view-toggle-group" id="viewToggle">
+                        <button class="view-toggle-btn active" id="btnCardView" title="Card View">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                            <span class="d-none d-sm-inline">Cards</span>
+                        </button>
+                        <button class="view-toggle-btn" id="btnListView" title="List View">
+                            <i class="bi bi-list-ul"></i>
+                            <span class="d-none d-sm-inline">List</span>
+                        </button>
+                    </div>
+                    <a href="students.html" class="btn btn-light border btn-sm">
+                        <i class="bi bi-people me-1"></i>All Students
+                    </a>
+                    <a href="add-student.html" class="btn btn-primary-custom btn-sm px-3">
+                        <i class="bi bi-plus-lg me-1"></i>Enroll
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card View -->
+            <div class="row g-3" id="rosterGrid"></div>
+
+            <!-- List View -->
+            <div id="rosterList"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════ PROFILE DRAWER ═══════════ -->
+    <div class="profile-overlay" id="profileOverlay" onclick="closeDrawer()"></div>
+    <div class="profile-drawer" id="profileDrawer">
+        <div class="drawer-header">
+            <div class="drawer-hero-bg"></div>
+            <button class="drawer-close-btn" onclick="closeDrawer()"><i class="bi bi-x-lg"></i></button>
+            <div class="drawer-avatar-wrap">
+                <img src="" id="drawerAvatar" class="drawer-avatar" alt="">
+            </div>
+        </div>
+        <div class="drawer-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="drawer-name" id="drawerName">—</div>
+                    <div class="drawer-meta" id="drawerMeta">—</div>
+                </div>
+                <span class="badge rounded-pill px-3 py-2" id="drawerGradeBadge" style="font-size:0.82rem;">—</span>
+            </div>
+
+            <!-- Tab Nav -->
+            <div class="drawer-tab-nav">
+                <button class="drawer-tab-btn active" data-tab="overview" onclick="switchTab('overview', this)">
+                    <i class="bi bi-person me-1"></i>Overview
+                </button>
+                <button class="drawer-tab-btn" data-tab="grades" onclick="switchTab('grades', this)">
+                    <i class="bi bi-bar-chart me-1"></i>Grades
+                </button>
+                <button class="drawer-tab-btn" data-tab="attendance" onclick="switchTab('attendance', this)">
+                    <i class="bi bi-calendar3 me-1"></i>Attendance
+                </button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="drawer-tab-panel active" id="tab-overview">
+                <div class="mb-3">
+                    <div class="small fw-bold text-muted text-uppercase mb-2" style="letter-spacing:0.08em;">Personal Info</div>
+                    <div class="info-table-row"><span class="lbl">Student ID</span><span class="val" id="dStudentId">—</span></div>
+                    <div class="info-table-row"><span class="lbl">Date of Birth</span><span class="val" id="dDob">—</span></div>
+                    <div class="info-table-row"><span class="lbl">Gender</span><span class="val" id="dGender">—</span></div>
+                    <div class="info-table-row"><span class="lbl">Status</span><span class="val" id="dStatus">—</span></div>
+                </div>
+                <div class="mb-3">
+                    <div class="small fw-bold text-muted text-uppercase mb-2" style="letter-spacing:0.08em;">Guardian Info</div>
+                    <div class="info-table-row"><span class="lbl">Parent/Guardian</span><span class="val" id="dParent">—</span></div>
+                    <div class="info-table-row"><span class="lbl">Contact</span><span class="val" id="dContact">—</span></div>
+                </div>
+                <div>
+                    <div class="small fw-bold text-muted text-uppercase mb-2" style="letter-spacing:0.08em;">Academic Info</div>
+                    <div class="info-table-row"><span class="lbl">Class</span><span class="val" id="dClass">—</span></div>
+                    <div class="info-table-row"><span class="lbl">Academic Year</span><span class="val" id="dYear">—</span></div>
+                    <div class="info-table-row"><span class="lbl">Overall Grade</span><span class="val fw-bold" id="dGrade" style="font-size:1rem;">—</span></div>
+                </div>
+            </div>
+
+            <!-- Grades Tab -->
+            <div class="drawer-tab-panel" id="tab-grades">
+                <div id="gradesContent">
+                    <!-- Injected by JS -->
+                </div>
+                <div class="mt-3 p-3 rounded-3" style="background:var(--bg-secondary,#f8fafc);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small fw-bold">Term Average</span>
+                        <span class="fw-bold fs-5" id="termAvg">—</span>
+                    </div>
+                    <div class="progress mt-2" style="height:8px;border-radius:99px;">
+                        <div class="progress-bar bg-primary" id="termProgressBar" style="width:0%;border-radius:99px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Tab -->
+            <div class="drawer-tab-panel" id="tab-attendance">
+                <div class="d-flex gap-3 mb-3">
+                    <div class="flex-fill p-3 rounded-3 text-center" style="background:#f0fdf4;">
+                        <div class="fw-bold fs-5 text-success" id="attPresent">—</div>
+                        <div class="small text-muted">Present</div>
+                    </div>
+                    <div class="flex-fill p-3 rounded-3 text-center" style="background:#fff7ed;">
+                        <div class="fw-bold fs-5 text-warning" id="attLate">—</div>
+                        <div class="small text-muted">Late</div>
+                    </div>
+                    <div class="flex-fill p-3 rounded-3 text-center" style="background:#fef2f2;">
+                        <div class="fw-bold fs-5 text-danger" id="attAbsent">—</div>
+                        <div class="small text-muted">Absent</div>
+                    </div>
+                </div>
+                <div id="attendanceLog">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <div class="drawer-footer">
+            <button class="btn btn-light border flex-fill" id="drawerEditBtn" onclick="">
+                <i class="bi bi-pencil me-2"></i>Edit Profile
+            </button>
+            <a href="students.html" class="btn btn-primary-custom flex-fill">
+                <i class="bi bi-people me-2"></i>Full Records
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // ═════════════════════════════════════
+        //  STATE
+        // ═════════════════════════════════════
+        const urlParams = new URLSearchParams(window.location.search);
+        const classId = urlParams.get('class') || '';
+
+        const classesList = JSON.parse(localStorage.getItem('classes-db') || '[]');
+        const classInfo = classesList.find(c => c.id === classId);
+
+        let currentView = localStorage.getItem('roster-view') || 'card';
+        let activeStatusFilter = 'all';
+        let activeSearch = '';
+        let activeStudent = null;
+
+        // ═════════════════════════════════════
+        //  STUDENT SEED DATA
+        // ═════════════════════════════════════
+        const mockStudentsByClass = {
+            'cls-10a': [
+                { id:'S10001', name:'Aiden Clarke',   dob:'12/03/2008', gender:'Male',   status:'Active',   photo:'https://i.pravatar.cc/150?img=8',  parent:'James Clarke',   contact:'+1 555-1001', grade:'A',  pct:91 },
+                { id:'S10002', name:'Priya Sharma',   dob:'22/07/2008', gender:'Female', status:'Active',   photo:'https://i.pravatar.cc/150?img=47', parent:'Raj Sharma',     contact:'+1 555-1002', grade:'A+', pct:97 },
+                { id:'S10003', name:'Luca Ferrari',   dob:'05/11/2007', gender:'Male',   status:'Active',   photo:'https://i.pravatar.cc/150?img=15', parent:'Marco Ferrari',  contact:'+1 555-1003', grade:'B+', pct:83 },
+                { id:'S10004', name:'Sofia Garcia',   dob:'18/01/2008', gender:'Female', status:'Active',   photo:'https://i.pravatar.cc/150?img=45', parent:'Carlos Garcia',  contact:'+1 555-1004', grade:'A',  pct:90 },
+                { id:'S10005', name:'Yuki Tanaka',    dob:'09/06/2008', gender:'Female', status:'Active',   photo:'https://i.pravatar.cc/150?img=49', parent:'Hiroshi Tanaka', contact:'+1 555-1005', grade:'B',  pct:76 },
+                { id:'S10006', name:'Ethan Moore',    dob:'30/09/2007', gender:'Male',   status:'Inactive', photo:'https://i.pravatar.cc/150?img=18', parent:'Brian Moore',    contact:'+1 555-1006', grade:'C+', pct:62 },
+            ],
+            'cls-10b': [
+                { id:'S10007', name:'Amara Osei',  dob:'14/02/2008', gender:'Female', status:'Active', photo:'https://i.pravatar.cc/150?img=44', parent:'Kofi Osei',   contact:'+1 555-2001', grade:'A',  pct:92 },
+                { id:'S10008', name:'Finn O\'Brien', dob:'27/08/2008', gender:'Male', status:'Active', photo:'https://i.pravatar.cc/150?img=12', parent:'Liam O\'Brien', contact:'+1 555-2002', grade:'B+', pct:82 },
+                { id:'S10009', name:'Mei Ling',    dob:'03/04/2007', gender:'Female', status:'Active', photo:'https://i.pravatar.cc/150?img=43', parent:'Wei Ling',    contact:'+1 555-2003', grade:'A+', pct:96 },
+            ],
+            'cls-9a': [
+                { id:'S09001', name:'Carlos Rivera', dob:'11/05/2009', gender:'Male',   status:'Active', photo:'https://i.pravatar.cc/150?img=7',  parent:'Diego Rivera',   contact:'+1 555-3001', grade:'B',  pct:74 },
+                { id:'S09002', name:'Anya Patel',    dob:'22/11/2009', gender:'Female', status:'Active', photo:'https://i.pravatar.cc/150?img=48', parent:'Sunita Patel',   contact:'+1 555-3002', grade:'A',  pct:89 },
+                { id:'S09003', name:'Jack Thompson', dob:'06/07/2009', gender:'Male',   status:'Active', photo:'https://i.pravatar.cc/150?img=11', parent:'Steven Thompson', contact:'+1 555-3003', grade:'A+', pct:95 },
+                { id:'S09004', name:'Nina Volkov',   dob:'15/03/2009', gender:'Female', status:'Active', photo:'https://i.pravatar.cc/150?img=46', parent:'Ivan Volkov',    contact:'+1 555-3004', grade:'B+', pct:85 },
+            ],
+            'cls-9b': [
+                { id:'S09005', name:'Omar Hassan', dob:'19/09/2009', gender:'Male',   status:'Active', photo:'https://i.pravatar.cc/150?img=6',  parent:'Khalid Hassan', contact:'+1 555-4001', grade:'A',  pct:91 },
+                { id:'S09006', name:'Elena Cruz',  dob:'04/12/2009', gender:'Female', status:'Active', photo:'https://i.pravatar.cc/150?img=41', parent:'Miguel Cruz',   contact:'+1 555-4002', grade:'B',  pct:75 },
+                { id:'S09007', name:'Ravi Kumar',  dob:'28/02/2009', gender:'Male',   status:'Active', photo:'https://i.pravatar.cc/150?img=14', parent:'Suresh Kumar',  contact:'+1 555-4003', grade:'A+', pct:98 },
+            ],
+            'cls-5a': [
+                { id:'S05001', name:'Lily Johnson', dob:'08/04/2013', gender:'Female', status:'Active', photo:'https://i.pravatar.cc/150?img=50', parent:'Mark Johnson', contact:'+1 555-5001', grade:'A',  pct:93 },
+                { id:'S05002', name:'Noah Williams', dob:'17/06/2013', gender:'Male',  status:'Active', photo:'https://i.pravatar.cc/150?img=3',  parent:'Tom Williams', contact:'+1 555-5002', grade:'B+', pct:81 },
+                { id:'S05003', name:'Zara Ahmed',   dob:'25/10/2013', gender:'Female', status:'Active', photo:'https://i.pravatar.cc/150?img=42', parent:'Ali Ahmed',    contact:'+1 555-5003', grade:'A+', pct:96 },
+            ],
+            'cls-5b': [
+                { id:'S05004', name:'Leo Nguyen', dob:'13/01/2013', gender:'Male',   status:'Active', photo:'https://i.pravatar.cc/150?img=4',  parent:'Minh Nguyen', contact:'+1 555-6001', grade:'B',  pct:78 },
+                { id:'S05005', name:'Grace Kim',  dob:'21/07/2013', gender:'Female', status:'Active', photo:'https://i.pravatar.cc/150?img=51', parent:'Jae Kim',     contact:'+1 555-6002', grade:'A',  pct:88 },
+                { id:'S05006', name:'Adam Okafor', dob:'09/03/2013', gender:'Male',  status:'Active', photo:'https://i.pravatar.cc/150?img=5',  parent:'Emeka Okafor', contact:'+1 555-6003', grade:'A+', pct:97 },
+            ],
+        };
+
+        const gradeSubjects = ['Mathematics','English','Science','History','Geography','Computer Science'];
+
+        function getSubjectGrades(student) {
+            // Generate stable deterministic fake grades per student
+            const base = student.pct || 80;
+            return gradeSubjects.map((sub, i) => {
+                const offset = ((student.id.charCodeAt(student.id.length - 1) + i * 7) % 20) - 10;
+                const score = Math.min(100, Math.max(40, base + offset));
+                const letter = score >= 95 ? 'A+' : score >= 85 ? 'A' : score >= 75 ? 'B+' : score >= 65 ? 'B' : score >= 55 ? 'C+' : 'C';
+                return { subject: sub, score, letter };
+            });
+        }
+
+        function getRoster() {
+            const mock = mockStudentsByClass[classId] || [];
+            const overrides = JSON.parse(localStorage.getItem('student-status-overrides') || '{}');
+            const dbStudents = JSON.parse(localStorage.getItem('students-db') || '[]');
+            const dbMatched = dbStudents.filter(s => {
+                const c = (s.class || s.className || '').toLowerCase();
+                const n = classInfo ? classInfo.name.toLowerCase() : '';
+                return n && c.includes(n.replace('class ', '').toLowerCase());
+            }).map(s => ({
+                id: s.id, name: s.name, dob: s.dob || '—',
+                gender: s.gender || '—', status: overrides[s.id] || s.status || 'Active',
+                photo: s.photo || s.avatarUrl || 'https://i.pravatar.cc/150?u=' + s.id,
+                parent: s.parent || s.guardian || '—', contact: '—', grade: '—', pct: 75,
+            }));
+            // Apply overrides to mock students too
+            const combined = mock.map(s => overrides[s.id] ? { ...s, status: overrides[s.id] } : s);
+            dbMatched.forEach(s => { if (!combined.find(c => c.id === s.id)) combined.push(s); });
+            return combined;
+        }
+
+        // ═════════════════════════════════════
+        //  RENDER
+        // ═════════════════════════════════════
+        const gradeColors = { 'A+':'#16a34a','A':'#2563eb','B+':'#7c3aed','B':'#ea580c','C+':'#d97706','C':'#dc2626','D':'#9f1239' };
+
+        function getFiltered() {
+            return getRoster().filter(s => {
+                const matchStatus = activeStatusFilter === 'all' || s.status === activeStatusFilter;
+                const matchSearch = !activeSearch ||
+                    s.name.toLowerCase().includes(activeSearch) ||
+                    s.id.toLowerCase().includes(activeSearch) ||
+                    (s.parent || '').toLowerCase().includes(activeSearch);
+                return matchStatus && matchSearch;
+            });
+        }
+
+        function render() {
+            const filtered = getFiltered();
+            const total = getRoster().length;
+            document.getElementById('rosterCount').textContent = `Showing ${filtered.length} of ${total} students`;
+
+            if (currentView === 'card') {
+                renderCards(filtered);
+            } else {
+                renderList(filtered);
+            }
+        }
+
+        function renderCards(filtered) {
+            document.getElementById('rosterGrid').style.display = '';
+            document.getElementById('rosterList').style.display = 'none';
+            const grid = document.getElementById('rosterGrid');
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-12"><div class="empty-state card-custom">
+                    <div class="empty-icon-wrap"><i class="bi bi-people"></i></div>
+                    <h5 class="fw-bold mb-2">No Students Found</h5>
+                    <p class="text-muted mb-3">No students match your current filters.</p>
+                    <a href="add-student.html" class="btn btn-primary-custom px-4"><i class="bi bi-plus-lg me-2"></i>Enroll First Student</a>
+                </div></div>`;
+                return;
+            }
+
+            filtered.forEach((s, i) => {
+                const isActive = s.status === 'Active';
+                const gc = gradeColors[s.grade] || '#64748b';
+
+                // Pick a banner gradient per card index
+                const banners = [
+                    'linear-gradient(135deg,#2563eb,#7c3aed)',
+                    'linear-gradient(135deg,#0d9488,#2563eb)',
+                    'linear-gradient(135deg,#ea580c,#f59e0b)',
+                    'linear-gradient(135deg,#db2777,#7c3aed)',
+                    'linear-gradient(135deg,#16a34a,#0d9488)',
+                    'linear-gradient(135deg,#7c3aed,#2563eb)',
+                ];
+                const banner = banners[i % banners.length];
+
+                const col = document.createElement('div');
+                col.className = 'col-sm-6 col-md-4 col-lg-3';
+                col.innerHTML = `
+                    <div class="student-card">
+                        <!-- Banner -->
+                        <div class="s-card-banner" style="--card-banner-bg:${banner};background:${banner};">
+                            <div class="rank-num">${i + 1}</div>
+                            <span class="s-status-badge ${isActive ? 'active' : 'inactive'}">
+                                ${isActive ? '● Active' : '● Inactive'}
+                            </span>
+                            <!-- Avatar overlapping banner -->
+                            <div class="s-avatar-wrap">
+                                <img src="${s.photo}" class="s-avatar" alt="${s.name}"
+                                    onerror="this.src='https://i.pravatar.cc/150?u=${s.id}'">
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="s-card-body">
+                            <div class="s-name">${s.name}</div>
+                            <div class="s-id">ID: ${s.id}</div>
+
+                            ${s.grade !== '—' ? `
+                            <div class="s-grade-pill" style="background:${gc}15;color:${gc};">
+                                <i class="bi bi-star-fill" style="font-size:0.6rem;"></i>
+                                Grade ${s.grade}
+                            </div>` : ''}
+
+                            <!-- Mini stats -->
+                            <div class="s-stats-row">
+                                <div class="s-stat">
+                                    <div class="v">${s.gender === 'Male' ? '♂' : s.gender === 'Female' ? '♀' : '—'}</div>
+                                    <div class="l">Gender</div>
+                                </div>
+                                <div class="s-stat">
+                                    <div class="v" style="font-size:0.68rem;">${s.dob !== '—' ? s.dob.split('/').pop() || s.dob : '—'}</div>
+                                    <div class="l">Birth Yr</div>
+                                </div>
+                                <div class="s-stat">
+                                    <div class="v" style="color:${gc};">${s.grade !== '—' ? (s.pct || '—') + '%' : '—'}</div>
+                                    <div class="l">Score</div>
+                                </div>
+                            </div>
+
+                            <!-- Parent info chip -->
+                            ${s.parent !== '—' ? `
+                            <div style="width:100%;background:var(--bg-secondary,#f8fafc);border-radius:10px;padding:7px 10px;margin-bottom:12px;text-align:left;display:flex;align-items:center;gap:7px;">
+                                <i class="bi bi-person-heart" style="color:var(--primary,#2563eb);font-size:0.85rem;flex-shrink:0;"></i>
+                                <div style="min-width:0;">
+                                    <div style="font-size:0.67rem;color:var(--text-muted,#94a3b8);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Guardian</div>
+                                    <div style="font-size:0.77rem;font-weight:700;color:var(--text-primary,#0f172a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.parent}</div>
+                                </div>
+                            </div>` : ''}
+
+                            <!-- Actions -->
+                            <div class="card-action-row">
+                                <button class="btn-icon-action" data-tip="Edit Student" onclick="editStudent('${s.id}')">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                                <button class="btn-icon-action btn-profile" data-tip="Full Profile" onclick="viewProfile('${s.id}')">
+                                    <i class="bi bi-person-lines-fill"></i>
+                                </button>
+                                <button class="btn-icon-action ${isActive ? 'btn-toggle-active' : 'btn-toggle-inactive'}" data-tip="${isActive ? 'Set Inactive' : 'Set Active'}" onclick="toggleStatus('${s.id}')">
+                                    <i class="bi ${isActive ? 'bi-toggle-on' : 'bi-toggle-off'}"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(col);
+            });
+        }
+
+        function renderList(filtered) {
+            document.getElementById('rosterGrid').style.display = 'none';
+            document.getElementById('rosterList').style.display = 'block';
+            const list = document.getElementById('rosterList');
+            list.innerHTML = '';
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="empty-state card-custom">
+                    <div class="empty-icon-wrap"><i class="bi bi-people"></i></div>
+                    <h5 class="fw-bold mb-2">No Students Found</h5>
+                    <p class="text-muted mb-3">No students match your current filters.</p>
+                    <a href="add-student.html" class="btn btn-primary-custom px-4"><i class="bi bi-plus-lg me-2"></i>Enroll First Student</a>
+                </div>`;
+                return;
+            }
+
+            // Header
+            const header = document.createElement('div');
+            header.className = 'list-header-row';
+            header.innerHTML = `
+                <span class="lh-rank">#</span>
+                <span class="lh-avatar" style="width:46px;flex:none;"></span>
+                <span style="flex:2;">Student</span>
+                <span>DOB</span>
+                <span>Gender</span>
+                <span>Parent</span>
+                <span>Grade</span>
+                <span>Status</span>
+                <span class="lh-actions" style="width:130px;flex:none;">Actions</span>
+            `;
+            list.appendChild(header);
+
+            filtered.forEach((s, i) => {
+                const isActive = s.status === 'Active';
+                const gc = gradeColors[s.grade] || '#64748b';
+
+                const accentColors = ['#2563eb','#7c3aed','#0d9488','#ea580c','#db2777','#16a34a'];
+                const accent = accentColors[i % accentColors.length];
+
+                const row = document.createElement('div');
+                row.className = 'list-student-row';
+                row.style.setProperty('--list-accent', accent);
+                row.innerHTML = `
+                    <div class="list-rank" style="background:${accent};">${i + 1}</div>
+                    <img src="${s.photo}" class="list-s-avatar" alt=""
+                        onerror="this.src='https://i.pravatar.cc/60?u=${s.id}'" style="border-color:${accent}25;">
+                    <div style="flex:2;min-width:0;">
+                        <div class="list-s-name">${s.name}</div>
+                        <div class="list-s-meta">ID: ${s.id}</div>
+                    </div>
+                    <div class="list-col"><strong>${s.dob}</strong></div>
+                    <div class="list-col">
+                        <strong style="display:flex;align-items:center;gap:5px;">
+                            <span style="color:${s.gender==='Male'?'#2563eb':'#db2777'};font-size:1rem;">${s.gender === 'Male' ? '♂' : s.gender === 'Female' ? '♀' : ''}</span>
+                            ${s.gender}
+                        </strong>
+                    </div>
+                    <div class="list-col" style="min-width:0;">
+                        <strong style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:120px;">${s.parent}</strong>
+                    </div>
+                    <div class="list-col">
+                        ${s.grade !== '—' ? `
+                        <span style="display:inline-flex;align-items:center;gap:4px;background:${gc}14;color:${gc};border-radius:999px;padding:3px 10px;font-size:0.78rem;font-weight:800;">
+                            ${s.grade}
+                        </span>` : '<strong>—</strong>'}
+                    </div>
+                    <div class="list-col">
+                        <span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:0.75rem;font-weight:700;background:${isActive?'#f0fdf4':'#fef2f2'};color:${isActive?'#16a34a':'#ef4444'};">
+                            <span style="width:6px;height:6px;border-radius:50%;background:${isActive?'#22c55e':'#ef4444'};flex-shrink:0;display:inline-block;"></span>
+                            ${s.status}
+                        </span>
+                    </div>
+                    <div class="list-actions" style="width:130px;flex:none;">
+                        <button class="btn-list-action btn-list-edit" data-tip="Edit" onclick="editStudent('${s.id}')">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-list-action btn-list-profile" data-tip="Full Profile" onclick="viewProfile('${s.id}')">
+                            <i class="bi bi-person-lines-fill"></i>
+                        </button>
+                        <button class="btn-list-action ${isActive ? 'btn-list-toggle-on' : 'btn-list-toggle-off'}" data-tip="${isActive ? 'Set Inactive' : 'Set Active'}" onclick="toggleStatus('${s.id}')">
+                            <i class="bi ${isActive ? 'bi-toggle-on' : 'bi-toggle-off'}"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        // ═════════════════════════════════════
+        //  ACTIONS
+        // ═════════════════════════════════════
+        function editStudent(id) {
+            window.location.href = `edit-student.html?id=${id}&from=class&class=${encodeURIComponent(classId)}`;
+        }
+
+        function viewProfile(id) {
+            window.location.href = `student-profile.html?id=${id}&class=${encodeURIComponent(classId)}`;
+        }
+
+        function toggleStatus(id) {
+            // Find student in mock data or localStorage roster
+            const roster = getRoster();
+            const s = roster.find(r => r.id === id);
+            if (!s) return;
+            const newStatus = s.status === 'Active' ? 'Inactive' : 'Active';
+
+            // Try to update in localStorage students-db first
+            let dbStudents = JSON.parse(localStorage.getItem('students-db') || '[]');
+            const dbIdx = dbStudents.findIndex(r => r.id === id);
+            if (dbIdx !== -1) {
+                dbStudents[dbIdx].status = newStatus;
+                localStorage.setItem('students-db', JSON.stringify(dbStudents));
+            }
+
+            // Also maintain a local override store for mock students
+            let overrides = JSON.parse(localStorage.getItem('student-status-overrides') || '{}');
+            overrides[id] = newStatus;
+            localStorage.setItem('student-status-overrides', JSON.stringify(overrides));
+
+            // Show quick toast
+            showToast(`${s.name} marked as <strong>${newStatus}</strong>`, newStatus === 'Active' ? 'success' : 'warning');
+            render();
+        }
+
+        // Toast notification
+        function showToast(html, type = 'success') {
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
+                document.body.appendChild(container);
+            }
+            const colors = { success: '#16a34a', warning: '#ea580c', info: '#2563eb' };
+            const icons  = { success: 'bi-check-circle-fill', warning: 'bi-dash-circle-fill', info: 'bi-info-circle-fill' };
+            const toast = document.createElement('div');
+            toast.style.cssText = `display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid ${colors[type]}30;border-left:4px solid ${colors[type]};border-radius:12px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,0.1);min-width:260px;animation:slideInToast 0.3s ease;`;
+            toast.innerHTML = `<i class="bi ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;flex-shrink:0;"></i><span style="font-size:0.83rem;color:#0f172a;">${html}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(20px)'; toast.style.transition = 'all 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 2800);
+        }
+
+        function openProfile(id) {
+            const roster = getRoster();
+            const s = roster.find(r => r.id === id);
+            if (!s) return;
+            activeStudent = s;
+
+            const isActive = s.status === 'Active';
+            const gc = gradeColors[s.grade] || '#64748b';
+
+            // Populate drawer
+            document.getElementById('drawerAvatar').src = s.photo;
+            document.getElementById('drawerAvatar').onerror = function() { this.src = 'https://i.pravatar.cc/150?u=' + id; };
+            document.getElementById('drawerName').textContent = s.name;
+            document.getElementById('drawerMeta').textContent = `${classInfo ? classInfo.name : ''} · ID: ${s.id}`;
+            document.getElementById('drawerGradeBadge').textContent = s.grade !== '—' ? `Grade: ${s.grade}` : 'N/A';
+            document.getElementById('drawerGradeBadge').style.cssText = `background:${gc}18;color:${gc};font-size:0.82rem;`;
+
+            // Overview tab
+            document.getElementById('dStudentId').textContent = s.id;
+            document.getElementById('dDob').textContent = s.dob;
+            document.getElementById('dGender').textContent = s.gender;
+            document.getElementById('dStatus').innerHTML = `<span style="color:${isActive?'#16a34a':'#ef4444'};font-weight:700;">${s.status}</span>`;
+            document.getElementById('dParent').textContent = s.parent;
+            document.getElementById('dContact').textContent = s.contact || '—';
+            document.getElementById('dClass').textContent = classInfo ? classInfo.name : '—';
+            document.getElementById('dYear').textContent = classInfo ? (classInfo.academicYear || '2025-2026') : '2025-2026';
+            document.getElementById('dGrade').textContent = s.grade;
+            document.getElementById('dGrade').style.color = gc;
+
+            // Grades tab
+            const subjectGrades = getSubjectGrades(s);
+            const avgScore = Math.round(subjectGrades.reduce((a, b) => a + b.score, 0) / subjectGrades.length);
+            const avgLetter = avgScore >= 95 ? 'A+' : avgScore >= 85 ? 'A' : avgScore >= 75 ? 'B+' : avgScore >= 65 ? 'B' : avgScore >= 55 ? 'C+' : 'C';
+            const avgColor = gradeColors[avgLetter] || '#64748b';
+
+            document.getElementById('gradesContent').innerHTML = subjectGrades.map(g => `
+                <div class="grade-item">
+                    <div>
+                        <div class="fw-semibold" style="font-size:0.85rem;">${g.subject}</div>
+                        <div class="text-muted" style="font-size:0.72rem;">${g.score}/100</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width:70px;height:6px;border-radius:99px;background:#e2e8f0;overflow:hidden;">
+                            <div style="height:100%;width:${g.score}%;background:${gradeColors[g.letter]||'#64748b'};border-radius:99px;"></div>
+                        </div>
+                        <span class="grade-badge" style="color:${gradeColors[g.letter]||'#64748b'};">${g.letter}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('termAvg').textContent = avgLetter;
+            document.getElementById('termAvg').style.color = avgColor;
+            document.getElementById('termProgressBar').style.width = avgScore + '%';
+            document.getElementById('termProgressBar').style.background = avgColor;
+
+            // Attendance tab
+            const days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+            const statuses = ['Present','Present','Present','Late','Present','Absent','Present'];
+            const dotColors = { 'Present': '#22c55e', 'Late': '#f59e0b', 'Absent': '#ef4444' };
+            const rng = s.id.charCodeAt(s.id.length - 1);
+            const present = 18 + (rng % 4);
+            const late = 2 + (rng % 2);
+            const absent = 22 - present - late;
+
+            document.getElementById('attPresent').textContent = present;
+            document.getElementById('attLate').textContent = late;
+            document.getElementById('attAbsent').textContent = Math.max(0, absent);
+
+            const recent = [
+                { date: 'Mon, 16 Jun', status: 'Present' },
+                { date: 'Tue, 17 Jun', status: rng % 3 === 0 ? 'Late' : 'Present' },
+                { date: 'Wed, 18 Jun', status: 'Present' },
+                { date: 'Thu, 19 Jun', status: rng % 5 === 0 ? 'Absent' : 'Present' },
+                { date: 'Fri, 20 Jun', status: 'Present' },
+            ];
+            document.getElementById('attendanceLog').innerHTML = `
+                <div class="small fw-bold text-muted text-uppercase mb-2" style="letter-spacing:0.08em;">Recent Days</div>
+                ${recent.map(r => `
+                    <div class="att-row">
+                        <div class="att-dot" style="background:${dotColors[r.status]};"></div>
+                        <div class="att-day">${r.date}</div>
+                        <div class="att-status" style="color:${dotColors[r.status]};font-weight:600;font-size:0.8rem;">${r.status}</div>
+                    </div>
+                `).join('')}
+            `;
+
+            // Edit button
+            document.getElementById('drawerEditBtn').onclick = () => editStudent(s.id);
+
+            // Reset to overview tab
+            switchTab('overview', document.querySelector('[data-tab="overview"]'));
+
+            // Open drawer
+            document.getElementById('profileOverlay').classList.add('open');
+            document.getElementById('profileDrawer').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            document.getElementById('profileOverlay').classList.remove('open');
+            document.getElementById('profileDrawer').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.drawer-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.drawer-tab-panel').forEach(p => p.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        // ═════════════════════════════════════
+        //  VIEW TOGGLE
+        // ═════════════════════════════════════
+        document.getElementById('btnCardView').addEventListener('click', function() {
+            currentView = 'card';
+            localStorage.setItem('roster-view', 'card');
+            document.getElementById('btnCardView').classList.add('active');
+            document.getElementById('btnListView').classList.remove('active');
+            render();
+        });
+        document.getElementById('btnListView').addEventListener('click', function() {
+            currentView = 'list';
+            localStorage.setItem('roster-view', 'list');
+            document.getElementById('btnListView').classList.add('active');
+            document.getElementById('btnCardView').classList.remove('active');
+            render();
+        });
+
+        // Apply saved view state to buttons on load
+        if (currentView === 'list') {
+            document.getElementById('btnListView').classList.add('active');
+            document.getElementById('btnCardView').classList.remove('active');
+        }
+
+        // ═════════════════════════════════════
+        //  FILTER + SEARCH
+        // ═════════════════════════════════════
+        document.querySelectorAll('.filter-pill').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                activeStatusFilter = this.dataset.status;
+                render();
+            });
+        });
+
+        document.getElementById('rosterSearch').addEventListener('input', function() {
+            activeSearch = this.value.toLowerCase();
+            render();
+        });
+
+        // ESC to close drawer
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+        // ═════════════════════════════════════
+        //  PAGE INIT
+        // ═════════════════════════════════════
+        function initPage() {
+            if (!classInfo) {
+                document.getElementById('heroClassName').textContent = 'Class Not Found';
+                document.getElementById('rosterGrid').innerHTML = `<div class="col-12"><div class="empty-state card-custom">
+                    <div class="empty-icon-wrap"><i class="bi bi-exclamation-circle"></i></div>
+                    <h5 class="fw-bold mb-2">Class Not Found</h5>
+                    <p class="text-muted"><a href="classes.html">Go back to Classes</a></p>
+                </div></div>`;
+                return;
+            }
+
+            document.title = classInfo.name + ' Roster - Bright Future';
+            document.getElementById('pageTitle').textContent = classInfo.name;
+            document.getElementById('pageSubtitle').textContent = `Student Roster · ${classInfo.wing} Wing · ${classInfo.room}`;
+            document.getElementById('breadcrumbClass').textContent = classInfo.name;
+
+            document.getElementById('heroClassName').textContent = classInfo.name;
+            document.getElementById('heroClassMeta').textContent = `${classInfo.wing} Wing`;
+            document.getElementById('heroTeacher').textContent = classInfo.teacher;
+            document.getElementById('heroTeacherAvatar').src = classInfo.teacherAvatar || 'https://i.pravatar.cc/40?img=2';
+            document.getElementById('heroRoom').textContent = classInfo.room;
+            document.getElementById('heroYear').textContent = classInfo.academicYear || '2025-2026';
+            document.getElementById('heroStudentCount').textContent = classInfo.students;
+            document.getElementById('heroCapacity').textContent = classInfo.capacity;
+            document.getElementById('heroSubjects').textContent = classInfo.subjects;
+
+            render();
+        }
+
+        initPage();
+    </script>
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bright Future School - Students</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand text-white">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <div>
+                    <h5 class="mb-0 fw-bold" style="letter-spacing: 0.5px;">Bright Future</h5>
+                    <small class="opacity-50">School SMS</small>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="fw-medium">Logout</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold">Students</h4>
+                    <small class="text-muted">Manage school student database</small>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" id="headerSearch" placeholder="Search anything...">
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">5</span>
+                    </div>
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-chat-dots fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">3</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3 cursor-pointer">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Body -->
+        <div class="container-fluid p-4">
+            <!-- Title Bar -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-0">Students List</h3>
+                </div>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-primary-custom" href="add-student.html"><i class="bi bi-person-plus me-2"></i>Add New Student</a>
+                    <div class="btn-group border rounded" role="group">
+                        <button type="button" class="btn btn-light active" id="listViewBtn" title="List View"><i class="bi bi-list-task"></i></button>
+                        <button type="button" class="btn btn-light" id="gridViewBtn" title="Grid View"><i class="bi bi-grid-fill"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">1,245</h3>
+                            <p class="text-muted small mb-0">Total Students</p>
+                        </div>
+                        <div class="stat-icon icon-blue"><i class="bi bi-people-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">1,210</h3>
+                            <p class="text-muted small mb-0">Active Students</p>
+                        </div>
+                        <div class="stat-icon icon-green"><i class="bi bi-person-check-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">32</h3>
+                            <p class="text-muted small mb-0">New Admissions</p>
+                        </div>
+                        <div class="stat-icon icon-purple"><i class="bi bi-person-plus-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">3</h3>
+                            <p class="text-muted small mb-0">Inactive / Suspended</p>
+                        </div>
+                        <div class="stat-icon icon-red"><i class="bi bi-person-x-fill"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="card-custom mb-4">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label small fw-bold text-secondary">Search Student</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="studentsSearch" class="form-control border-start-0" placeholder="Search by name, ID...">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-secondary">Class</label>
+                        <select id="filterClass" class="form-select">
+                            <option value="">All Classes</option>
+                            <option value="Class 10">Class 10</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 8">Class 8</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-secondary">Section</label>
+                        <select id="filterSection" class="form-select">
+                            <option value="">All</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-secondary">Academic Year</label>
+                        <select id="filterYear" class="form-select">
+                            <option value="2024-2025">2024-2025</option>
+                            <option value="2023-2024">2023-2024</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                    <div class="d-flex align-items-center">
+                        <label class="me-2 small fw-bold text-secondary mb-0" for="studentsPerPage">Show</label>
+                        <select id="studentsPerPage" class="form-select form-select-sm w-auto d-inline-block">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="0">All</option>
+                        </select>
+                        <span class="ms-2 small fw-bold text-secondary">entries per page</span>
+                    </div>
+                    <small id="studentsRowCount" class="text-muted"></small>
+                </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="card-custom" id="studentsTableWrapper">
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle" id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;"><input type="checkbox" class="form-check-input" id="selectAll"></th>
+                                <th>Profile Photo</th>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Class/Section</th>
+                                <th>DOB</th>
+                                <th>Parent/Guardian</th>
+                                <th>Status</th>
+<th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-class="Class 10" data-section="A" data-id="200000006">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://i.pravatar.cc/150?u=student1" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Ananya Sharma</div>
+                                    <small class="text-muted">Class 10 - A</small>
+                                </td>
+                                <td>200000006</td>
+                                <td>Class 10 - A</td>
+                                <td>05/07/2010</td>
+                                <td>Ram Sharma</td>
+                                <td class="text-center"><i class="bi bi-check-circle-fill text-success" title="Active"></i></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-outline-success" onclick="toggleStatus('200000006')" title="Toggle Active/Inactive"><i class="bi bi-toggle-on"></i></button>
+                                        <button class="btn btn-sm btn-light border" onclick="editStudent('200000006')" title="Edit"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)" title="Delete"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-class="Class 10" data-section="B" data-id="200000007">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://i.pravatar.cc/150?u=student2" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Rohan Verma</div>
+                                    <small class="text-muted">Class 10 - B</small>
+                                </td>
+                                <td>200000007</td>
+                                <td>Class 10 - B</td>
+                                <td>15/07/2010</td>
+                                <td>Rakesh Verma</td>
+                                <td class="text-center"><i class="bi bi-check-circle-fill text-success" title="Active"></i></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-outline-success" onclick="toggleStatus('200000007')" title="Toggle Active/Inactive"><i class="bi bi-toggle-on"></i></button>
+                                        <button class="btn btn-sm btn-light border" onclick="editStudent('200000007')" title="Edit"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)" title="Delete"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-class="Class 10" data-section="A" data-id="200000018">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://i.pravatar.cc/150?u=student3" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Ishita Singh</div>
+                                    <small class="text-muted">Class 10 - A</small>
+                                </td>
+                                <td>200000018</td>
+                                <td>Class 10 - A</td>
+                                <td>06/07/2010</td>
+                                <td>Sanjay Singh</td>
+                                <td class="text-center"><i class="bi bi-check-circle-fill text-success" title="Active"></i></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-outline-success" onclick="toggleStatus('200000018')" title="Toggle Active/Inactive"><i class="bi bi-toggle-on"></i></button>
+                                        <button class="btn btn-sm btn-light border" onclick="editStudent('200000018')" title="Edit"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)" title="Delete"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-class="Class 10" data-section="C" data-id="200000022">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://i.pravatar.cc/150?u=student4" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Arjun Mehta</div>
+                                    <small class="text-muted">Class 10 - C</small>
+                                </td>
+                                <td>200000022</td>
+                                <td>Class 10 - C</td>
+                                <td>11/02/2010</td>
+                                <td>Amit Mehta</td>
+                                <td class="text-center"><i class="bi bi-check-circle-fill text-success" title="Active"></i></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-outline-success" onclick="toggleStatus('200000022')" title="Toggle Active/Inactive"><i class="bi bi-toggle-on"></i></button>
+                                        <button class="btn btn-sm btn-light border" onclick="editStudent('200000022')" title="Edit"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)" title="Delete"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-class="Class 9" data-section="A" data-id="200000030">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://i.pravatar.cc/150?u=student5" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Kabir Khanna</div>
+                                    <small class="text-muted">Class 9 - A</small>
+                                </td>
+                                <td>200000030</td>
+                                <td>Class 9 - A</td>
+                                <td>19/11/2011</td>
+                                <td>Sunil Khanna</td>
+                                <td class="text-center"><i class="bi bi-check-circle-fill text-success" title="Active"></i></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-outline-success" onclick="toggleStatus('200000030')" title="Toggle Active/Inactive"><i class="bi bi-toggle-on"></i></button>
+                                        <button class="btn btn-sm btn-light border" onclick="editStudent('200000030')" title="Edit"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)" title="Delete"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-class="Class 9" data-section="B" data-id="200000034">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://i.pravatar.cc/150?u=student6" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Neha Kapoor</div>
+                                    <small class="text-muted">Class 9 - B</small>
+                                </td>
+                                <td>200000034</td>
+                                <td>Class 9 - B</td>
+                                <td>22/04/2011</td>
+                                <td>Raj Kapoor</td>
+                                <td class="text-center"><i class="bi bi-check-circle-fill text-success" title="Active"></i></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-outline-success" onclick="toggleStatus('200000034')" title="Toggle Active/Inactive"><i class="bi bi-toggle-on"></i></button>
+                                        <button class="btn btn-sm btn-light border" onclick="editStudent('200000034')" title="Edit"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)" title="Delete"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination Footer -->
+                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 border-top pt-3">
+                    <small class="text-muted">Showing 1 to 6 of 6 entries</small>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled"><a class="page-link text-secondary" href="#">Previous</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link text-secondary" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link text-secondary" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Students Grid -->
+            <div class="row g-4 d-none mb-4" id="studentsGridContainer"></div>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addStudentModalLabel">Add Student Admission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addStudentForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Full Name</label>
+                            <input type="text" class="form-control" required placeholder="Enter student name">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label small fw-bold">Class</label>
+                                <select class="form-select" required>
+                                    <option value="Class 10">Class 10</option>
+                                    <option value="Class 9">Class 9</option>
+                                    <option value="Class 8">Class 8</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label small fw-bold">Section</label>
+                                <select class="form-select" required>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Date of Birth</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Parent/Guardian Name</label>
+                            <input type="text" class="form-control" required placeholder="Enter parent name">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom px-4">Submit Admission</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Check if there is an "action=add" in the url parameters to auto-trigger modal
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('action') === 'add') {
+            const addModal = new Bootstrap.Modal(document.getElementById('addStudentModal'));
+            addModal.show();
+        }
+
+        // Student seed data
+        const defaultStudents = [
+            {"id": "200000006", "name": "Ananya Sharma", "cls": "Class 10", "section": "A", "dob": "05/07/2010", "parent": "Ram Sharma", "avatarUrl": "https://i.pravatar.cc/150?u=student1", "status": "Active"},
+            {"id": "200000007", "name": "Rohan Verma", "cls": "Class 10", "section": "B", "dob": "15/07/2010", "parent": "Rakesh Verma", "avatarUrl": "https://i.pravatar.cc/150?u=student2", "status": "Active"},
+            {"id": "200000018", "name": "Ishita Singh", "cls": "Class 10", "section": "A", "dob": "06/07/2010", "parent": "Sanjay Singh", "avatarUrl": "https://i.pravatar.cc/150?u=student3", "status": "Active"},
+            {"id": "200000022", "name": "Arjun Mehta", "cls": "Class 10", "section": "C", "dob": "11/02/2010", "parent": "Amit Mehta", "avatarUrl": "https://i.pravatar.cc/150?u=student4", "status": "Active"},
+            {"id": "200000030", "name": "Kabir Khanna", "cls": "Class 9", "section": "A", "dob": "19/11/2011", "parent": "Sunil Khanna", "avatarUrl": "https://i.pravatar.cc/150?u=student5", "status": "Active"},
+            {"id": "200000034", "name": "Neha Kapoor", "cls": "Class 9", "section": "B", "dob": "22/04/2011", "parent": "Raj Kapoor", "avatarUrl": "https://i.pravatar.cc/150?u=student6", "status": "Active"}
+        ];
+
+        // Seed data if not present
+        if (!localStorage.getItem('students-db')) {
+            localStorage.setItem('students-db', JSON.stringify(defaultStudents));
+        }
+
+        const sInput = document.getElementById("studentsSearch");
+        const fClass = document.getElementById("filterClass");
+        const fSection = document.getElementById("filterSection");
+        const sTable = document.getElementById("studentsTable");
+
+        function renderStudents() {
+            const list = JSON.parse(localStorage.getItem('students-db') || '[]');
+            const tbody = sTable.querySelector("tbody");
+            tbody.innerHTML = "";
+
+            list.forEach(student => {
+                const tr = document.createElement("tr");
+                tr.setAttribute("data-class", student.cls);
+                tr.setAttribute("data-section", student.section);
+                tr.setAttribute("data-id", student.id);
+
+                const statusHtml = student.status === "Active" 
+                    ? '<td class="text-center"><i class="bi bi-check-circle-fill text-success" title="Active"></i></td>' 
+                    : '<td class="text-center"><i class="bi bi-x-circle-fill text-danger" title="Inactive"></i></td>';
+                const statusToggleClass = student.status === "Active" ? "bi-toggle-on" : "bi-toggle-off";
+
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="form-check-input select-item"></td>
+                    <td><img src="${student.avatarUrl || 'https://i.pravatar.cc/150?u=' + student.id}" class="avatar" alt=""></td>
+                    <td>
+                        <div class="fw-bold text-dark-theme-override">${student.name}</div>
+                        <small class="text-muted">${student.cls} - ${student.section}</small>
+                    </td>
+                    <td>${student.id}</td>
+                    <td>${student.cls} - ${student.section}</td>
+                    <td>${student.dob}</td>
+                    <td>${student.parent}</td>
+                    ${statusHtml}
+                    <td class="text-end">
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-sm btn-outline-success" onclick="toggleStatus('${student.id}')" title="Toggle Active/Inactive"><i class="bi ${statusToggleClass}"></i></button>
+                            <button class="btn btn-sm btn-light border" onclick="editStudent('${student.id}')" title="Edit"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-light border text-danger" onclick="deleteStudent('${student.id}')" title="Delete"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            filterStudents();
+        }
+
+        function filterStudents() {
+            const q = sInput.value.toLowerCase();
+            const cls = fClass.value;
+            const sec = fSection.value;
+            const currentRows = sTable.querySelectorAll("tbody tr");
+
+            currentRows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                const rCls = row.getAttribute("data-class");
+                const rSec = row.getAttribute("data-section");
+
+                const matchesSearch = text.includes(q);
+                const matchesClass = !cls || rCls === cls;
+                const matchesSection = !sec || rSec === sec;
+
+                if (matchesSearch && matchesClass && matchesSection) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            // Update footer info
+            const visibleRows = Array.from(currentRows).filter(row => row.style.display !== "none");
+            const footerText = document.querySelector("#studentsTableWrapper .border-top small");
+            if (footerText) {
+                footerText.textContent = `Showing 1 to ${visibleRows.length} of ${currentRows.length} entries`;
+            }
+
+            // Sync grid view if layout is grid
+            if (localStorage.getItem("students-layout") === "grid") {
+                syncGridView();
+            }
+        }
+
+        sInput.addEventListener("keyup", filterStudents);
+        fClass.addEventListener("change", filterStudents);
+        fSection.addEventListener("change", filterStudents);
+
+        // Grid View Sync function
+        function syncGridView() {
+            const gridContainer = document.getElementById("studentsGridContainer");
+            if (!gridContainer) return;
+            
+            gridContainer.innerHTML = "";
+            const currentRows = sTable.querySelectorAll("tbody tr");
+            let visibleCount = 0;
+            
+            currentRows.forEach(row => {
+                if (row.style.display === "none") return;
+                visibleCount++;
+                
+                const id = row.getAttribute("data-id");
+                const img = row.querySelector("td img.avatar").src;
+                const name = row.querySelector("td .fw-bold").innerText;
+                const details = row.querySelector("td small").innerText;
+                const dob = row.cells[5].innerText;
+                const parent = row.cells[6].innerText;
+                const statusIconHtml = row.cells[7].innerHTML;
+                
+                const cardCol = document.createElement("div");
+                cardCol.className = "col-md-6 col-lg-4";
+                cardCol.innerHTML = `
+                    <div class="card-custom h-100 p-3 text-center d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <input type="checkbox" class="form-check-input select-item-grid" data-id="${id}">
+                                <div class="d-flex align-items-center gap-2">
+                                    ${statusIconHtml}
+                                    <span class="badge bg-primary-subtle text-primary small">ID: ${id}</span>
+                                </div>
+                            </div>
+                            <img src="${img}" class="avatar mx-auto mb-3" style="width: 64px; height: 64px;" alt="">
+                            <h6 class="fw-bold mb-1 text-dark-theme-override">${name}</h6>
+                            <small class="text-muted d-block mb-3">${details}</small>
+                            
+                            <div class="p-2 bg-light rounded-3 text-start small mb-3 border-0">
+                                <div class="d-flex justify-content-between mb-1"><span class="text-secondary">DOB:</span><span class="fw-medium text-dark-theme-override">${dob}</span></div>
+                                <div class="d-flex justify-content-between"><span class="text-secondary">Parent:</span><span class="fw-medium text-dark-theme-override">${parent}</span></div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center gap-2 mt-2">
+                            <button class="btn btn-sm btn-light border px-2.5" onclick="editStudent('${id}')" title="Edit"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-primary px-3" onclick="viewProfile('${id}')"><i class="bi bi-eye"></i> Profile</button>
+                            <button class="btn btn-sm btn-light border text-danger px-2.5" onclick="deleteStudent('${id}')" title="Delete"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+                gridContainer.appendChild(cardCol);
+            });
+
+            // Grid Pagination Footer
+            if (visibleCount > 0) {
+                const pagCol = document.createElement("div");
+                pagCol.className = "col-12 mt-2";
+                pagCol.innerHTML = `
+                    <div class="card-custom p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <small class="text-muted">Showing 1 to ${visibleCount} of ${visibleCount} entries</small>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item disabled"><a class="page-link text-secondary" href="#">Previous</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link text-secondary" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link text-secondary" href="#">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                `;
+                gridContainer.appendChild(pagCol);
+            }
+
+            if (visibleCount === 0) {
+                gridContainer.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-people text-muted fs-1 mb-2"></i>
+                        <p class="text-muted">No students match the criteria.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Layout Toggling
+        const listViewBtn = document.getElementById("listViewBtn");
+        const gridViewBtn = document.getElementById("gridViewBtn");
+        const tableWrapper = document.getElementById("studentsTableWrapper");
+        const gridContainer = document.getElementById("studentsGridContainer");
+
+        function setViewLayout(layout) {
+            if (layout === "grid") {
+                listViewBtn.classList.remove("active");
+                gridViewBtn.classList.add("active");
+                tableWrapper.classList.add("d-none");
+                gridContainer.classList.remove("d-none");
+                syncGridView();
+                localStorage.setItem("students-layout", "grid");
+            } else {
+                gridViewBtn.classList.remove("active");
+                listViewBtn.classList.add("active");
+                gridContainer.classList.add("d-none");
+                tableWrapper.classList.remove("d-none");
+                localStorage.setItem("students-layout", "list");
+            }
+        }
+
+        listViewBtn.addEventListener("click", () => setViewLayout("list"));
+        gridViewBtn.addEventListener("click", () => setViewLayout("grid"));
+
+        // Initialize preferred layout
+        const savedLayout = localStorage.getItem("students-layout") || "list";
+        setViewLayout(savedLayout);
+
+        // Select All checkboxes
+        const selectAll = document.getElementById("selectAll");
+        selectAll.addEventListener("change", function() {
+            const checkboxes = sTable.querySelectorAll("tbody .select-item");
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        });
+
+        // View Student Profile drill-down details
+        function viewProfile(studentId) {
+            const list = JSON.parse(localStorage.getItem('students-db') || '[]');
+            const student = list.find(s => s.id === studentId) || {
+                name: "Student", id: studentId, cls: "N/A", section: "N/A", dob: "N/A", parent: "N/A", avatarUrl: "https://i.pravatar.cc/150", status: "Active"
+            };
+
+            const title = "Detailed Student Profile";
+            const html = `
+                <div class="text-center mb-4">
+                    <img src="${student.avatarUrl}" class="rounded-circle border" style="width: 90px; height: 90px; object-fit: cover;" alt="">
+                    <h5 class="fw-bold mt-3 mb-1">${student.name}</h5>
+                    <span class="badge bg-primary-subtle text-primary">ID: ${student.id}</span>
+                </div>
+                <div class="card-custom p-3 bg-light border-0">
+                    <div class="detail-item py-2 d-flex justify-content-between"><span class="text-secondary small">Academic Class</span><span class="fw-medium small">${student.cls} - ${student.section}</span></div>
+                    <div class="detail-item py-2 d-flex justify-content-between"><span class="text-secondary small">Date of Birth</span><span class="fw-medium small">${student.dob}</span></div>
+                    <div class="detail-item py-2 d-flex justify-content-between"><span class="text-secondary small">Parent/Guardian</span><span class="fw-medium small">${student.parent}</span></div>
+                    <div class="detail-item py-2 d-flex justify-content-between"><span class="text-secondary small">Status</span><span class="badge ${student.status === 'Active' ? 'bg-success' : 'bg-danger'}">${student.status}</span></div>
+                    <div class="detail-item py-2 d-flex justify-content-between"><span class="text-secondary small">Attendance Rate</span><span class="fw-medium small text-success">98.5%</span></div>
+                </div>
+                <div class="mt-4">
+                    <h6 class="fw-bold mb-3">Academic Performance Summary</h6>
+                    <div class="d-flex justify-content-between mb-1 small"><span>Mathematics</span><span class="fw-bold">A+</span></div>
+                    <div class="progress mb-2" style="height: 6px;"><div class="progress-bar bg-success" role="progressbar" style="width: 94%"></div></div>
+                    
+                    <div class="d-flex justify-content-between mb-1 small"><span>English literature</span><span class="fw-bold">A</span></div>
+                    <div class="progress mb-2" style="height: 6px;"><div class="progress-bar bg-primary" role="progressbar" style="width: 88%"></div></div>
+                    
+                    <div class="d-flex justify-content-between mb-1 small"><span>Science (Biology)</span><span class="fw-bold">A+</span></div>
+                    <div class="progress" style="height: 6px;"><div class="progress-bar bg-success" role="progressbar" style="width: 96%"></div></div>
+                </div>
+            `;
+            window.showDrilldown(title, html);
+        }
+
+        // Form Submit Simulation
+        document.getElementById("addStudentForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const inputs = this.querySelectorAll("input, select");
+            const name = inputs[0].value;
+            const cls = inputs[1].value;
+            const sec = inputs[2].value;
+            const dob = inputs[3].value;
+            let formattedDob = dob;
+            if (dob) {
+                const parts = dob.split("-");
+                if (parts.length === 3) {
+                    formattedDob = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+            }
+            const parent = inputs[4].value;
+            const randomId = Math.floor(200000000 + Math.random() * 999999).toString();
+
+            const existing = JSON.parse(localStorage.getItem('students-db') || '[]');
+            existing.unshift({
+                id: randomId,
+                name: name,
+                cls: cls,
+                section: sec,
+                dob: formattedDob,
+                parent: parent,
+                avatarUrl: `https://i.pravatar.cc/150?u=${randomId}`,
+                status: "Active"
+            });
+            localStorage.setItem('students-db', JSON.stringify(existing));
+
+            renderStudents();
+
+            // Hide modal and reset form
+            bootstrap.Modal.getInstance(document.getElementById('addStudentModal')).hide();
+            this.reset();
+            alert("Student Admission Submitted Successfully!");
+        });
+
+        function toggleStatus(id) {
+            const existing = JSON.parse(localStorage.getItem('students-db') || '[]');
+            const index = existing.findIndex(s => s.id === id);
+            if (index !== -1) {
+                existing[index].status = existing[index].status === "Active" ? "Inactive" : "Active";
+                localStorage.setItem('students-db', JSON.stringify(existing));
+                renderStudents();
+            }
+        }
+
+        function deleteStudent(id) {
+            if (confirm("Are you sure you want to delete this student record?")) {
+                const existing = JSON.parse(localStorage.getItem('students-db') || '[]');
+                const filtered = existing.filter(s => s.id !== id);
+                localStorage.setItem('students-db', JSON.stringify(filtered));
+                renderStudents();
+            }
+        }
+
+        function editStudent(id) {
+            window.location.href = `edit-student.html?id=${id}`;
+        }
+
+        // Render on page load
+        renderStudents();
+    </script>
+</body>
+</html>

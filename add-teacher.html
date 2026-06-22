@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Teacher - Bright Future School</title>
+    <meta name="description" content="Faculty onboarding form for Bright Future School management system.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .wizard-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.9rem 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 0.4rem;
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+            color: var(--sidebar-text, #475569);
+        }
+        .wizard-step:hover { background: var(--sidebar-link-hover-bg, #f1f5f9); }
+        .wizard-step.active {
+            background: var(--primary-light, #eff6ff);
+            color: var(--primary, #2563eb);
+            border-color: rgba(37,99,235,0.15);
+            font-weight: 600;
+        }
+        .wizard-step .step-num {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+            background: #e2e8f0; color: #64748b;
+            flex-shrink: 0; transition: all 0.25s ease;
+        }
+        .wizard-step.active .step-num { background: var(--primary, #2563eb); color: #fff; }
+        .wizard-step.completed .step-num { background: #22c55e; color: #fff; }
+        .wizard-step.completed { color: #16a34a; }
+        .wizard-pane { display: none; }
+        .wizard-pane.active { display: block; animation: fadeSlide 0.3s ease; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .avatar-option {
+            width: 56px; height: 56px; border-radius: 50%;
+            cursor: pointer; border: 3px solid transparent;
+            transition: all 0.2s; object-fit: cover;
+        }
+        .avatar-option.selected { border-color: var(--primary,#2563eb); box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
+        .form-section-title {
+            font-size: 0.8rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--primary, #2563eb);
+            margin-bottom: 1rem; padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light, #eff6ff);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <div>
+                    <h5 class="mb-0 fw-bold" style="letter-spacing: 0.5px;">Bright Future</h5>
+                    <small class="opacity-50">School SMS</small>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link active"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card" id="sidebarLogout">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="fw-medium">Logout</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold">Add New Teacher</h4>
+                    <small class="text-muted">Complete the faculty onboarding form</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3 cursor-pointer">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid p-4">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb small">
+                    <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="teachers.html" class="text-decoration-none">Teachers</a></li>
+                    <li class="breadcrumb-item active">Add New Teacher</li>
+                </ol>
+            </nav>
+
+            <div class="row g-4">
+                <!-- Wizard Steps Sidebar -->
+                <div class="col-lg-3">
+                    <div class="card-custom p-3">
+                        <div class="d-flex align-items-center gap-2 mb-4 p-2 border-bottom pb-3">
+                            <div class="p-2 rounded-3" style="background:var(--primary-light,#eff6ff);color:var(--primary,#2563eb)"><i class="bi bi-person-badge fs-5"></i></div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Onboarding Form</h6>
+                                <small class="text-muted">4 sections to complete</small>
+                            </div>
+                        </div>
+                        <div id="wizardSteps">
+                            <div class="wizard-step active" data-step="1" onclick="goToStep(1)">
+                                <span class="step-num">1</span>
+                                <div>
+                                    <div class="fw-medium" style="font-size:0.85rem;">Personal Profile</div>
+                                    <small class="text-muted" style="font-size:0.75rem;">Name, gender, contact</small>
+                                </div>
+                            </div>
+                            <div class="wizard-step" data-step="2" onclick="goToStep(2)">
+                                <span class="step-num">2</span>
+                                <div>
+                                    <div class="fw-medium" style="font-size:0.85rem;">Professional Details</div>
+                                    <small class="text-muted" style="font-size:0.75rem;">Department, specialization</small>
+                                </div>
+                            </div>
+                            <div class="wizard-step" data-step="3" onclick="goToStep(3)">
+                                <span class="step-num">3</span>
+                                <div>
+                                    <div class="fw-medium" style="font-size:0.85rem;">Salary &amp; Bank</div>
+                                    <small class="text-muted" style="font-size:0.75rem;">Compensation details</small>
+                                </div>
+                            </div>
+                            <div class="wizard-step" data-step="4" onclick="goToStep(4)">
+                                <span class="step-num">4</span>
+                                <div>
+                                    <div class="fw-medium" style="font-size:0.85rem;">Documents</div>
+                                    <small class="text-muted" style="font-size:0.75rem;">Upload credentials</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="small text-muted mb-1">Progress</div>
+                            <div class="progress" style="height:6px;">
+                                <div class="progress-bar bg-primary" id="wizardProgress" style="width:25%;transition:width 0.3s"></div>
+                            </div>
+                            <small class="text-muted" id="wizardProgressLabel">Step 1 of 4</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Panes -->
+                <div class="col-lg-9">
+                    <!-- Step 1: Personal Profile -->
+                    <div class="wizard-pane active" id="pane-1">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-person text-primary me-2"></i>Personal Profile</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Enter the faculty member's personal and contact details.</p>
+
+                            <div class="form-section-title">Profile Avatar</div>
+                            <div class="d-flex flex-wrap gap-3 mb-4" id="avatarPicker">
+                                <img src="https://i.pravatar.cc/150?u=t1" class="avatar-option selected" data-url="https://i.pravatar.cc/150?u=t1">
+                                <img src="https://i.pravatar.cc/150?u=t2" class="avatar-option" data-url="https://i.pravatar.cc/150?u=t2">
+                                <img src="https://i.pravatar.cc/150?u=t3" class="avatar-option" data-url="https://i.pravatar.cc/150?u=t3">
+                                <img src="https://i.pravatar.cc/150?u=t4" class="avatar-option" data-url="https://i.pravatar.cc/150?u=t4">
+                                <img src="https://i.pravatar.cc/150?u=t5" class="avatar-option" data-url="https://i.pravatar.cc/150?u=t5">
+                                <img src="https://i.pravatar.cc/150?u=t6" class="avatar-option" data-url="https://i.pravatar.cc/150?u=t6">
+                            </div>
+                            <input type="hidden" id="selectedAvatar" value="https://i.pravatar.cc/150?u=t1">
+
+                            <div class="form-section-title">Basic Details</div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">First Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="tch-first-name" placeholder="e.g. Sarah" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Middle Name</label>
+                                    <input type="text" class="form-control" placeholder="Optional">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Last Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="tch-last-name" placeholder="e.g. Jenkins" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Date of Birth <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="tch-dob" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Gender <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="tch-gender" required>
+                                        <option value="">Select</option>
+                                        <option>Male</option><option>Female</option><option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Blood Group</label>
+                                    <select class="form-select">
+                                        <option value="">Select</option>
+                                        <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                                        <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Nationality</label>
+                                    <input type="text" class="form-control" value="Indian">
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label small fw-bold">Email Address <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="tch-email" placeholder="teacher@school.edu" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Mobile Number <span class="text-danger">*</span></label>
+                                    <input type="tel" class="form-control" id="tch-phone" placeholder="+1 000 000 0000" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Emergency Contact</label>
+                                    <input type="tel" class="form-control" placeholder="Alt number">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold">Residential Address</label>
+                                    <textarea class="form-control" rows="2" placeholder="Full address"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Professional Details -->
+                    <div class="wizard-pane" id="pane-2">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-briefcase text-primary me-2"></i>Professional Details</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Enter academic qualifications, department, and class assignments.</p>
+
+                            <div class="form-section-title">Academic Qualifications</div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Highest Degree <span class="text-danger">*</span></label>
+                                    <select class="form-select" required>
+                                        <option value="">Select</option>
+                                        <option>B.Ed</option><option>M.Ed</option>
+                                        <option>B.Sc</option><option>M.Sc</option>
+                                        <option>B.A</option><option>M.A</option>
+                                        <option>Ph.D</option><option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">University / Institute</label>
+                                    <input type="text" class="form-control" placeholder="University name">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Year of Graduation</label>
+                                    <input type="number" class="form-control" placeholder="2018" min="1990" max="2030">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Teaching Certifications</label>
+                                    <input type="text" class="form-control" placeholder="e.g. CTET, TET, NTT">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Years of Experience</label>
+                                    <input type="number" class="form-control" placeholder="5" min="0" max="50">
+                                </div>
+                            </div>
+
+                            <div class="form-section-title">Placement at School</div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Department <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="tch-dept" required>
+                                        <option value="">Select</option>
+                                        <option value="Mathematics">Mathematics</option>
+                                        <option value="Science">Science</option>
+                                        <option value="English">English</option>
+                                        <option value="Engineering">Engineering</option>
+                                        <option value="Arts">Arts</option>
+                                        <option value="Commerce">Commerce</option>
+                                        <option value="Physical Education">Physical Education</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Subject Specialization <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="tch-spec" placeholder="e.g. Calculus, Physics" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Employee Type</label>
+                                    <select class="form-select">
+                                        <option>Full Time</option><option>Part Time</option>
+                                        <option>Visiting</option><option>Contract</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Joining Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="tch-join-date" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Assigned Class</label>
+                                    <select class="form-select">
+                                        <option value="">None / Floating</option>
+                                        <option>Class 10 - A</option><option>Class 10 - B</option>
+                                        <option>Class 9 - A</option><option>Class 9 - B</option>
+                                        <option>Class 8 - A</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Employee ID (auto)</label>
+                                    <input type="text" class="form-control" id="tch-emp-id" placeholder="Auto-generated" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Salary & Bank -->
+                    <div class="wizard-pane" id="pane-3">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-currency-dollar text-primary me-2"></i>Salary &amp; Bank Account</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Set up compensation details and bank account for payroll processing.</p>
+
+                            <div class="form-section-title">Salary Structure</div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Basic Salary (Monthly) <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="tch-salary" placeholder="3500.00" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">House Rent Allowance</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" placeholder="500.00">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Medical Allowance</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" placeholder="200.00">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Provident Fund (%)</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" placeholder="12" min="0" max="100">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Tax Deduction (%)</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" placeholder="10" min="0" max="50">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Pay Cycle</label>
+                                    <select class="form-select">
+                                        <option>Monthly</option>
+                                        <option>Bi-Weekly</option>
+                                        <option>Weekly</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-section-title">Bank Account Details</div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Bank Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="e.g. State Bank of India" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Account Holder Name</label>
+                                    <input type="text" class="form-control" placeholder="Full name as on bank account">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Account Number</label>
+                                    <input type="text" class="form-control" placeholder="XXXX XXXX XXXX">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">IFSC / Routing Code</label>
+                                    <input type="text" class="form-control" placeholder="SBIN0001234">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Account Type</label>
+                                    <select class="form-select">
+                                        <option>Savings</option>
+                                        <option>Current</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">UPI / Payment ID</label>
+                                    <input type="text" class="form-control" placeholder="teacher@upi (optional)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Documents -->
+                    <div class="wizard-pane" id="pane-4">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-file-earmark-text text-primary me-2"></i>Document Upload</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Upload verification credentials and experience certificates.</p>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">National ID / Aadhar <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Degree Certificate <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Teaching License / Certificate</label>
+                                    <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Experience Letters</label>
+                                    <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Recent Photograph <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" accept=".jpg,.png">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Address Proof</label>
+                                    <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                                </div>
+                            </div>
+
+                            <div class="form-section-title">Review &amp; Submit</div>
+                            <div class="alert alert-primary border-0 d-flex align-items-center gap-3 mb-4">
+                                <i class="bi bi-info-circle-fill fs-5 flex-shrink-0"></i>
+                                <div>
+                                    By submitting, you confirm that all entered information is accurate and the faculty member record will be registered in the system.
+                                </div>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="tch-terms" required>
+                                <label class="form-check-label small" for="tch-terms">
+                                    I confirm that all information above is verified and correct.
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <a href="teachers.html" class="btn btn-light border">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Teachers
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-light border" id="btnPrev" onclick="navigateStep(-1)" style="display:none!important;">
+                                <i class="bi bi-chevron-left me-1"></i>Previous
+                            </button>
+                            <button class="btn btn-primary-custom" id="btnNext" onclick="navigateStep(1)">
+                                Next <i class="bi bi-chevron-right ms-1"></i>
+                            </button>
+                            <button class="btn btn-success d-none" id="btnSubmit" onclick="submitTeacher()">
+                                <i class="bi bi-check-circle me-2"></i>Register Faculty
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        // Auto-generate employee ID
+        document.getElementById('tch-emp-id').value = 'TCH' + Math.floor(100000 + Math.random() * 899999);
+
+        function updateWizardUI() {
+            document.querySelectorAll('.wizard-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById('pane-' + currentStep).classList.add('active');
+
+            document.querySelectorAll('.wizard-step').forEach(s => {
+                const n = parseInt(s.dataset.step);
+                s.classList.remove('active','completed');
+                if (n === currentStep) s.classList.add('active');
+                else if (n < currentStep) s.classList.add('completed');
+            });
+
+            const pct = Math.round((currentStep / totalSteps) * 100);
+            document.getElementById('wizardProgress').style.width = pct + '%';
+            document.getElementById('wizardProgressLabel').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
+
+            const btnPrev = document.getElementById('btnPrev');
+            const btnNext = document.getElementById('btnNext');
+            const btnSubmit = document.getElementById('btnSubmit');
+            btnPrev.style.display = currentStep > 1 ? '' : 'none';
+            if (currentStep === totalSteps) {
+                btnNext.classList.add('d-none');
+                btnSubmit.classList.remove('d-none');
+            } else {
+                btnNext.classList.remove('d-none');
+                btnSubmit.classList.add('d-none');
+            }
+        }
+
+        function goToStep(n) { currentStep = n; updateWizardUI(); }
+        function navigateStep(dir) {
+            const next = currentStep + dir;
+            if (next < 1 || next > totalSteps) return;
+            currentStep = next;
+            updateWizardUI();
+        }
+
+        function submitTeacher() {
+            const firstName = document.getElementById('tch-first-name').value.trim();
+            const lastName  = document.getElementById('tch-last-name').value.trim();
+            const dept      = document.getElementById('tch-dept').value;
+            const spec      = document.getElementById('tch-spec').value.trim();
+            const phone     = document.getElementById('tch-phone').value.trim();
+            const terms     = document.getElementById('tch-terms').checked;
+
+            if (!firstName || !lastName || !dept || !spec || !phone) {
+                alert('Please complete all required fields (Step 1 & 2: Name, Dept, Spec, Phone).');
+                goToStep(1); return;
+            }
+            if (!terms) { alert('Please check the confirmation box to proceed.'); return; }
+
+            const empId = document.getElementById('tch-emp-id').value;
+            const avatarUrl = document.getElementById('selectedAvatar').value;
+
+            const existing = JSON.parse(localStorage.getItem('teachers-db') || '[]');
+            existing.unshift({ 
+                id: empId, 
+                name: firstName + ' ' + lastName, 
+                dept, 
+                spec, 
+                phone, 
+                avatarUrl, 
+                status: "Active" 
+            });
+            localStorage.setItem('teachers-db', JSON.stringify(existing));
+
+            alert(`✅ Faculty Member Registered!\n\nName: ${firstName} ${lastName}\nDepartment: ${dept}\nEmployee ID: ${empId}\n\nRedirecting to Teachers list...`);
+            window.location.href = 'teachers.html';
+        }
+
+        // Avatar picker
+        document.querySelectorAll('.avatar-option').forEach(img => {
+            img.addEventListener('click', () => {
+                document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
+                img.classList.add('selected');
+                document.getElementById('selectedAvatar').value = img.dataset.url;
+            });
+        });
+
+        updateWizardUI();
+    </script>
+</body>
+</html>

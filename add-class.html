@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Class - Bright Future School</title>
+    <meta name="description" content="Create a new classroom with full configuration details for Bright Future School.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary, #2563eb);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light, #eff6ff);
+            margin-bottom: 1.2rem;
+        }
+
+        .subject-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary-light, #eff6ff);
+            color: var(--primary, #2563eb);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            margin: 3px;
+            cursor: default;
+        }
+        .subject-tag .remove-btn {
+            background: none; border: none; padding: 0;
+            line-height: 1; color: var(--primary, #2563eb);
+            cursor: pointer; font-size: 0.7rem;
+            opacity: 0.7;
+        }
+        .subject-tag .remove-btn:hover { opacity: 1; }
+
+        #subjectsBox {
+            min-height: 50px;
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            border-radius: 10px;
+            padding: 8px;
+            cursor: text;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .schedule-slot {
+            background: var(--bg-secondary, #f8fafc);
+            border-radius: 10px;
+            padding: 12px;
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-swatch {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .color-swatch:hover, .color-swatch.selected { transform: scale(1.2); border-color: #1e293b; }
+
+        .step-indicator {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .step-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: all 0.2s;
+        }
+        .step-dot.active { background: var(--primary, #2563eb); width: 24px; border-radius: 4px; }
+        .step-dot.done { background: #22c55e; }
+
+        .preview-card {
+            border-radius: 16px;
+            border: 1.5px solid var(--border-color, #e2e8f0);
+            overflow: hidden;
+        }
+        .preview-card-header {
+            padding: 1rem 1.2rem;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+        }
+
+        body.dark-theme .schedule-slot { background: rgba(255,255,255,0.04); }
+        body.dark-theme #subjectsBox { border-color: var(--border-color); }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand text-white">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <div>
+                    <h5 class="mb-0 fw-bold">Bright Future</h5>
+                    <small class="opacity-50">School SMS</small>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link active"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="fw-medium">Logout</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold">Add New Class</h4>
+                    <small class="text-muted">Configure a new classroom with full details</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid p-4">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb small">
+                    <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="classes.html" class="text-decoration-none">Classes</a></li>
+                    <li class="breadcrumb-item active">Add New Class</li>
+                </ol>
+            </nav>
+
+            <div class="row g-4">
+                <!-- Main Form -->
+                <div class="col-lg-8">
+
+                    <!-- Section 1: Basic Info -->
+                    <div class="card-custom mb-4">
+                        <div class="section-title"><i class="bi bi-info-circle me-2"></i>Basic Class Information</div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Class Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="cls-name" placeholder="e.g. Class 11" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Grade Level <span class="text-danger">*</span></label>
+                                <select class="form-select" id="cls-grade" required>
+                                    <option value="">-- Select Grade --</option>
+                                    <option value="1">Grade 1</option>
+                                    <option value="2">Grade 2</option>
+                                    <option value="3">Grade 3</option>
+                                    <option value="4">Grade 4</option>
+                                    <option value="5">Grade 5</option>
+                                    <option value="6">Grade 6</option>
+                                    <option value="7">Grade 7</option>
+                                    <option value="8">Grade 8</option>
+                                    <option value="9">Grade 9</option>
+                                    <option value="10">Grade 10</option>
+                                    <option value="11">Grade 11</option>
+                                    <option value="12">Grade 12</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Section <span class="text-danger">*</span></label>
+                                <select class="form-select" id="cls-section" required>
+                                    <option value="">-- Select Section --</option>
+                                    <option value="A">Section A</option>
+                                    <option value="B">Section B</option>
+                                    <option value="C">Section C</option>
+                                    <option value="D">Section D</option>
+                                    <option value="E">Section E</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">School Wing <span class="text-danger">*</span></label>
+                                <select class="form-select" id="cls-wing" required>
+                                    <option value="">-- Select Wing --</option>
+                                    <option value="Primary">Primary Wing</option>
+                                    <option value="Secondary">Secondary Wing</option>
+                                    <option value="Pre-School">Pre-School Wing</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Room Number <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="cls-room" placeholder="e.g. Room 401">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Maximum Capacity <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="cls-capacity" placeholder="45" min="1" max="100">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Academic Year</label>
+                                <select class="form-select" id="cls-year">
+                                    <option value="2025-2026">2025 - 2026 (Current)</option>
+                                    <option value="2026-2027">2026 - 2027</option>
+                                    <option value="2024-2025">2024 - 2025</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Status</label>
+                                <select class="form-select" id="cls-status">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Pending">Pending Setup</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Class Description</label>
+                                <textarea class="form-control" id="cls-desc" rows="2" placeholder="Optional notes about this class, focus areas, or special programs..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Teacher Assignment -->
+                    <div class="card-custom mb-4">
+                        <div class="section-title"><i class="bi bi-person-badge me-2"></i>Teacher Assignments</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Class Teacher (Homeroom) <span class="text-danger">*</span></label>
+                                <select class="form-select" id="cls-teacher" required>
+                                    <option value="">-- Select Teacher --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Assistant / Co-Teacher</label>
+                                <select class="form-select" id="cls-co-teacher">
+                                    <option value="">None (Optional)</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Subject Teachers</label>
+                                <div class="p-3 border rounded-3 bg-light small">
+                                    <div class="row g-2" id="subjectTeacherRows">
+                                        <div class="col-md-6">
+                                            <div class="d-flex gap-2">
+                                                <select class="form-select form-select-sm"><option>Mathematics</option><option>Science</option><option>English</option></select>
+                                                <select class="form-select form-select-sm"><option>-- Teacher --</option></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addSubjectTeacherRow()">
+                                        <i class="bi bi-plus-circle me-1"></i>Add Subject
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Subjects -->
+                    <div class="card-custom mb-4">
+                        <div class="section-title"><i class="bi bi-journal-bookmark me-2"></i>Class Subjects</div>
+                        <p class="text-muted small mb-3">Type a subject and press Enter or comma to add it.</p>
+                        <div id="subjectsBox" onclick="document.getElementById('subjectInput').focus()">
+                            <!-- Tags injected here -->
+                            <input type="text" id="subjectInput" placeholder="Type subject name, press Enter..." style="border:none;outline:none;background:transparent;font-size:0.83rem;min-width:180px;padding:2px 4px;color:inherit;">
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <small class="text-muted me-1">Suggestions:</small>
+                            <span class="badge bg-light border text-dark cursor-pointer" style="font-size:0.73rem;cursor:pointer;" onclick="addSubject('Mathematics')">Mathematics</span>
+                            <span class="badge bg-light border text-dark cursor-pointer" style="font-size:0.73rem;cursor:pointer;" onclick="addSubject('Science')">Science</span>
+                            <span class="badge bg-light border text-dark cursor-pointer" style="font-size:0.73rem;cursor:pointer;" onclick="addSubject('English')">English</span>
+                            <span class="badge bg-light border text-dark cursor-pointer" style="font-size:0.73rem;cursor:pointer;" onclick="addSubject('History')">History</span>
+                            <span class="badge bg-light border text-dark cursor-pointer" style="font-size:0.73rem;cursor:pointer;" onclick="addSubject('Geography')">Geography</span>
+                            <span class="badge bg-light border text-dark cursor-pointer" style="font-size:0.73rem;cursor:pointer;" onclick="addSubject('Computer Science')">Computer Science</span>
+                            <span class="badge bg-light border text-dark cursor-pointer" style="font-size:0.73rem;cursor:pointer;" onclick="addSubject('Physical Education')">Physical Education</span>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Schedule -->
+                    <div class="card-custom mb-4">
+                        <div class="section-title"><i class="bi bi-clock me-2"></i>Class Schedule</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Morning Session Start</label>
+                                <input type="time" class="form-control" id="cls-start" value="07:30">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Session End Time</label>
+                                <input type="time" class="form-control" id="cls-end" value="14:00">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold mb-2">Class Days</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <label class="d-flex align-items-center gap-2 border rounded-3 px-3 py-2" style="cursor:pointer;font-size:0.83rem;">
+                                        <input type="checkbox" checked class="form-check-input m-0"> Monday
+                                    </label>
+                                    <label class="d-flex align-items-center gap-2 border rounded-3 px-3 py-2" style="cursor:pointer;font-size:0.83rem;">
+                                        <input type="checkbox" checked class="form-check-input m-0"> Tuesday
+                                    </label>
+                                    <label class="d-flex align-items-center gap-2 border rounded-3 px-3 py-2" style="cursor:pointer;font-size:0.83rem;">
+                                        <input type="checkbox" checked class="form-check-input m-0"> Wednesday
+                                    </label>
+                                    <label class="d-flex align-items-center gap-2 border rounded-3 px-3 py-2" style="cursor:pointer;font-size:0.83rem;">
+                                        <input type="checkbox" checked class="form-check-input m-0"> Thursday
+                                    </label>
+                                    <label class="d-flex align-items-center gap-2 border rounded-3 px-3 py-2" style="cursor:pointer;font-size:0.83rem;">
+                                        <input type="checkbox" checked class="form-check-input m-0"> Friday
+                                    </label>
+                                    <label class="d-flex align-items-center gap-2 border rounded-3 px-3 py-2" style="cursor:pointer;font-size:0.83rem;">
+                                        <input type="checkbox" class="form-check-input m-0"> Saturday
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-between gap-3">
+                        <a href="classes.html" class="btn btn-light border px-4">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Classes
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary px-4" onclick="saveDraft()">
+                                <i class="bi bi-save me-2"></i>Save Draft
+                            </button>
+                            <button type="button" class="btn btn-primary-custom px-5 fw-semibold" onclick="submitClass()">
+                                <i class="bi bi-check-circle me-2"></i>Create Class
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Preview -->
+                <div class="col-lg-4">
+                    <!-- Live Preview Card -->
+                    <div class="card-custom mb-4 sticky-top" style="top: 90px;">
+                        <div class="section-title"><i class="bi bi-eye me-2"></i>Live Preview</div>
+                        <div class="preview-card">
+                            <div class="preview-card-header" id="previewHeader">
+                                <h5 class="fw-bold mb-1" id="previewName">Class Name</h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small id="previewWing">Select Wing</small>
+                                    <span class="badge bg-white bg-opacity-20 text-white" id="previewRoom">Room</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="font-size:0.82rem;">
+                                    <span class="text-muted">Class Teacher</span>
+                                    <span class="fw-semibold" id="previewTeacher">—</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="font-size:0.82rem;">
+                                    <span class="text-muted">Grade / Section</span>
+                                    <span class="fw-semibold" id="previewGrade">—</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="font-size:0.82rem;">
+                                    <span class="text-muted">Capacity</span>
+                                    <span class="fw-semibold" id="previewCapacity">—</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="font-size:0.82rem;">
+                                    <span class="text-muted">Academic Year</span>
+                                    <span class="fw-semibold" id="previewYear">2025-2026</span>
+                                </div>
+                                <div class="py-2" style="font-size:0.82rem;">
+                                    <span class="text-muted">Subjects</span>
+                                    <div id="previewSubjects" class="mt-1 d-flex flex-wrap gap-1">
+                                        <span class="text-muted fst-italic small">None added yet</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Color Accent -->
+                        <div class="mt-4">
+                            <div class="section-title"><i class="bi bi-palette me-2"></i>Card Accent Color</div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="color-swatch selected" style="background:#2563eb;" data-accent="accent-blue" onclick="selectColor(this)"></div>
+                                <div class="color-swatch" style="background:#7c3aed;" data-accent="accent-purple" onclick="selectColor(this)"></div>
+                                <div class="color-swatch" style="background:#16a34a;" data-accent="accent-green" onclick="selectColor(this)"></div>
+                                <div class="color-swatch" style="background:#ea580c;" data-accent="accent-orange" onclick="selectColor(this)"></div>
+                                <div class="color-swatch" style="background:#db2777;" data-accent="accent-pink" onclick="selectColor(this)"></div>
+                                <div class="color-swatch" style="background:#0d9488;" data-accent="accent-teal" onclick="selectColor(this)"></div>
+                            </div>
+                        </div>
+
+                        <!-- Tips -->
+                        <div class="alert alert-primary border-0 mt-4 mb-0 p-3" style="border-radius:12px;">
+                            <div class="d-flex gap-2">
+                                <i class="bi bi-lightbulb-fill flex-shrink-0 mt-1"></i>
+                                <div style="font-size:0.8rem;">
+                                    After creating the class, you can enroll students from the <strong>Students</strong> page or via the <strong>Class Roster</strong> view.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        let selectedAccent = 'accent-blue';
+        let subjects = [];
+
+        // Load teachers into selects
+        function loadTeachers() {
+            const teachers = JSON.parse(localStorage.getItem('teachers-db') || '[]');
+            const teacherSelect = document.getElementById('cls-teacher');
+            const coTeacherSelect = document.getElementById('cls-co-teacher');
+            const subjectSelects = document.querySelectorAll('#subjectTeacherRows select:last-child');
+
+            teachers.forEach(t => {
+                const opt = new Option(t.name, t.id);
+                teacherSelect.appendChild(opt.cloneNode(true));
+                coTeacherSelect.appendChild(opt.cloneNode(true));
+                subjectSelects.forEach(sel => sel.appendChild(opt.cloneNode(true)));
+            });
+
+            // Fallback if no teachers in DB
+            if (teachers.length === 0) {
+                ['Sarah Jenkins', 'David Miller', 'Emily Watson', 'Arjun Mehta', 'Maria Rossi'].forEach(name => {
+                    const opt = new Option(name, name);
+                    teacherSelect.appendChild(opt.cloneNode(true));
+                    coTeacherSelect.appendChild(opt.cloneNode(true));
+                });
+            }
+        }
+        loadTeachers();
+
+        // Live Preview
+        function updatePreview() {
+            const name = document.getElementById('cls-name').value || 'Class Name';
+            const grade = document.getElementById('cls-grade').value;
+            const section = document.getElementById('cls-section').value;
+            const wing = document.getElementById('cls-wing').value || 'Select Wing';
+            const room = document.getElementById('cls-room').value || 'Room';
+            const capacity = document.getElementById('cls-capacity').value;
+            const year = document.getElementById('cls-year').value;
+            const teacherEl = document.getElementById('cls-teacher');
+            const teacherName = teacherEl.options[teacherEl.selectedIndex]?.text || '—';
+
+            document.getElementById('previewName').textContent = name + (section ? ` - ${section}` : '');
+            document.getElementById('previewWing').textContent = wing + ' Wing';
+            document.getElementById('previewRoom').textContent = room;
+            document.getElementById('previewTeacher').textContent = teacherName === '-- Select Teacher --' ? '—' : teacherName;
+            document.getElementById('previewGrade').textContent = grade && section ? `Grade ${grade} - ${section}` : '—';
+            document.getElementById('previewCapacity').textContent = capacity ? `${capacity} seats` : '—';
+            document.getElementById('previewYear').textContent = year;
+
+            // Subjects preview
+            const previewSubjects = document.getElementById('previewSubjects');
+            if (subjects.length === 0) {
+                previewSubjects.innerHTML = '<span class="text-muted fst-italic small">None added yet</span>';
+            } else {
+                previewSubjects.innerHTML = subjects.map(s => `<span class="badge" style="background:var(--primary-light,#eff6ff);color:var(--primary,#2563eb);font-size:0.68rem;">${s}</span>`).join('');
+            }
+        }
+
+        // Bind live preview events
+        ['cls-name','cls-grade','cls-section','cls-wing','cls-room','cls-capacity','cls-year','cls-teacher'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', updatePreview);
+            document.getElementById(id)?.addEventListener('change', updatePreview);
+        });
+
+        // Subject Tag System
+        const subjectInput = document.getElementById('subjectInput');
+        subjectInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                const val = this.value.trim().replace(',','');
+                if (val) addSubject(val);
+            }
+        });
+
+        function addSubject(name) {
+            if (subjects.includes(name)) return;
+            subjects.push(name);
+
+            const tag = document.createElement('span');
+            tag.className = 'subject-tag';
+            tag.innerHTML = `${name} <button class="remove-btn" onclick="removeSubject('${name}', this.parentElement)">✕</button>`;
+
+            const box = document.getElementById('subjectsBox');
+            box.insertBefore(tag, document.getElementById('subjectInput'));
+            document.getElementById('subjectInput').value = '';
+            updatePreview();
+        }
+
+        function removeSubject(name, el) {
+            subjects = subjects.filter(s => s !== name);
+            el.remove();
+            updatePreview();
+        }
+
+        // Color selection
+        function selectColor(el) {
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedAccent = el.dataset.accent;
+        }
+
+        // Add subject-teacher row
+        function addSubjectTeacherRow() {
+            const row = document.createElement('div');
+            row.className = 'col-md-6';
+            row.innerHTML = `
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm">
+                        <option>Mathematics</option><option>Science</option><option>English</option>
+                        <option>History</option><option>Geography</option><option>Computer Science</option>
+                    </select>
+                    <select class="form-select form-select-sm">
+                        <option>-- Teacher --</option>
+                    </select>
+                    <button type="button" class="btn btn-sm btn-light border text-danger" onclick="this.closest('.col-md-6').remove()">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            `;
+            // Load teacher options
+            const teachers = JSON.parse(localStorage.getItem('teachers-db') || '[]');
+            const teacherSel = row.querySelector('select:last-of-type');
+            teachers.forEach(t => teacherSel.appendChild(new Option(t.name, t.id)));
+            if (teachers.length === 0) {
+                ['Sarah Jenkins','David Miller','Emily Watson'].forEach(n => teacherSel.appendChild(new Option(n, n)));
+            }
+
+            document.getElementById('subjectTeacherRows').appendChild(row);
+        }
+
+        function saveDraft() {
+            alert('Draft saved! You can continue editing later from the Classes page.');
+        }
+
+        function submitClass() {
+            const name = document.getElementById('cls-name').value.trim();
+            const grade = document.getElementById('cls-grade').value;
+            const section = document.getElementById('cls-section').value;
+            const wing = document.getElementById('cls-wing').value;
+            const room = document.getElementById('cls-room').value.trim();
+            const capacity = parseInt(document.getElementById('cls-capacity').value) || 45;
+            const year = document.getElementById('cls-year').value;
+            const status = document.getElementById('cls-status').value;
+            const teacherEl = document.getElementById('cls-teacher');
+            const teacherName = teacherEl.options[teacherEl.selectedIndex]?.text;
+
+            if (!name || !grade || !section || !wing || !room) {
+                alert('Please fill in all required fields (Name, Grade, Section, Wing, Room Number).');
+                return;
+            }
+
+            const accentColors = {
+                'accent-blue': { iconBg: '#eff6ff', iconColor: '#2563eb' },
+                'accent-purple': { iconBg: '#f5f3ff', iconColor: '#7c3aed' },
+                'accent-green': { iconBg: '#f0fdf4', iconColor: '#16a34a' },
+                'accent-orange': { iconBg: '#fff7ed', iconColor: '#ea580c' },
+                'accent-pink': { iconBg: '#fdf2f8', iconColor: '#db2777' },
+                'accent-teal': { iconBg: '#f0fdfa', iconColor: '#0d9488' },
+            };
+            const colorSet = accentColors[selectedAccent] || accentColors['accent-blue'];
+
+            const newClass = {
+                id: 'cls-' + Date.now(),
+                name: name + (section ? ` - ${section}` : ''),
+                grade: parseInt(grade),
+                section: section,
+                wing: wing,
+                room: room,
+                teacher: teacherName === '-- Select Teacher --' ? 'TBD' : teacherName,
+                teacherAvatar: 'https://i.pravatar.cc/60?u=' + Date.now(),
+                students: 0,
+                capacity: capacity,
+                subjects: subjects.length,
+                subjectList: subjects,
+                academicYear: year,
+                status: status,
+                accent: selectedAccent,
+                icon: 'bi-door-open-fill',
+                iconBg: colorSet.iconBg,
+                iconColor: colorSet.iconColor
+            };
+
+            const existing = JSON.parse(localStorage.getItem('classes-db') || '[]');
+            existing.unshift(newClass);
+            localStorage.setItem('classes-db', JSON.stringify(existing));
+
+            alert(`✅ Class "${newClass.name}" has been created successfully!\n\nYou can now enroll students from the class roster.`);
+            window.location.href = 'classes.html';
+        }
+
+        // Initial preview
+        updatePreview();
+    </script>
+</body>
+</html>

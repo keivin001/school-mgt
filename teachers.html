@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bright Future School - Teachers</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand text-white">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <div>
+                    <h5 class="mb-0 fw-bold" style="letter-spacing: 0.5px;">Bright Future</h5>
+                    <small class="opacity-50">School SMS</small>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="fw-medium">Logout</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold">Teachers</h4>
+                    <small class="text-muted">Manage school faculty members</small>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">5</span>
+                    </div>
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-chat-dots fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">3</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3 cursor-pointer">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Body -->
+        <div class="container-fluid p-4">
+            <!-- Title Bar -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-0">Teachers List</h3>
+                </div>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-primary-custom" href="add-teacher.html"><i class="bi bi-person-plus me-2"></i>Add New Teacher</a>
+                    <div class="btn-group border rounded" role="group">
+                        <button type="button" class="btn btn-light active" id="listViewBtn" title="List View"><i class="bi bi-list-task"></i></button>
+                        <button type="button" class="btn btn-light" id="gridViewBtn" title="Grid View"><i class="bi bi-grid-fill"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">245</h3>
+                            <p class="text-muted small mb-0">Total Teachers</p>
+                        </div>
+                        <div class="stat-icon icon-blue"><i class="bi bi-person-badge-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">240</h3>
+                            <p class="text-muted small mb-0">Active Faculty</p>
+                        </div>
+                        <div class="stat-icon icon-green"><i class="bi bi-person-check-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">8</h3>
+                            <p class="text-muted small mb-0">New Joinings</p>
+                        </div>
+                        <div class="stat-icon icon-purple"><i class="bi bi-person-plus-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">5</h3>
+                            <p class="text-muted small mb-0">On Leave / Inactive</p>
+                        </div>
+                        <div class="stat-icon icon-red"><i class="bi bi-person-x-fill"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="card-custom mb-4">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label small fw-bold text-secondary">Search Faculty</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="teachersSearch" class="form-control border-start-0" placeholder="Search by name, ID...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-secondary">Department</label>
+                        <select id="filterDept" class="form-select">
+                            <option value="">All Departments</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Science">Science</option>
+                            <option value="English">English</option>
+                            <option value="Engineering">Engineering</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-secondary">Status</label>
+                        <select id="filterStatus" class="form-select">
+                            <option value="">All</option>
+                            <option value="Active">Active</option>
+                            <option value="On Leave">On Leave</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-secondary">Academic Year</label>
+                        <select class="form-select">
+                            <option>2024-2025</option>
+                            <option>2023-2024</option>
+                        </select>
+                    </div>
+                </div>
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <div class="form-inline">
+    <label class="me-2 small fw-bold text-secondary" for="teachersPerPage">Show</label>
+    <select id="teachersPerPage" class="form-select form-select-sm w-auto">
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="0">All</option>
+    </select>
+    <span class="ms-2 small fw-bold text-secondary">entries</span>
+  </div>
+  <small id="teachersRowCount" class="text-muted"></small>
+</div>
+            </div>
+
+            <!-- Teachers Table -->
+            <div class="card-custom" id="teachersTableWrapper">
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle" id="teachersTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;"><input type="checkbox" class="form-check-input" id="selectAll"></th>
+                                <th>Profile Photo</th>
+                                <th>Name</th>
+                                <th>Teacher ID</th>
+                                <th>Department</th>
+                                <th>Subject Specialization</th>
+                                <th>Phone Number</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-dept="Mathematics" data-status="Active" data-id="200000006">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=150" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Sarah Jenkins</div>
+                                    <small class="text-muted">Class 10 - A Lead</small>
+                                </td>
+                                <td>200000006</td>
+                                <td>Mathematics</td>
+                                <td>Science</td>
+                                <td>+1 123456789</td>
+                                <td><span class="badge badge-active">Active</span></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-light border" onclick="editTeacher('200000006')"><i class="bi bi-pencil"></i> Edit</button>
+                                        <button class="btn btn-sm btn-primary" onclick="viewTeacherProfile('200000006')"><i class="bi bi-eye"></i> View Profile</button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-dept="Mathematics" data-status="Active" data-id="200000007">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">David Chen</div>
+                                    <small class="text-muted">Class 10 - B Lead</small>
+                                </td>
+                                <td>200000007</td>
+                                <td>Mathematics</td>
+                                <td>Science</td>
+                                <td>+1 123456789</td>
+                                <td><span class="badge badge-active">Active</span></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-light border" onclick="editTeacher('200000007')"><i class="bi bi-pencil"></i> Edit</button>
+                                        <button class="btn btn-sm btn-primary" onclick="viewTeacherProfile('200000007')"><i class="bi bi-eye"></i> View Profile</button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-dept="English" data-status="Active" data-id="200000018">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Maria Rossi</div>
+                                    <small class="text-muted">English Specialist</small>
+                                </td>
+                                <td>200000018</td>
+                                <td>English</td>
+                                <td>English</td>
+                                <td>+1 123456789</td>
+                                <td><span class="badge badge-active">Active</span></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-light border" onclick="editTeacher('200000018')"><i class="bi bi-pencil"></i> Edit</button>
+                                        <button class="btn btn-sm btn-primary" onclick="viewTeacherProfile('200000018')"><i class="bi bi-eye"></i> View Profile</button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-dept="English" data-status="Active" data-id="200000001">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Ishita Singh</div>
+                                    <small class="text-muted">Literature Faculty</small>
+                                </td>
+                                <td>200000001</td>
+                                <td>English</td>
+                                <td>English</td>
+                                <td>+1 123456789</td>
+                                <td><span class="badge badge-active">Active</span></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-light border" onclick="editTeacher('200000001')"><i class="bi bi-pencil"></i> Edit</button>
+                                        <button class="btn btn-sm btn-primary" onclick="viewTeacherProfile('200000001')"><i class="bi bi-eye"></i> View Profile</button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-dept="Engineering" data-status="Active" data-id="200000022">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Arjun Mehta</div>
+                                    <small class="text-muted">Physics Lab In-charge</small>
+                                </td>
+                                <td>200000022</td>
+                                <td>Engineering</td>
+                                <td>Engineering</td>
+                                <td>+1 123456789</td>
+                                <td><span class="badge badge-active">Active</span></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-light border" onclick="editTeacher('200000022')"><i class="bi bi-pencil"></i> Edit</button>
+                                        <button class="btn btn-sm btn-primary" onclick="viewTeacherProfile('200000022')"><i class="bi bi-eye"></i> View Profile</button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-dept="English" data-status="On Leave" data-id="200000003">
+                                <td><input type="checkbox" class="form-check-input select-item"></td>
+                                <td><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150" class="avatar" alt=""></td>
+                                <td>
+                                    <div class="fw-bold text-dark-theme-override">Ananya Mehta</div>
+                                    <small class="text-muted">Primary Teacher</small>
+                                </td>
+                                <td>200000003</td>
+                                <td>English</td>
+                                <td>English</td>
+                                <td>+1 123456789</td>
+                                <td><span class="badge badge-pending">On Leave</span></td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-light border" onclick="editTeacher('200000003')"><i class="bi bi-pencil"></i> Edit</button>
+                                        <button class="btn btn-sm btn-primary" onclick="viewTeacherProfile('200000003')"><i class="bi bi-eye"></i> View Profile</button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="deleteRow(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination Footer -->
+                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 border-top pt-3">
+                    <small class="text-muted">Showing 1 to 6 of 6 entries</small>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled"><a class="page-link text-secondary" href="#">Previous</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link text-secondary" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link text-secondary" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Teachers Grid -->
+            <div class="row g-4 d-none mb-4" id="teachersGridContainer"></div>
+        </div>
+    </div>
+
+    <!-- Add Teacher Modal -->
+    <div class="modal fade" id="addTeacherModal" tabindex="-1" aria-labelledby="addTeacherModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addTeacherModalLabel">Add New Teacher</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addTeacherForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Full Name</label>
+                            <input type="text" class="form-control" required placeholder="Enter full name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Department</label>
+                            <select class="form-select" required>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Science">Science</option>
+                                <option value="English">English</option>
+                                <option value="Engineering">Engineering</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Subject Specialization</label>
+                            <input type="text" class="form-control" required placeholder="e.g. Algebra, Physics">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Phone Number</label>
+                            <input type="text" class="form-control" required placeholder="+1 XXXXXXXXX">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom px-4">Register Teacher</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Class Assignments Modal for Sarah Jenkins Workflow -->
+    <div class="modal fade" id="assignClassModal" tabindex="-1" aria-labelledby="assignClassModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="assignClassModalLabel">Assign Class</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="fw-bold mb-1">Assign to Class</h6>
+                    <small class="text-muted d-block mb-3">Select classes to allocate to Sarah Jenkins.</small>
+                    
+                    <div class="mb-3">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" id="classSearchInput" class="form-control" placeholder="Search classes...">
+                        </div>
+                    </div>
+                    
+                    <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;" id="classListContainer">
+                        <div class="form-check py-1 border-bottom">
+                            <input class="form-check-input" type="checkbox" value="Class 10-B" id="c10b" checked>
+                            <label class="form-check-label small" for="c10b">Class 10 - B</label>
+                        </div>
+                        <div class="form-check py-1 border-bottom">
+                            <input class="form-check-input" type="checkbox" value="Class 9-A" id="c9a">
+                            <label class="form-check-label small" for="c9a">Class 9 - A</label>
+                        </div>
+                        <div class="form-check py-1 border-bottom">
+                            <input class="form-check-input" type="checkbox" value="Class 11-C" id="c11c">
+                            <label class="form-check-label small" for="c11c">Class 11 - C</label>
+                        </div>
+                        <div class="form-check py-1 border-bottom">
+                            <input class="form-check-input" type="checkbox" value="Class 12-B" id="c12b">
+                            <label class="form-check-label small" for="c12b">Class 12 - B</label>
+                        </div>
+                        <div class="form-check py-1 border-bottom">
+                            <input class="form-check-input" type="checkbox" value="Class 11-A" id="c11a">
+                            <label class="form-check-label small" for="c11a">Class 11 - A</label>
+                        </div>
+                        <div class="form-check py-1">
+                            <input class="form-check-input" type="checkbox" value="Class 13-G" id="c13g">
+                            <label class="form-check-label small" for="c13g">Class 13 - G</label>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 bg-light p-2 rounded small" id="selectionPreviewContainer">
+                        <div class="fw-bold text-secondary mb-1">Selection Preview:</div>
+                        <div id="selectionPreviewList"><span class="badge bg-primary">Class 10-B</span></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-sm border" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm btn-primary-custom px-3" onclick="confirmClassAssignment()">Confirm Assignment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Check url params
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('action') === 'add') {
+            const addModal = new bootstrap.Modal(document.getElementById('addTeacherModal'));
+            addModal.show();
+        }
+
+        // Teacher seed data
+        const defaultTeachers = [
+            {"id": "200000006", "name": "Sarah Jenkins", "dept": "Mathematics", "spec": "Calculus, Science", "phone": "+1 123456789", "status": "Active", "avatarUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=150"},
+            {"id": "200000007", "name": "David Chen", "dept": "Mathematics", "spec": "Geometry, Physics", "phone": "+1 123456789", "status": "Active", "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150"},
+            {"id": "200000018", "name": "Maria Rossi", "dept": "English", "spec": "English Literature", "phone": "+1 123456789", "status": "Active", "avatarUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150"},
+            {"id": "200000001", "name": "Ishita Singh", "dept": "English", "spec": "Creative Writing", "phone": "+1 123456789", "status": "Active", "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"},
+            {"id": "200000022", "name": "Arjun Mehta", "dept": "Engineering", "spec": "Applied Physics", "phone": "+1 123456789", "status": "Active", "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150"},
+            {"id": "200000003", "name": "Ananya Mehta", "dept": "English", "spec": "Primary Grammar", "phone": "+1 123456789", "status": "On Leave", "avatarUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150"}
+        ];
+
+        // Seed data if not present
+        if (!localStorage.getItem('teachers-db')) {
+            localStorage.setItem('teachers-db', JSON.stringify(defaultTeachers));
+        }
+
+        // Filters logic
+        const sInput = document.getElementById("teachersSearch");
+        const fDept = document.getElementById("filterDept");
+        const fStatus = document.getElementById("filterStatus");
+        const sTable = document.getElementById("teachersTable");
+
+        function renderTeachers() {
+            const list = JSON.parse(localStorage.getItem('teachers-db') || '[]');
+            const tbody = sTable.querySelector("tbody");
+            tbody.innerHTML = "";
+
+            list.forEach(teacher => {
+                const tr = document.createElement("tr");
+                tr.setAttribute("data-dept", teacher.dept);
+                tr.setAttribute("data-status", teacher.status);
+                tr.setAttribute("data-id", teacher.id);
+
+                const statusHtml = teacher.status === "Active" 
+                    ? '<td class="text-center"><i class="bi bi-check-circle-fill text-success" title="Active"></i></td>' 
+                    : '<td class="text-center"><i class="bi bi-x-circle-fill text-danger" title="On Leave"></i></td>';
+                const statusToggleClass = teacher.status === "Active" ? "bi-toggle-on" : "bi-toggle-off";
+
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="form-check-input select-item"></td>
+                    <td><img src="${teacher.avatarUrl || 'https://i.pravatar.cc/150?u=' + teacher.id}" class="avatar" alt=""></td>
+                    <td>
+                        <div class="fw-bold text-dark-theme-override">${teacher.name}</div>
+                        <small class="text-muted">${teacher.dept} Lead</small>
+                    </td>
+                    <td>${teacher.id}</td>
+                    <td>${teacher.dept}</td>
+                    <td>${teacher.spec}</td>
+                    <td>${teacher.phone}</td>
+                    ${statusHtml}
+                    <td class="text-end">
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-sm btn-outline-success" onclick="toggleStatus('${teacher.id}')" title="Toggle Status"><i class="bi ${statusToggleClass}"></i></button>
+                            <button class="btn btn-sm btn-light border" onclick="editTeacher('${teacher.id}')" title="Edit"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-light border text-danger" onclick="deleteTeacher('${teacher.id}')" title="Delete"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            filterTeachers();
+        }
+
+        function filterTeachers() {
+            const q = sInput.value.toLowerCase();
+            const dept = fDept.value;
+            const status = fStatus.value;
+            const currentRows = sTable.querySelectorAll("tbody tr");
+
+            currentRows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                const rDept = row.getAttribute("data-dept");
+                const rStatus = row.getAttribute("data-status");
+
+                const matchesSearch = text.includes(q);
+                const matchesDept = !dept || rDept === dept;
+                const matchesStatus = !status || rStatus === status;
+
+                if (matchesSearch && matchesDept && matchesStatus) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            // Update footer entries and row count
+            const visibleRows = Array.from(currentRows).filter(row => row.style.display !== "none");
+            const footerText = document.querySelector("#teachersTableWrapper .border-top small");
+            if (footerText) {
+                footerText.textContent = `Showing 1 to ${visibleRows.length} of ${currentRows.length} entries`;
+            }
+            const rowCountLabel = document.getElementById("teachersRowCount");
+            if (rowCountLabel) {
+                rowCountLabel.textContent = `Total visible faculty: ${visibleRows.length}`;
+            }
+
+            // Sync grid view if layout is grid
+            if (localStorage.getItem("teachers-layout") === "grid") {
+                syncTeacherGridView();
+            }
+        }
+
+        sInput.addEventListener("keyup", filterTeachers);
+        fDept.addEventListener("change", filterTeachers);
+        fStatus.addEventListener("change", filterTeachers);
+
+        // Grid View Sync function
+        function syncTeacherGridView() {
+            const gridContainer = document.getElementById("teachersGridContainer");
+            if (!gridContainer) return;
+            
+            gridContainer.innerHTML = "";
+            const currentRows = sTable.querySelectorAll("tbody tr");
+            let visibleCount = 0;
+            
+            currentRows.forEach(row => {
+                if (row.style.display === "none") return;
+                visibleCount++;
+                
+                const id = row.getAttribute("data-id");
+                const img = row.querySelector("td img.avatar").src;
+                const name = row.querySelector("td .fw-bold").innerText;
+                const details = row.querySelector("td small").innerText;
+                const dept = row.cells[4].innerText;
+                const spec = row.cells[5].innerText;
+                const phone = row.cells[6].innerText;
+                const statusIconHtml = row.cells[7].innerHTML;
+                
+                const cardCol = document.createElement("div");
+                cardCol.className = "col-md-6 col-lg-4";
+                cardCol.innerHTML = `
+                    <div class="card-custom h-100 p-3 text-center d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <input type="checkbox" class="form-check-input select-item-grid" data-id="${id}">
+                                <div class="d-flex gap-1 align-items-center">
+                                    <span class="badge bg-primary-subtle text-primary small">ID: ${id}</span>
+                                    ${statusIconHtml}
+                                </div>
+                            </div>
+                            <img src="${img}" class="avatar mx-auto mb-3" style="width: 64px; height: 64px;" alt="">
+                            <h6 class="fw-bold mb-1 text-dark-theme-override">${name}</h6>
+                            <small class="text-muted d-block mb-3">${details}</small>
+                            
+                            <div class="p-2 bg-light rounded-3 text-start small mb-3 border-0">
+                                <div class="d-flex justify-content-between mb-1"><span class="text-secondary">Dept:</span><span class="fw-medium text-dark-theme-override">${dept}</span></div>
+                                <div class="d-flex justify-content-between mb-1"><span class="text-secondary">Spec:</span><span class="fw-medium text-dark-theme-override">${spec}</span></div>
+                                <div class="d-flex justify-content-between"><span class="text-secondary">Phone:</span><span class="fw-medium text-dark-theme-override">${phone}</span></div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center gap-2 mt-2">
+                            <button class="btn btn-sm btn-light border px-2.5" onclick="editTeacher('${id}')" title="Edit"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-primary px-3" onclick="viewTeacherProfile('${id}')" title="Profile"><i class="bi bi-eye"></i> Profile</button>
+                            <button class="btn btn-sm btn-light border text-danger px-2.5" onclick="deleteTeacher('${id}')" title="Delete"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+                gridContainer.appendChild(cardCol);
+            });
+
+            // Grid Pagination Footer
+            if (visibleCount > 0) {
+                const pagCol = document.createElement("div");
+                pagCol.className = "col-12 mt-2";
+                pagCol.innerHTML = `
+                    <div class="card-custom p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <small class="text-muted">Showing 1 to ${visibleCount} of ${visibleCount} entries</small>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item disabled"><a class="page-link text-secondary" href="#">Previous</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link text-secondary" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link text-secondary" href="#">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                `;
+                gridContainer.appendChild(pagCol);
+            }
+
+            if (visibleCount === 0) {
+                gridContainer.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-people text-muted fs-1 mb-2"></i>
+                        <p class="text-muted">No faculty members match the criteria.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Layout Toggling
+        const listViewBtn = document.getElementById("listViewBtn");
+        const gridViewBtn = document.getElementById("gridViewBtn");
+        const tableWrapper = document.getElementById("teachersTableWrapper");
+        const gridContainer = document.getElementById("teachersGridContainer");
+
+        function setViewLayout(layout) {
+            if (layout === "grid") {
+                listViewBtn.classList.remove("active");
+                gridViewBtn.classList.add("active");
+                tableWrapper.classList.add("d-none");
+                gridContainer.classList.remove("d-none");
+                syncTeacherGridView();
+                localStorage.setItem("teachers-layout", "grid");
+            } else {
+                gridViewBtn.classList.remove("active");
+                listViewBtn.classList.add("active");
+                gridContainer.classList.add("d-none");
+                tableWrapper.classList.remove("d-none");
+                localStorage.setItem("teachers-layout", "list");
+            }
+        }
+
+        listViewBtn.addEventListener("click", () => setViewLayout("list"));
+        gridViewBtn.addEventListener("click", () => setViewLayout("grid"));
+
+        // Initialize preferred layout
+        const savedLayout = localStorage.getItem("teachers-layout") || "list";
+        setViewLayout(savedLayout);
+
+        // Select All checkboxes
+        const selectAll = document.getElementById("selectAll");
+        selectAll.addEventListener("change", function() {
+            const checkboxes = sTable.querySelectorAll("tbody .select-item");
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        });
+
+        // View Teacher Profile details card view
+        function viewTeacherProfile(teacherId) {
+            const list = JSON.parse(localStorage.getItem('teachers-db') || '[]');
+            const teacher = list.find(t => t.id === teacherId) || {
+                name: "Teacher", id: teacherId, dept: "N/A", spec: "N/A", phone: "N/A", status: "Active", avatarUrl: "https://i.pravatar.cc/150"
+            };
+
+            const title = "Teacher Profile";
+            const html = `
+                <div class="text-center mb-4">
+                    <img src="${teacher.avatarUrl}" class="rounded-circle border" style="width: 80px; height: 80px; object-fit: cover;" alt="">
+                    <h5 class="fw-bold mt-3 mb-1">${teacher.name}</h5>
+                    <span class="badge bg-secondary-custom text-secondary">${teacher.dept}</span>
+                </div>
+
+                <!-- Custom Nav Tabs Inside Slideout -->
+                <ul class="nav nav-tabs nav-fill mb-3" id="teacherTab" role="tablist" style="font-size: 13px;">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active py-2" id="info-tab" data-bs-toggle="tab" data-bs-target="#info-pane" type="button" role="tab" aria-controls="info-pane" aria-selected="true">Details</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link py-2" id="schedule-tab" data-bs-toggle="tab" data-bs-target="#schedule-pane" type="button" role="tab" aria-controls="schedule-pane" aria-selected="false">Schedules</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link py-2" id="assigns-tab" data-bs-toggle="tab" data-bs-target="#assigns-pane" type="button" role="tab" aria-controls="assigns-pane" aria-selected="false">Class Assignments</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="teacherTabContent" style="font-size: 13px;">
+                    <div class="tab-pane fade show active" id="info-pane" role="tabpanel" aria-labelledby="info-tab">
+                        <div class="card-custom p-3 bg-light border-0">
+                            <div class="detail-item py-2 d-flex justify-content-between"><span>Teacher No</span><span class="fw-bold">${teacher.id}</span></div>
+                            <div class="detail-item py-2 d-flex justify-content-between"><span>Specialization</span><span>${teacher.spec}</span></div>
+                            <div class="detail-item py-2 d-flex justify-content-between"><span>Phone Number</span><span>${teacher.phone}</span></div>
+                            <div class="detail-item py-2 d-flex justify-content-between"><span>Email</span><span class="text-lowercase">${teacher.name.replace(' ', '')}@brightfuture.com</span></div>
+                            <div class="detail-item py-2 d-flex justify-content-between"><span>Status</span><span class="badge ${teacher.status==='Active'?'bg-success text-white':'bg-danger text-white'}">${teacher.status}</span></div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="schedule-pane" role="tabpanel" aria-labelledby="schedule-tab">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-0 bg-transparent">
+                                <div>
+                                    <div class="fw-bold">Period 1 - Mathematics</div>
+                                    <small class="text-muted">Monday, Wednesday (8:30 AM)</small>
+                                </div>
+                                <span class="badge bg-secondary-custom text-secondary">Class 10-A</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-0 bg-transparent">
+                                <div>
+                                    <div class="fw-bold">Period 3 - Science Labs</div>
+                                    <small class="text-muted">Tuesday, Thursday (10:15 AM)</small>
+                                </div>
+                                <span class="badge bg-secondary-custom text-secondary">Class 10-B</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="assigns-pane" role="tabpanel" aria-labelledby="assigns-tab">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="fw-bold">Current Allocations:</div>
+                            <button class="btn btn-xs btn-primary py-1 px-2 fw-bold" style="font-size: 11px;" onclick="triggerAssignClass('${teacher.name}')">+ Assign Class</button>
+                        </div>
+                        <div id="allocatedClassesList">
+                            <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+                                <span>Class 10 - A (Home Room)</span>
+                                <span class="badge bg-success">Lead Teacher</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+                                <span>Class 10 - B</span>
+                                <span class="badge bg-secondary-custom text-secondary">Mathematics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.showDrilldown(title, html);
+        }
+
+        // Secondary class assignment dialog workflow
+        let activeTeacherForAssignment = "";
+        function triggerAssignClass(teacherName) {
+            activeTeacherForAssignment = teacherName;
+            const selectModal = new bootstrap.Modal(document.getElementById('assignClassModal'));
+            selectModal.show();
+        }
+
+        // Listen for checkbox state change to show in preview list
+        const classListContainer = document.getElementById("classListContainer");
+        const selectionPreviewList = document.getElementById("selectionPreviewList");
+        classListContainer.addEventListener("change", function() {
+            const checkboxes = classListContainer.querySelectorAll("input[type=checkbox]:checked");
+            if (checkboxes.length === 0) {
+                selectionPreviewList.innerHTML = "<span class='text-muted small'>None selected</span>";
+            } else {
+                selectionPreviewList.innerHTML = Array.from(checkboxes).map(cb => `<span class="badge bg-primary me-1 mb-1">${cb.value}</span>`).join('');
+            }
+        });
+
+        // Search classes inside list check
+        document.getElementById("classSearchInput").addEventListener("keyup", function(e) {
+            const q = e.target.value.toLowerCase();
+            const checks = classListContainer.querySelectorAll(".form-check");
+            checks.forEach(check => {
+                const text = check.innerText.toLowerCase();
+                if (text.includes(q)) {
+                    check.style.display = "";
+                } else {
+                    check.style.display = "none";
+                }
+            });
+        });
+
+        function confirmClassAssignment() {
+            const checkboxes = classListContainer.querySelectorAll("input[type=checkbox]:checked");
+            const classesSelected = Array.from(checkboxes).map(cb => cb.value);
+            bootstrap.Modal.getInstance(document.getElementById('assignClassModal')).hide();
+
+            // Simulate adding items dynamically inside the slide-out DOM if details panel is open!
+            const listDiv = document.getElementById("allocatedClassesList");
+            if (listDiv) {
+                listDiv.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+                        <span>Class 10 - A (Home Room)</span>
+                        <span class="badge bg-success">Lead Teacher</span>
+                    </div>
+                ` + classesSelected.map(clsName => `
+                    <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+                        <span>${clsName}</span>
+                        <span class="badge bg-secondary-custom text-secondary">Mathematics</span>
+                    </div>
+                `).join('');
+            }
+            alert(`Assigned classes: [${classesSelected.join(', ')}] to ${activeTeacherForAssignment} successfully!`);
+        }
+
+        // Add Teacher submit simulation
+        document.getElementById("addTeacherForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const inputs = this.querySelectorAll("input, select");
+            const name = inputs[0].value;
+            const dept = inputs[1].value;
+            const spec = inputs[2].value;
+            const phone = inputs[3].value;
+            const randomId = Math.floor(200000000 + Math.random() * 999999).toString();
+
+            const existing = JSON.parse(localStorage.getItem('teachers-db') || '[]');
+            existing.unshift({
+                id: randomId,
+                name: name,
+                dept: dept,
+                spec: spec,
+                phone: phone,
+                status: "Active",
+                avatarUrl: `https://i.pravatar.cc/150?u=${randomId}`
+            });
+            localStorage.setItem('teachers-db', JSON.stringify(existing));
+
+            renderTeachers();
+
+            bootstrap.Modal.getInstance(document.getElementById('addTeacherModal')).hide();
+            this.reset();
+            alert("New Faculty Member Registered Successfully!");
+        });
+
+        function toggleStatus(id) {
+            const existing = JSON.parse(localStorage.getItem('teachers-db') || '[]');
+            const index = existing.findIndex(t => t.id === id);
+            if (index !== -1) {
+                existing[index].status = existing[index].status === "Active" ? "On Leave" : "Active";
+                localStorage.setItem('teachers-db', JSON.stringify(existing));
+                renderTeachers();
+            }
+        }
+
+        function deleteTeacher(id) {
+            if (confirm("Are you sure you want to delete this teacher record?")) {
+                const existing = JSON.parse(localStorage.getItem('teachers-db') || '[]');
+                const filtered = existing.filter(t => t.id !== id);
+                localStorage.setItem('teachers-db', JSON.stringify(filtered));
+                renderTeachers();
+            }
+        }
+
+        function editTeacher(id) {
+            window.location.href = `edit-teacher.html?id=${id}`;
+        }
+
+        // Initial render
+        renderTeachers();
+    </script>
+</body>
+</html>

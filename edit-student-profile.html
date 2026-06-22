@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student Profile - Bright Future School</title>
+    <meta name="description" content="Edit a student's full profile details.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ── Step Wizard ── */
+        .wizard-step {
+            display: flex; align-items: center; gap: 10px;
+            padding: 0.85rem 1.1rem; border-radius: 10px;
+            cursor: pointer; margin-bottom: 0.35rem;
+            transition: all 0.22s ease; border: 1px solid transparent;
+            color: var(--sidebar-text, #475569);
+        }
+        .wizard-step:hover { background: var(--sidebar-link-hover-bg, #f1f5f9); }
+        .wizard-step.active {
+            background: var(--primary-light, #eff6ff);
+            color: var(--primary, #2563eb);
+            border-color: rgba(37,99,235,0.15); font-weight: 600;
+        }
+        .wizard-step.completed { color: #16a34a; }
+        .wizard-step .step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+            background: #e2e8f0; color: #64748b; flex-shrink: 0;
+            transition: all 0.22s ease;
+        }
+        .wizard-step.active    .step-num { background: var(--primary,#2563eb); color:#fff; }
+        .wizard-step.completed .step-num { background: #22c55e; color:#fff; }
+
+        /* ── Panes ── */
+        .wizard-pane { display: none; }
+        .wizard-pane.active { display: block; animation: fadeSlide 0.28s ease; }
+        @keyframes fadeSlide { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ── Avatar picker ── */
+        .avatar-option {
+            width: 58px; height: 58px; border-radius: 50%;
+            cursor: pointer; border: 3px solid transparent;
+            transition: all 0.2s; object-fit: cover;
+        }
+        .avatar-option:hover  { transform: scale(1.08); }
+        .avatar-option.selected {
+            border-color: var(--primary,#2563eb);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+        }
+
+        /* ── Section title ── */
+        .form-section-title {
+            font-size: 0.78rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--primary,#2563eb);
+            margin-bottom: 1rem; padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light,#eff6ff);
+        }
+
+        /* ── Preview card ── */
+        .preview-card {
+            border-radius: 16px;
+            background: linear-gradient(135deg,#1d4ed8,#7c3aed);
+            color: #fff; padding: 1.4rem;
+            text-align: center; position: relative; overflow: hidden;
+        }
+        .preview-card::before {
+            content:''; position:absolute; top:-40px; right:-30px;
+            width:120px; height:120px; border-radius:50%;
+            background:rgba(255,255,255,0.07); pointer-events:none;
+        }
+        .preview-avatar {
+            width: 72px; height: 72px; border-radius: 50%;
+            object-fit: cover; border: 3px solid rgba(255,255,255,0.5);
+            margin-bottom: 10px;
+        }
+
+        /* ── Toast ── */
+        @keyframes slideInToast { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+
+        body.dark-theme .wizard-step.active { background: rgba(37,99,235,0.15); }
+        body.dark-theme .step-num { background: #1e293b; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <div>
+                    <h5 class="mb-0 fw-bold">Bright Future</h5>
+                    <small class="opacity-50">School SMS</small>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link active"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card"><i class="bi bi-box-arrow-left"></i><span class="fw-medium">Logout</span></a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold" id="pageTitle">Edit Student Profile</h4>
+                    <small class="text-muted" id="pageSubtitle">Loading student…</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid p-4">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb small">
+                    <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="classes.html" class="text-decoration-none">Classes</a></li>
+                    <li class="breadcrumb-item"><a href="#" id="bcClass" class="text-decoration-none">Class Roster</a></li>
+                    <li class="breadcrumb-item"><a href="#" id="bcProfile" class="text-decoration-none">Profile</a></li>
+                    <li class="breadcrumb-item active">Edit</li>
+                </ol>
+            </nav>
+
+            <div class="row g-4">
+
+                <!-- ── LEFT: Wizard steps + preview ── -->
+                <div class="col-lg-3">
+                    <!-- Profile Preview -->
+                    <div class="preview-card mb-3">
+                        <img id="previewAvatar" src="https://i.pravatar.cc/150?img=1" class="preview-avatar" alt="">
+                        <div class="fw-bold" id="previewName" style="font-size:.95rem;">—</div>
+                        <div style="font-size:.72rem;opacity:.75;margin-top:2px;" id="previewMeta">—</div>
+                    </div>
+
+                    <!-- Wizard Steps Card -->
+                    <div class="card-custom p-3">
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-3 border-bottom">
+                            <div class="p-2 rounded-3" style="background:var(--primary-light,#eff6ff);color:var(--primary,#2563eb);">
+                                <i class="bi bi-pencil-square fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0" id="wizardStudentName">Edit Student</h6>
+                                <small class="text-muted" id="wizardStudentId">ID: —</small>
+                            </div>
+                        </div>
+                        <div id="wizardSteps">
+                            <div class="wizard-step active" data-step="1" onclick="goToStep(1)">
+                                <span class="step-num">1</span>
+                                <div><div class="fw-medium" style="font-size:.84rem;">Personal Info</div><small class="text-muted" style="font-size:.73rem;">Name, DOB, gender</small></div>
+                            </div>
+                            <div class="wizard-step" data-step="2" onclick="goToStep(2)">
+                                <span class="step-num">2</span>
+                                <div><div class="fw-medium" style="font-size:.84rem;">Academic</div><small class="text-muted" style="font-size:.73rem;">Class, section, year</small></div>
+                            </div>
+                            <div class="wizard-step" data-step="3" onclick="goToStep(3)">
+                                <span class="step-num">3</span>
+                                <div><div class="fw-medium" style="font-size:.84rem;">Guardian</div><small class="text-muted" style="font-size:.73rem;">Parent & contacts</small></div>
+                            </div>
+                            <div class="wizard-step" data-step="4" onclick="goToStep(4)">
+                                <span class="step-num">4</span>
+                                <div><div class="fw-medium" style="font-size:.84rem;">Review & Save</div><small class="text-muted" style="font-size:.73rem;">Confirm changes</small></div>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-top">
+                            <div class="small text-muted mb-1">Progress</div>
+                            <div class="progress" style="height:6px;">
+                                <div class="progress-bar bg-primary" id="wizardProgress" style="width:25%;transition:width .3s;"></div>
+                            </div>
+                            <small class="text-muted" id="wizardProgressLabel">Step 1 of 4</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── RIGHT: Form Panes ── -->
+                <div class="col-lg-9">
+                    <!-- ── STEP 1: Personal Info ── -->
+                    <div class="wizard-pane active" id="pane-1">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-person text-primary me-2"></i>Personal Information</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Update the student's personal details and profile avatar.</p>
+
+                            <div class="form-section-title">Profile Avatar</div>
+                            <div class="d-flex flex-wrap gap-3 mb-4" id="avatarPicker">
+                                <img src="https://i.pravatar.cc/150?img=1"  class="avatar-option" data-url="https://i.pravatar.cc/150?img=1"  title="Avatar 1">
+                                <img src="https://i.pravatar.cc/150?img=3"  class="avatar-option" data-url="https://i.pravatar.cc/150?img=3"  title="Avatar 2">
+                                <img src="https://i.pravatar.cc/150?img=5"  class="avatar-option" data-url="https://i.pravatar.cc/150?img=5"  title="Avatar 3">
+                                <img src="https://i.pravatar.cc/150?img=6"  class="avatar-option" data-url="https://i.pravatar.cc/150?img=6"  title="Avatar 4">
+                                <img src="https://i.pravatar.cc/150?img=7"  class="avatar-option" data-url="https://i.pravatar.cc/150?img=7"  title="Avatar 5">
+                                <img src="https://i.pravatar.cc/150?img=8"  class="avatar-option" data-url="https://i.pravatar.cc/150?img=8"  title="Avatar 6">
+                                <img src="https://i.pravatar.cc/150?img=11" class="avatar-option" data-url="https://i.pravatar.cc/150?img=11" title="Avatar 7">
+                                <img src="https://i.pravatar.cc/150?img=12" class="avatar-option" data-url="https://i.pravatar.cc/150?img=12" title="Avatar 8">
+                                <img src="https://i.pravatar.cc/150?img=14" class="avatar-option" data-url="https://i.pravatar.cc/150?img=14" title="Avatar 9">
+                                <img src="https://i.pravatar.cc/150?img=15" class="avatar-option" data-url="https://i.pravatar.cc/150?img=15" title="Avatar 10">
+                                <img src="https://i.pravatar.cc/150?img=41" class="avatar-option" data-url="https://i.pravatar.cc/150?img=41" title="Avatar 11">
+                                <img src="https://i.pravatar.cc/150?img=42" class="avatar-option" data-url="https://i.pravatar.cc/150?img=42" title="Avatar 12">
+                                <img src="https://i.pravatar.cc/150?img=43" class="avatar-option" data-url="https://i.pravatar.cc/150?img=43" title="Avatar 13">
+                                <img src="https://i.pravatar.cc/150?img=44" class="avatar-option" data-url="https://i.pravatar.cc/150?img=44" title="Avatar 14">
+                                <img src="https://i.pravatar.cc/150?img=45" class="avatar-option" data-url="https://i.pravatar.cc/150?img=45" title="Avatar 15">
+                                <img src="https://i.pravatar.cc/150?img=46" class="avatar-option" data-url="https://i.pravatar.cc/150?img=46" title="Avatar 16">
+                                <img src="https://i.pravatar.cc/150?img=47" class="avatar-option" data-url="https://i.pravatar.cc/150?img=47" title="Avatar 17">
+                                <img src="https://i.pravatar.cc/150?img=48" class="avatar-option" data-url="https://i.pravatar.cc/150?img=48" title="Avatar 18">
+                                <img src="https://i.pravatar.cc/150?img=49" class="avatar-option" data-url="https://i.pravatar.cc/150?img=49" title="Avatar 19">
+                                <img src="https://i.pravatar.cc/150?img=50" class="avatar-option" data-url="https://i.pravatar.cc/150?img=50" title="Avatar 20">
+                            </div>
+                            <input type="hidden" id="selectedAvatar" value="">
+
+                            <div class="form-section-title">Basic Details</div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">First Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="stu-first-name" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Middle Name</label>
+                                    <input type="text" class="form-control" id="stu-middle-name" placeholder="Optional">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Last Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="stu-last-name" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Date of Birth</label>
+                                    <input type="date" class="form-control" id="stu-dob">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Gender <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="stu-gender">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Blood Group</label>
+                                    <select class="form-select" id="stu-blood">
+                                        <option value="">Select</option>
+                                        <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                                        <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Nationality</label>
+                                    <input type="text" class="form-control" id="stu-nationality">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Mother Tongue</label>
+                                    <input type="text" class="form-control" id="stu-tongue">
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label small fw-bold">Home Address</label>
+                                    <input type="text" class="form-control" id="stu-address">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── STEP 2: Academic ── -->
+                    <div class="wizard-pane" id="pane-2">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-mortarboard text-primary me-2"></i>Academic Placement</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Update the student's class assignment and academic year.</p>
+
+                            <div class="form-section-title">Class Assignment</div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Class <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="stu-class">
+                                        <option value="Class 10">Class 10</option>
+                                        <option value="Class 9">Class 9</option>
+                                        <option value="Class 8">Class 8</option>
+                                        <option value="Class 7">Class 7</option>
+                                        <option value="Class 6">Class 6</option>
+                                        <option value="Class 5">Class 5</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label small fw-bold">Section</label>
+                                    <select class="form-select" id="stu-section">
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Roll Number</label>
+                                    <input type="text" class="form-control" id="stu-roll">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Academic Year</label>
+                                    <select class="form-select" id="stu-year">
+                                        <option value="2025-2026">2025-2026</option>
+                                        <option value="2024-2025">2024-2025</option>
+                                        <option value="2023-2024">2023-2024</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Status</label>
+                                    <select class="form-select" id="stu-status">
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── STEP 3: Guardian ── -->
+                    <div class="wizard-pane" id="pane-3">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-people text-primary me-2"></i>Guardian Information</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Update parent or guardian contact details.</p>
+
+                            <div class="form-section-title">Primary Guardian</div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Parent / Guardian Name</label>
+                                    <input type="text" class="form-control" id="stu-parent">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Contact Number</label>
+                                    <input type="tel" class="form-control" id="stu-contact">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Father's Name</label>
+                                    <input type="text" class="form-control" id="stu-father">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Mother's Name</label>
+                                    <input type="text" class="form-control" id="stu-mother">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Occupation</label>
+                                    <input type="text" class="form-control" id="stu-occupation">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Email Address</label>
+                                    <input type="email" class="form-control" id="stu-email">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ── STEP 4: Review & Save ── -->
+                    <div class="wizard-pane" id="pane-4">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-check2-circle text-primary me-2"></i>Review & Save</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Confirm the changes below before saving.</p>
+
+                            <!-- Review summary injected by JS -->
+                            <div id="reviewSummary"></div>
+
+                            <div class="alert border-0 d-flex align-items-start gap-3 mt-3"
+                                style="background:var(--primary-light,#eff6ff);border-left:4px solid var(--primary,#2563eb)!important;">
+                                <i class="bi bi-info-circle-fill text-primary flex-shrink-0 mt-1"></i>
+                                <div style="font-size:.83rem;">
+                                    Changes are saved to your browser's local storage. They will be reflected immediately on the profile page.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Navigation Buttons ── -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <button class="btn btn-light border" id="btnCancel" onclick="cancelEdit()">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </button>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-light border" id="btnPrev" onclick="navigateStep(-1)">
+                                <i class="bi bi-chevron-left me-1"></i>Previous
+                            </button>
+                            <button class="btn btn-primary-custom" id="btnNext" onclick="navigateStep(1)">
+                                Next <i class="bi bi-chevron-right ms-1"></i>
+                            </button>
+                            <button class="btn btn-success d-none fw-semibold" id="btnSubmit" onclick="saveProfile()">
+                                <i class="bi bi-check-circle me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                </div><!-- end col-lg-9 -->
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </div><!-- end #content -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    // ═══════════════════════════════════════
+    //  PARAMS
+    // ═══════════════════════════════════════
+    const urlParams  = new URLSearchParams(window.location.search);
+    const studentId  = urlParams.get('id')    || '';
+    const classParam = urlParams.get('class') || '';
+
+    // ─ Same mock data as student-profile.html ─
+    const mockStudentsByClass = {
+        'cls-10a': [
+            { id:'S10001',name:'Aiden Clarke',  dob:'12/03/2008',gender:'Male',  status:'Active',  photo:'https://i.pravatar.cc/150?img=8', parent:'James Clarke',  contact:'+1 555-1001',blood:'O+',nationality:'British',tongue:'English',address:'12 Baker St, London',   section:'A',roll:'01' },
+            { id:'S10002',name:'Priya Sharma',  dob:'22/07/2008',gender:'Female',status:'Active',  photo:'https://i.pravatar.cc/150?img=47',parent:'Raj Sharma',    contact:'+1 555-1002',blood:'B+',nationality:'Indian', tongue:'Hindi',  address:'45 Sector 4, New Delhi',section:'A',roll:'02' },
+            { id:'S10003',name:'Luca Ferrari',  dob:'05/11/2007',gender:'Male',  status:'Active',  photo:'https://i.pravatar.cc/150?img=15',parent:'Marco Ferrari', contact:'+1 555-1003',blood:'A+',nationality:'Italian',tongue:'Italian',address:'Via Roma 7, Milan',      section:'A',roll:'03' },
+            { id:'S10004',name:'Sofia Garcia',  dob:'18/01/2008',gender:'Female',status:'Active',  photo:'https://i.pravatar.cc/150?img=45',parent:'Carlos Garcia', contact:'+1 555-1004',blood:'A-',nationality:'Spanish',tongue:'Spanish',address:'Calle Mayor 3, Madrid',  section:'A',roll:'04' },
+            { id:'S10005',name:'Yuki Tanaka',   dob:'09/06/2008',gender:'Female',status:'Active',  photo:'https://i.pravatar.cc/150?img=49',parent:'Hiroshi Tanaka',contact:'+1 555-1005',blood:'O-',nationality:'Japanese',tongue:'Japanese',address:'1-2-3 Shibuya, Tokyo',section:'A',roll:'05' },
+            { id:'S10006',name:'Ethan Moore',   dob:'30/09/2007',gender:'Male',  status:'Inactive',photo:'https://i.pravatar.cc/150?img=18',parent:'Brian Moore',   contact:'+1 555-1006',blood:'B-',nationality:'American',tongue:'English',address:'55 Elm St, New York',   section:'A',roll:'06' },
+        ],
+        'cls-10b': [
+            { id:'S10007',name:'Amara Osei',   dob:'14/02/2008',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=44',parent:'Kofi Osei',    contact:'+1 555-2001',blood:'A+',nationality:'Ghanaian', tongue:'Twi',      address:'5 Accra Rd, Accra',       section:'B',roll:'01' },
+            { id:'S10008',name:"Finn O'Brien", dob:'27/08/2008',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=12',parent:"Liam O'Brien",contact:'+1 555-2002',blood:'O+',nationality:'Irish',    tongue:'English',   address:'Dublin 4, Ireland',        section:'B',roll:'02' },
+            { id:'S10009',name:'Mei Ling',     dob:'03/04/2007',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=43',parent:'Wei Ling',    contact:'+1 555-2003',blood:'B+',nationality:'Chinese',  tongue:'Mandarin',  address:'88 Nanjing Rd, Shanghai',  section:'B',roll:'03' },
+        ],
+        'cls-9a': [
+            { id:'S09001',name:'Carlos Rivera',dob:'11/05/2009',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=7', parent:'Diego Rivera',  contact:'+1 555-3001',blood:'O+',nationality:'Mexican', tongue:'Spanish',   address:'Av. Insurgentes, CDMX',    section:'A',roll:'01' },
+            { id:'S09002',name:'Anya Patel',   dob:'22/11/2009',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=48',parent:'Sunita Patel',  contact:'+1 555-3002',blood:'A+',nationality:'Indian', tongue:'Gujarati',  address:'MG Road, Ahmedabad',       section:'A',roll:'02' },
+            { id:'S09003',name:'Jack Thompson',dob:'06/07/2009',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=11',parent:'Steven Thompson',contact:'+1 555-3003',blood:'AB+',nationality:'American',tongue:'English', address:'300 Park Ave, Chicago',    section:'A',roll:'03' },
+            { id:'S09004',name:'Nina Volkov',  dob:'15/03/2009',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=46',parent:'Ivan Volkov',   contact:'+1 555-3004',blood:'A-',nationality:'Russian', tongue:'Russian',   address:'Arbat St 12, Moscow',      section:'A',roll:'04' },
+        ],
+        'cls-9b': [
+            { id:'S09005',name:'Omar Hassan',dob:'19/09/2009',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=6', parent:'Khalid Hassan',contact:'+1 555-4001',blood:'O+',nationality:'Egyptian', tongue:'Arabic',    address:'Tahrir Sq, Cairo',         section:'B',roll:'01' },
+            { id:'S09006',name:'Elena Cruz', dob:'04/12/2009',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=41',parent:'Miguel Cruz',  contact:'+1 555-4002',blood:'B+',nationality:'Brazilian',tongue:'Portuguese',address:'Copacabana, Rio',           section:'B',roll:'02' },
+            { id:'S09007',name:'Ravi Kumar', dob:'28/02/2009',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=14',parent:'Suresh Kumar', contact:'+1 555-4003',blood:'O-',nationality:'Indian',  tongue:'Tamil',     address:'Anna Nagar, Chennai',      section:'B',roll:'03' },
+        ],
+        'cls-5a': [
+            { id:'S05001',name:'Lily Johnson', dob:'08/04/2013',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=50',parent:'Mark Johnson',contact:'+1 555-5001',blood:'A+',nationality:'American',tongue:'English',address:'12 Oak Lane, Boston', section:'A',roll:'01' },
+            { id:'S05002',name:'Noah Williams',dob:'17/06/2013',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=3', parent:'Tom Williams', contact:'+1 555-5002',blood:'O+',nationality:'American',tongue:'English',address:'99 Maple St, Austin', section:'A',roll:'02' },
+            { id:'S05003',name:'Zara Ahmed',   dob:'25/10/2013',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=42',parent:'Ali Ahmed',   contact:'+1 555-5003',blood:'B-',nationality:'Pakistani',tongue:'Urdu',  address:'Blue Area, Islamabad',section:'A',roll:'03' },
+        ],
+        'cls-5b': [
+            { id:'S05004',name:'Leo Nguyen',  dob:'13/01/2013',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=4', parent:'Minh Nguyen',contact:'+1 555-6001',blood:'A+',nationality:'Vietnamese',tongue:'Vietnamese',address:'Ba Dinh, Hanoi',     section:'B',roll:'01' },
+            { id:'S05005',name:'Grace Kim',   dob:'21/07/2013',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=51',parent:'Jae Kim',    contact:'+1 555-6002',blood:'O+',nationality:'Korean',   tongue:'Korean',    address:'Gangnam, Seoul',     section:'B',roll:'02' },
+            { id:'S05006',name:'Adam Okafor', dob:'09/03/2013',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=5', parent:'Emeka Okafor',contact:'+1 555-6003',blood:'B+',nationality:'Nigerian', tongue:'Igbo',     address:'Victoria Island, Lagos',section:'B',roll:'03' },
+        ],
+    };
+    </script>
+    <script>
+    // ═══════════════════════════════════════
+    //  LOAD STUDENT
+    // ═══════════════════════════════════════
+    function findStudentBase() {
+        // 1. check all mock pools
+        for (const list of Object.values(mockStudentsByClass)) {
+            const s = list.find(x => x.id === studentId);
+            if (s) return { ...s };
+        }
+        // 2. fallback: students-db
+        const db = JSON.parse(localStorage.getItem('students-db') || '[]');
+        return db.find(x => x.id === studentId) || null;
+    }
+
+    function findStudent() {
+        const base      = findStudentBase();
+        if (!base) return null;
+        const overrides = JSON.parse(localStorage.getItem('student-status-overrides') || '{}');
+        const edits     = JSON.parse(localStorage.getItem('student-edits') || '{}');
+        // Apply any saved edits on top of base
+        const merged    = { ...base, ...(edits[studentId] || {}) };
+        if (overrides[studentId]) merged.status = overrides[studentId];
+        return merged;
+    }
+
+    // ═══════════════════════════════════════
+    //  WIZARD STATE
+    // ═══════════════════════════════════════
+    let currentStep  = 1;
+    const totalSteps = 4;
+
+    function updateWizardUI() {
+        document.querySelectorAll('.wizard-pane').forEach(p => p.classList.remove('active'));
+        document.getElementById('pane-' + currentStep).classList.add('active');
+
+        document.querySelectorAll('.wizard-step').forEach(s => {
+            const n = parseInt(s.dataset.step);
+            s.classList.remove('active','completed');
+            if (n === currentStep)   s.classList.add('active');
+            else if (n < currentStep) s.classList.add('completed');
+        });
+
+        const pct = Math.round((currentStep / totalSteps) * 100);
+        document.getElementById('wizardProgress').style.width = pct + '%';
+        document.getElementById('wizardProgressLabel').textContent = `Step ${currentStep} of ${totalSteps}`;
+
+        const btnPrev   = document.getElementById('btnPrev');
+        const btnNext   = document.getElementById('btnNext');
+        const btnSubmit = document.getElementById('btnSubmit');
+        btnPrev.style.display = currentStep > 1 ? '' : 'none';
+
+        if (currentStep === totalSteps) {
+            btnNext.classList.add('d-none');
+            btnSubmit.classList.remove('d-none');
+            buildReview();
+        } else {
+            btnNext.classList.remove('d-none');
+            btnSubmit.classList.add('d-none');
+        }
+
+        // Update live preview name
+        const fn = document.getElementById('stu-first-name').value;
+        const ln = document.getElementById('stu-last-name').value;
+        if (fn || ln) document.getElementById('previewName').textContent = [fn,ln].filter(Boolean).join(' ');
+    }
+
+    function goToStep(n) { currentStep = n; updateWizardUI(); }
+    function navigateStep(dir) {
+        const next = currentStep + dir;
+        if (next < 1 || next > totalSteps) return;
+        currentStep = next;
+        updateWizardUI();
+    }
+
+    // ─ Avatar picker ─
+    document.querySelectorAll('.avatar-option').forEach(img => {
+        img.addEventListener('click', () => {
+            document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
+            img.classList.add('selected');
+            document.getElementById('selectedAvatar').value = img.dataset.url;
+            document.getElementById('previewAvatar').src    = img.dataset.url;
+        });
+    });
+
+    // Live preview name update on typing
+    ['stu-first-name','stu-last-name'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+            const fn = document.getElementById('stu-first-name').value;
+            const ln = document.getElementById('stu-last-name').value;
+            document.getElementById('previewName').textContent = [fn,ln].filter(Boolean).join(' ') || '—';
+        });
+    });
+
+    // ═══════════════════════════════════════
+    //  REVIEW SUMMARY (step 4)
+    // ═══════════════════════════════════════
+    function buildReview() {
+        const fn  = document.getElementById('stu-first-name').value.trim();
+        const mn  = document.getElementById('stu-middle-name').value.trim();
+        const ln  = document.getElementById('stu-last-name').value.trim();
+        const fullName = [fn, mn, ln].filter(Boolean).join(' ');
+
+        const rows = [
+            ['Full Name',       fullName                                              ],
+            ['Gender',          document.getElementById('stu-gender').value          ],
+            ['Date of Birth',   document.getElementById('stu-dob').value || '—'      ],
+            ['Blood Group',     document.getElementById('stu-blood').value  || '—'   ],
+            ['Nationality',     document.getElementById('stu-nationality').value||'—' ],
+            ['Mother Tongue',   document.getElementById('stu-tongue').value  || '—'  ],
+            ['Address',         document.getElementById('stu-address').value || '—'  ],
+            ['Class',           document.getElementById('stu-class').value           ],
+            ['Section',         document.getElementById('stu-section').value         ],
+            ['Roll Number',     document.getElementById('stu-roll').value    || '—'  ],
+            ['Academic Year',   document.getElementById('stu-year').value            ],
+            ['Status',          document.getElementById('stu-status').value          ],
+            ['Parent/Guardian', document.getElementById('stu-parent').value  || '—' ],
+            ['Contact',         document.getElementById('stu-contact').value  || '—'],
+        ];
+
+        document.getElementById('reviewSummary').innerHTML = `
+            <div class="row g-3 mb-2">
+                <div class="col-12">
+                    <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--bg-secondary,#f8fafc);">
+                        <img src="${document.getElementById('selectedAvatar').value || 'https://i.pravatar.cc/150?img=1'}"
+                            style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--primary-light,#eff6ff);" alt="">
+                        <div>
+                            <div class="fw-bold fs-6">${fullName || '—'}</div>
+                            <div class="text-muted" style="font-size:.78rem;">ID: ${studentId}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2">
+                ${rows.map(([lbl, val]) => `
+                    <div class="col-md-6">
+                        <div style="display:flex;justify-content:space-between;padding:8px 10px;border-radius:8px;background:var(--bg-secondary,#f8fafc);font-size:.82rem;">
+                            <span style="color:var(--text-muted,#94a3b8);font-weight:500;">${lbl}</span>
+                            <span style="font-weight:700;color:var(--text-primary,#0f172a);text-align:right;max-width:55%;word-break:break-word;">${val}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    // ═══════════════════════════════════════
+    //  SAVE
+    // ═══════════════════════════════════════
+    function saveProfile() {
+        const fn = document.getElementById('stu-first-name').value.trim();
+        const ln = document.getElementById('stu-last-name').value.trim();
+        if (!fn || !ln) {
+            showToast('First and Last Name are required.', 'warning');
+            goToStep(1); return;
+        }
+
+        const mn       = document.getElementById('stu-middle-name').value.trim();
+        const fullName = [fn, mn, ln].filter(Boolean).join(' ');
+        const dobRaw   = document.getElementById('stu-dob').value;
+        let   dobFmt   = dobRaw;
+        if (dobRaw && dobRaw.includes('-')) {
+            const [y,m,d] = dobRaw.split('-');
+            dobFmt = `${d}/${m}/${y}`;
+        }
+
+        const newData = {
+            name:        fullName,
+            photo:       document.getElementById('selectedAvatar').value || '',
+            gender:      document.getElementById('stu-gender').value,
+            dob:         dobFmt,
+            blood:       document.getElementById('stu-blood').value,
+            nationality: document.getElementById('stu-nationality').value,
+            tongue:      document.getElementById('stu-tongue').value,
+            address:     document.getElementById('stu-address').value,
+            class:       document.getElementById('stu-class').value,
+            section:     document.getElementById('stu-section').value,
+            roll:        document.getElementById('stu-roll').value,
+            academicYear:document.getElementById('stu-year').value,
+            status:      document.getElementById('stu-status').value,
+            parent:      document.getElementById('stu-parent').value,
+            contact:     document.getElementById('stu-contact').value,
+            father:      document.getElementById('stu-father').value,
+            mother:      document.getElementById('stu-mother').value,
+            occupation:  document.getElementById('stu-occupation').value,
+            email:       document.getElementById('stu-email').value,
+        };
+
+        // Save to student-edits store (works for both mock + db students)
+        const edits = JSON.parse(localStorage.getItem('student-edits') || '{}');
+        edits[studentId] = newData;
+        localStorage.setItem('student-edits', JSON.stringify(edits));
+
+        // Also sync status override
+        const overrides = JSON.parse(localStorage.getItem('student-status-overrides') || '{}');
+        overrides[studentId] = newData.status;
+        localStorage.setItem('student-status-overrides', JSON.stringify(overrides));
+
+        // If student is also in students-db, update there too
+        let db = JSON.parse(localStorage.getItem('students-db') || '[]');
+        const idx = db.findIndex(x => x.id === studentId);
+        if (idx !== -1) {
+            db[idx] = { ...db[idx], ...newData };
+            localStorage.setItem('students-db', JSON.stringify(db));
+        }
+
+        showToast(`<strong>${fullName}</strong> profile saved successfully!`, 'success');
+        setTimeout(() => {
+            window.location.href = `student-profile.html?id=${studentId}&class=${encodeURIComponent(classParam)}`;
+        }, 1400);
+    }
+
+    // ─ Cancel ─
+    function cancelEdit() {
+        window.location.href = `student-profile.html?id=${studentId}&class=${encodeURIComponent(classParam)}`;
+    }
+
+    // ─ Toast ─
+    function showToast(html, type = 'success') {
+        let c = document.getElementById('toastContainer');
+        if (!c) {
+            c = document.createElement('div');
+            c.id = 'toastContainer';
+            c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
+            document.body.appendChild(c);
+        }
+        const colors = { success:'#16a34a', warning:'#ea580c', info:'#2563eb' };
+        const icons  = { success:'bi-check-circle-fill', warning:'bi-exclamation-circle-fill', info:'bi-info-circle-fill' };
+        const t = document.createElement('div');
+        t.style.cssText = `display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid ${colors[type]}30;border-left:4px solid ${colors[type]};border-radius:12px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,.1);min-width:260px;animation:slideInToast .3s ease;`;
+        t.innerHTML = `<i class="bi ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;flex-shrink:0;"></i><span style="font-size:.83rem;color:#0f172a;">${html}</span>`;
+        c.appendChild(t);
+        setTimeout(() => { t.style.cssText += 'opacity:0;transform:translateX(20px);transition:all .3s ease;'; setTimeout(() => t.remove(), 300); }, 2800);
+    }
+
+    // ═══════════════════════════════════════
+    //  PREFILL FORM
+    // ═══════════════════════════════════════
+    function prefillForm() {
+        const s = findStudent();
+
+        // Set breadcrumbs
+        const classesList = JSON.parse(localStorage.getItem('classes-db') || '[]');
+        const classInfo   = classesList.find(c => c.id === classParam);
+        if (classParam) {
+            document.getElementById('bcClass').textContent = classInfo ? classInfo.name : 'Class';
+            document.getElementById('bcClass').href = `class-students.html?class=${encodeURIComponent(classParam)}`;
+        }
+        if (studentId) {
+            document.getElementById('bcProfile').textContent = s ? s.name : studentId;
+            document.getElementById('bcProfile').href = `student-profile.html?id=${studentId}&class=${encodeURIComponent(classParam)}`;
+        }
+
+        if (!s) {
+            document.getElementById('pageTitle').textContent    = 'Student Not Found';
+            document.getElementById('pageSubtitle').textContent = 'ID: ' + studentId + ' — no record found';
+            return;
+        }
+
+        document.title = `Edit ${s.name} — Bright Future`;
+        document.getElementById('pageTitle').textContent     = 'Edit: ' + s.name;
+        document.getElementById('pageSubtitle').textContent  = `ID: ${s.id} · Editing profile`;
+        document.getElementById('wizardStudentName').textContent = s.name;
+        document.getElementById('wizardStudentId').textContent   = 'ID: ' + s.id;
+
+        // Preview card
+        document.getElementById('previewAvatar').src           = s.photo || 'https://i.pravatar.cc/150?img=1';
+        document.getElementById('previewName').textContent     = s.name;
+        document.getElementById('previewMeta').textContent     = (classInfo ? classInfo.name : s.class || '') + ' · ' + s.id;
+
+        // ─ Avatar picker: highlight current ─
+        const currentPhoto = s.photo || '';
+        let matched = false;
+        document.querySelectorAll('.avatar-option').forEach(img => {
+            if (img.dataset.url === currentPhoto) { img.classList.add('selected'); matched = true; }
+        });
+        if (!matched && currentPhoto) {
+            // Add current photo as first option
+            const extra = document.createElement('img');
+            extra.src = currentPhoto; extra.className = 'avatar-option selected';
+            extra.dataset.url = currentPhoto; extra.title = 'Current';
+            extra.style.cssText = 'width:58px;height:58px;border-radius:50%;cursor:pointer;object-fit:cover;border:3px solid var(--primary,#2563eb);box-shadow:0 0 0 3px rgba(37,99,235,.2);';
+            document.getElementById('avatarPicker').prepend(extra);
+            extra.addEventListener('click', () => {
+                document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
+                extra.classList.add('selected');
+                document.getElementById('selectedAvatar').value  = currentPhoto;
+                document.getElementById('previewAvatar').src     = currentPhoto;
+            });
+        }
+        document.getElementById('selectedAvatar').value = currentPhoto;
+
+        // ─ Personal ─
+        const nameParts = s.name.split(' ');
+        document.getElementById('stu-first-name').value  = nameParts[0] || '';
+        document.getElementById('stu-last-name').value   = nameParts.slice(-1)[0] || '';
+        if (nameParts.length > 2)
+            document.getElementById('stu-middle-name').value = nameParts.slice(1, -1).join(' ');
+        document.getElementById('stu-gender').value      = s.gender || 'Male';
+        document.getElementById('stu-blood').value       = s.blood  || '';
+        document.getElementById('stu-nationality').value = s.nationality || '';
+        document.getElementById('stu-tongue').value      = s.tongue || '';
+        document.getElementById('stu-address').value     = s.address || '';
+
+        // DOB: convert DD/MM/YYYY → YYYY-MM-DD for <input type="date">
+        if (s.dob && s.dob.includes('/')) {
+            const [d,m,y] = s.dob.split('/');
+            document.getElementById('stu-dob').value = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+        } else {
+            document.getElementById('stu-dob').value = s.dob || '';
+        }
+
+        // ─ Academic ─
+        document.getElementById('stu-class').value   = s.class || 'Class 10';
+        document.getElementById('stu-section').value = s.section || 'A';
+        document.getElementById('stu-roll').value    = s.roll || '';
+        document.getElementById('stu-year').value    = s.academicYear || '2025-2026';
+        document.getElementById('stu-status').value  = s.status || 'Active';
+
+        // ─ Guardian ─
+        document.getElementById('stu-parent').value      = s.parent     || '';
+        document.getElementById('stu-contact').value     = s.contact    || '';
+        document.getElementById('stu-father').value      = s.father     || '';
+        document.getElementById('stu-mother').value      = s.mother     || '';
+        document.getElementById('stu-occupation').value  = s.occupation || '';
+        document.getElementById('stu-email').value       = s.email      || '';
+    }
+
+    // ─ Boot ─
+    prefillForm();
+    updateWizardUI();
+    </script>
+</body>
+</html>

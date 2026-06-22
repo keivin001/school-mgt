@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bright Future School - Settings</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand text-white">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <div>
+                    <h5 class="mb-0 fw-bold" id="sidebarSchoolName" style="letter-spacing: 0.5px;">Bright Future</h5>
+                    <small class="opacity-50">School SMS</small>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card" id="sidebarLogout">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="fw-medium">Logout</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold">Settings</h4>
+                    <small class="text-muted">Configure portal preferences and institution profile</small>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">5</span>
+                    </div>
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-chat-dots fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">3</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3 cursor-pointer">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1" id="headerAdminName">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" id="headerAdminAvatar" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Body -->
+        <div class="container-fluid p-4">
+            <div class="row g-4">
+                
+                <!-- Left Tabs Column -->
+                <div class="col-lg-3">
+                    <div class="card-custom p-3 h-100">
+                        <div class="d-flex align-items-center gap-3 mb-4 p-2 border-bottom pb-3">
+                            <div class="p-2 bg-primary-light text-primary rounded-3"><i class="bi bi-sliders fs-4"></i></div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Control Panel</h6>
+                                <small class="text-muted">Select category</small>
+                            </div>
+                        </div>
+                        <div class="nav flex-column settings-nav-pills nav-pills" id="settingsTabs" role="tablist" aria-orientation="vertical">
+                            <button class="nav-link active" id="tab-preferences-btn" data-bs-toggle="pill" data-bs-target="#tab-preferences" type="button" role="tab" aria-controls="tab-preferences" aria-selected="true">
+                                <i class="bi bi-palette"></i> System Preferences
+                            </button>
+                            <button class="nav-link" id="tab-institution-btn" data-bs-toggle="pill" data-bs-target="#tab-institution" type="button" role="tab" aria-controls="tab-institution" aria-selected="false">
+                                <i class="bi bi-building"></i> Institution Details
+                            </button>
+                            <button class="nav-link" id="tab-profile-btn" data-bs-toggle="pill" data-bs-target="#tab-profile" type="button" role="tab" aria-controls="tab-profile" aria-selected="false">
+                                <i class="bi bi-person-circle"></i> Admin Profile
+                            </button>
+                            <button class="nav-link" id="tab-roles-btn" data-bs-toggle="pill" data-bs-target="#tab-roles" type="button" role="tab" aria-controls="tab-roles" aria-selected="false">
+                                <i class="bi bi-shield-check"></i> Roles &amp; Permissions
+                            </button>
+                            <button class="nav-link" id="tab-gateways-btn" data-bs-toggle="pill" data-bs-target="#tab-gateways" type="button" role="tab" aria-controls="tab-gateways" aria-selected="false">
+                                <i class="bi bi-envelope-at"></i> Mail &amp; SMS Gateway
+                            </button>
+                            <button class="nav-link" id="tab-maintenance-btn" data-bs-toggle="pill" data-bs-target="#tab-maintenance" type="button" role="tab" aria-controls="tab-maintenance" aria-selected="false">
+                                <i class="bi bi-shield-lock"></i> Maintenance &amp; Logs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Form Panels Column -->
+                <div class="col-lg-9">
+                    <div class="tab-content" id="settingsTabContent">
+                        
+                        <!-- TAB: General Preferences -->
+                        <div class="tab-pane fade show active" id="tab-preferences" role="tabpanel" aria-labelledby="tab-preferences-btn">
+                            <div class="card-custom">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-palette text-primary me-2"></i>System Preferences</h5>
+                                <p class="text-muted small border-bottom pb-3 mb-4">Adjust visual styling, font sizes, and localized defaults for your account session.</p>
+                                
+                                <form id="formPreferences">
+                                    <div class="row g-4 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-muted">Theme Mode</label>
+                                            <select class="form-select" id="settingsThemeSelect">
+                                                <option value="light">Light Mode</option>
+                                                <option value="dark">Dark Theme (Dark Mode)</option>
+                                            </select>
+                                            <small class="text-muted d-block mt-1">Switches colors to fit dim lighting environments.</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-muted">Default Text Scaling (Font Size)</label>
+                                            <select class="form-select" id="settingsFontSizeSelect">
+                                                <option value="sm">Small (Compact - 13px)</option>
+                                                <option value="md" selected>Medium (Standard - 14.5px)</option>
+                                                <option value="lg">Large (Spacious - 16px)</option>
+                                            </select>
+                                            <small class="text-muted d-block mt-1">Useful to fit more table rows or headers onto single screen.</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-muted">Academic Year (Active Session)</label>
+                                            <select class="form-select" id="settingsActiveSession">
+                                                <option>2025-2026 (Current)</option>
+                                                <option>2026-2027 (Future)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-muted">Default System Currency</label>
+                                            <select class="form-select" id="settingsCurrency">
+                                                <option value="INR">₹ (Indian Rupee - INR)</option>
+                                                <option value="USD">$ (US Dollar - USD)</option>
+                                                <option value="EUR">€ (Euro - EUR)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <h6 class="fw-bold mb-3 mt-4 border-top pt-4">Portal Notifications</h6>
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-12">
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="notifyEmail" checked>
+                                                <label class="form-check-label small fw-medium" for="notifyEmail">Enable Email notifications for newly admitted students</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="notifySms" checked>
+                                                <label class="form-check-label small fw-medium" for="notifySms">Enable SMS alerts for parent notices</label>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="notifyReports">
+                                                <label class="form-check-label small fw-medium" for="notifyReports">Send weekly consolidated reports overview automatically</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                                        <button type="button" class="btn btn-light btn-sm border px-3">Reset Defaults</button>
+                                        <button type="submit" class="btn btn-primary btn-sm btn-primary-custom px-4">Save Preferences</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- TAB: Institution Details -->
+                        <div class="tab-pane fade" id="tab-institution" role="tabpanel" aria-labelledby="tab-institution-btn">
+                            <div class="card-custom">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-building text-primary me-2"></i>Institution Details</h5>
+                                <p class="text-muted small border-bottom pb-3 mb-4">Update school profile details printed on report sheets, admission forms, and fee receipts.</p>
+                                
+                                <form id="formInstitution">
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-8">
+                                            <label class="form-label small fw-semibold text-muted">School / College Name</label>
+                                            <input type="text" class="form-control" id="instName" value="Bright Future School" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-semibold text-muted">Institution Code</label>
+                                            <input type="text" class="form-control" id="instCode" value="BFS-2026" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-muted">Office Contact Phone</label>
+                                            <input type="text" class="form-control" id="instPhone" value="+91 98765 43210" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-muted">Contact Email</label>
+                                            <input type="email" class="form-control" id="instEmail" value="contact@brightfutureschool.edu" required>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small fw-semibold text-muted">Postal Address</label>
+                                            <textarea class="form-control" id="instAddress" rows="3" required>123 Education Drive, Academic District, New Delhi</textarea>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                                        <button type="submit" class="btn btn-primary btn-sm btn-primary-custom px-4">Update Details</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- TAB: Admin Profile -->
+                        <div class="tab-pane fade" id="tab-profile" role="tabpanel" aria-labelledby="tab-profile-btn">
+                            <div class="card-custom">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-person-circle text-primary me-2"></i>Administrator Profile Settings</h5>
+                                <p class="text-muted small border-bottom pb-3 mb-4">Manage personal credential details and profile representation avatar.</p>
+                                
+                                <form id="formProfile">
+                                    <div class="d-flex align-items-center gap-4 mb-4 flex-wrap">
+                                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar" id="avatarPreview" style="width: 72px; height: 72px;" alt="Admin Avatar">
+                                        <div>
+                                            <label class="form-label small fw-semibold text-muted d-block">Select Profile Representation</label>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setAvatarId('admin')">Style 1</button>
+                                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setAvatarId('sam')">Style 2</button>
+                                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setAvatarId('clara')">Style 3</button>
+                                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setAvatarId('jack')">Style 4</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-muted">Admin User Full Name</label>
+                                            <input type="text" class="form-control" id="profileName" value="Admin" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-muted">Portal Login Email</label>
+                                            <input type="email" class="form-control" id="profileEmail" value="admin@brightfutureschool.edu" required>
+                                        </div>
+                                        <div class="col-md-4 mt-4">
+                                            <label class="form-label small fw-semibold text-muted">Current Password</label>
+                                            <input type="password" class="form-control" placeholder="••••••••">
+                                        </div>
+                                        <div class="col-md-4 mt-4">
+                                            <label class="form-label small fw-semibold text-muted">New Secure Password</label>
+                                            <input type="password" class="form-control" placeholder="Minimum 8 characters">
+                                        </div>
+                                        <div class="col-md-4 mt-4">
+                                            <label class="form-label small fw-semibold text-muted">Confirm New Password</label>
+                                            <input type="password" class="form-control" placeholder="Re-type password">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                                        <button type="submit" class="btn btn-primary btn-sm btn-primary-custom px-4">Save Profile changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- TAB: Roles & Permissions -->
+                        <div class="tab-pane fade" id="tab-roles" role="tabpanel" aria-labelledby="tab-roles-btn">
+                            <div class="card-custom">
+                                <h5 class="fw-bold mb-1"><i class="bi bi-shield-check text-primary me-2"></i>Roles &amp; Permissions Manager</h5>
+                                <p class="text-muted small border-bottom pb-3 mb-4">Define what actions each user role can perform across the system. Check to grant permission.</p>
+
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <span class="badge bg-primary-subtle text-primary me-2"><i class="bi bi-info-circle me-1"></i>4 Roles</span>
+                                        <span class="badge bg-success-subtle text-success">Changes auto-saved</span>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-light border" onclick="selectAllPerms(true)"><i class="bi bi-check-all me-1"></i>Grant All</button>
+                                        <button class="btn btn-sm btn-light border text-danger" onclick="selectAllPerms(false)"><i class="bi bi-x-lg me-1"></i>Revoke All</button>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table permissions-matrix align-middle" id="permissionsTable">
+                                        <thead>
+                                            <tr>
+                                                <th style="min-width:170px;">Permission / Feature</th>
+                                                <th class="text-center"><span class="badge bg-danger-subtle text-danger">Super Admin</span></th>
+                                                <th class="text-center"><span class="badge bg-primary-subtle text-primary">Admin</span></th>
+                                                <th class="text-center"><span class="badge bg-success-subtle text-success">Teacher</span></th>
+                                                <th class="text-center"><span class="badge bg-warning-subtle text-warning">Parent</span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="perm-category-row"><td colspan="5" class="fw-bold small py-2"><i class="bi bi-people me-2 text-primary"></i>Student Management</td></tr>
+                                            <tr><td class="small">View Students</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">Add / Admit Students</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">Edit Student Records</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">Delete Students</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+
+                                            <tr class="perm-category-row"><td colspan="5" class="fw-bold small py-2"><i class="bi bi-person-badge me-2 text-primary"></i>Teacher Management</td></tr>
+                                            <tr><td class="small">View Teachers</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">Add / Register Teachers</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">Manage Payroll</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+
+                                            <tr class="perm-category-row"><td colspan="5" class="fw-bold small py-2"><i class="bi bi-calendar-check me-2 text-primary"></i>Attendance &amp; Reports</td></tr>
+                                            <tr><td class="small">Mark Attendance</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">View Reports</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">Export Reports</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+
+                                            <tr class="perm-category-row"><td colspan="5" class="fw-bold small py-2"><i class="bi bi-wallet2 me-2 text-primary"></i>Fees &amp; Finance</td></tr>
+                                            <tr><td class="small">View Fee Records</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td></tr>
+                                            <tr><td class="small">Collect Payments</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">Issue Refunds</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+
+                                            <tr class="perm-category-row"><td colspan="5" class="fw-bold small py-2"><i class="bi bi-gear me-2 text-primary"></i>System Settings</td></tr>
+                                            <tr><td class="small">Access Settings</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">Manage User Roles</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                            <tr><td class="small">Database Backup</td><td class="text-center"><input type="checkbox" class="form-check-input perm-check" checked></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td><td class="text-center"><input type="checkbox" class="form-check-input perm-check"></td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button class="btn btn-primary-custom mt-3" onclick="savePermissions()"><i class="bi bi-floppy me-2"></i>Save Role Permissions</button>
+                            </div>
+                        </div>
+
+                        <!-- TAB: Mail & SMS Gateways -->
+                        <div class="tab-pane fade" id="tab-gateways" role="tabpanel" aria-labelledby="tab-gateways-btn">
+                            <div class="card-custom mb-4">
+                                <h5 class="fw-bold mb-1"><i class="bi bi-envelope-at text-primary me-2"></i>SMTP Mail Server Configuration</h5>
+                                <p class="text-muted small border-bottom pb-3 mb-4">Configure the outgoing email server for sending notifications, receipts, and alerts to parents and staff.</p>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">SMTP Host <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="smtp-host" placeholder="smtp.gmail.com" value="smtp.gmail.com">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-bold">Port <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="smtp-port" placeholder="587" value="587">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-bold">Encryption</label>
+                                        <select class="form-select" id="smtp-enc">
+                                            <option value="tls" selected>TLS</option>
+                                            <option value="ssl">SSL</option>
+                                            <option value="none">None</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">SMTP Username (Email)</label>
+                                        <input type="email" class="form-control" id="smtp-user" placeholder="noreply@school.edu">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">SMTP Password / App Key</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="smtp-pass" placeholder="App password">
+                                            <button class="btn btn-light border" type="button" onclick="togglePass('smtp-pass', this)"><i class="bi bi-eye"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">From Name</label>
+                                        <input type="text" class="form-control" id="smtp-name" placeholder="Bright Future School" value="Bright Future School">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Reply-To Email</label>
+                                        <input type="email" class="form-control" placeholder="admin@school.edu">
+                                    </div>
+                                    <div class="col-12 d-flex gap-2">
+                                        <button class="btn btn-primary-custom" onclick="saveSmtp()"><i class="bi bi-floppy me-2"></i>Save SMTP Settings</button>
+                                        <button class="btn btn-light border" onclick="testSmtp()"><i class="bi bi-send me-2"></i>Send Test Email</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-custom">
+                                <h5 class="fw-bold mb-1"><i class="bi bi-phone text-primary me-2"></i>SMS Gateway Configuration (Twilio)</h5>
+                                <p class="text-muted small border-bottom pb-3 mb-4">Configure Twilio or custom SMS gateway to send alerts, OTPs, and attendance notifications to parents via SMS.</p>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">SMS Provider</label>
+                                        <select class="form-select" id="sms-provider" onchange="updateSmsProvider(this.value)">
+                                            <option value="twilio">Twilio</option>
+                                            <option value="nexmo">Vonage (Nexmo)</option>
+                                            <option value="aws">AWS SNS</option>
+                                            <option value="custom">Custom API</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Sender Phone / Sender ID</label>
+                                        <input type="text" class="form-control" id="sms-sender" placeholder="+1XXXXXXXXXX">
+                                    </div>
+                                    <div class="col-md-6" id="sms-sid-row">
+                                        <label class="form-label small fw-bold">Account SID / API Key</label>
+                                        <input type="text" class="form-control" id="sms-sid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Auth Token / Secret</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="sms-token" placeholder="Auth Token">
+                                            <button class="btn btn-light border" type="button" onclick="togglePass('sms-token', this)"><i class="bi bi-eye"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" id="sms-custom-url" style="display:none;">
+                                        <label class="form-label small fw-bold">Custom API Endpoint</label>
+                                        <input type="url" class="form-control" placeholder="https://api.sms.com/v1/send">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-section-title mt-2" style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--primary,#2563eb);border-bottom:2px solid var(--primary-light,#eff6ff);padding-bottom:0.5rem;margin-bottom:1rem;">SMS Notification Triggers</div>
+                                        <div class="row g-2">
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="sms-attendance" checked>
+                                                    <label class="form-check-label small" for="sms-attendance">Attendance Alerts</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="sms-fees" checked>
+                                                    <label class="form-check-label small" for="sms-fees">Fee Due Reminders</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="sms-exam" checked>
+                                                    <label class="form-check-label small" for="sms-exam">Exam Notifications</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="sms-result">
+                                                    <label class="form-check-label small" for="sms-result">Result Release Alerts</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="sms-notice">
+                                                    <label class="form-check-label small" for="sms-notice">Notice Board Updates</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="sms-otp" checked>
+                                                    <label class="form-check-label small" for="sms-otp">Login OTP</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 d-flex gap-2 mt-2">
+                                        <button class="btn btn-primary-custom" onclick="saveSms()"><i class="bi bi-floppy me-2"></i>Save SMS Settings</button>
+                                        <button class="btn btn-light border" onclick="testSms()"><i class="bi bi-chat-dots me-2"></i>Send Test SMS</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab-maintenance" role="tabpanel" aria-labelledby="tab-maintenance-btn">
+                            <div class="card-custom mb-4">
+                                <h5 class="fw-bold mb-3 text-danger"><i class="bi bi-shield-lock me-2"></i>System Maintenance Operations</h5>
+                                <p class="text-muted small border-bottom pb-3 mb-3">Critical procedures regarding system information, backup storage, and system wipes.</p>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="border rounded p-3 h-100 d-flex flex-column justify-content-between">
+                                            <div>
+                                                <h6 class="fw-bold mb-1"><i class="bi bi-download text-primary me-2"></i>Database Backup</h6>
+                                                <p class="text-muted small mb-3">Download complete school records locally as structured format dumps (.SQL database backup).</p>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-sm btn-outline-primary w-100" id="btnBackup" type="button">Initiate Backup Download</button>
+                                                <!-- Simulated backup progress bar -->
+                                                <div class="progress mt-2 d-none" id="backupProgress" style="height: 6px;">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="border rounded p-3 h-100 d-flex flex-column justify-content-between border-danger-subtle">
+                                            <div>
+                                                <h6 class="fw-bold text-danger mb-1"><i class="bi bi-trash3 text-danger me-2"></i>System Reset</h6>
+                                                <p class="text-muted small mb-3">Wipe database records back to school installation defaults. Highly destructive.</p>
+                                            </div>
+                                            <button class="btn btn-sm btn-danger w-100" id="btnSystemReset" type="button">Reset Institutional Data</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-custom">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-clock-history text-secondary me-2"></i>Portal Activity Logs</h5>
+                                <p class="text-muted small mb-3">Historical authentication and records insert tracking log.</p>
+                                
+                                <div class="table-responsive">
+                                    <table class="table table-custom mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Timestamp</th>
+                                                <th>Administrator User</th>
+                                                <th>Action Category</th>
+                                                <th>Target Entity Details</th>
+                                                <th>IP / Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="logsTableBody">
+                                            <tr>
+                                                <td class="text-muted">Just now</td>
+                                                <td><span class="fw-medium">Admin</span></td>
+                                                <td><span class="badge badge-secondary-custom">System Configuration</span></td>
+                                                <td>Settings view rendered</td>
+                                                <td><code>192.168.1.50</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">10 mins ago</td>
+                                                <td><span class="fw-medium">Admin</span></td>
+                                                <td><span class="badge badge-active bg-success text-white">Student Admission</span></td>
+                                                <td>Added student record Sarah Jenkins</td>
+                                                <td><code>192.168.1.50</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">35 mins ago</td>
+                                                <td><span class="fw-medium">Admin</span></td>
+                                                <td><span class="badge bg-primary text-white">Fee Deposit</span></td>
+                                                <td>Recorded invoice transaction ₹18,500</td>
+                                                <td><code>192.168.1.50</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Today, 09:12 AM</td>
+                                                <td><span class="fw-medium">Admin</span></td>
+                                                <td><span class="badge bg-warning text-dark">Schedule Exam</span></td>
+                                                <td>Updated Class X mid-term date sheet</td>
+                                                <td><code>192.168.1.52</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Yesterday, 04:22 PM</td>
+                                                <td><span class="fw-medium">Admin</span></td>
+                                                <td><span class="badge badge-inactive bg-danger text-white">Notice Board</span></td>
+                                                <td>Removed emergency alert notice</td>
+                                                <td><code>192.168.1.50</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Custom Avatar handler
+        let currentAvatarId = 'admin';
+        function setAvatarId(id) {
+            currentAvatarId = id;
+            const url = `https://i.pravatar.cc/150?u=${id}`;
+            document.getElementById("avatarPreview").src = url;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Load configuration states
+            const savedTheme = localStorage.getItem("theme") || "light";
+            document.getElementById("settingsThemeSelect").value = savedTheme;
+
+            const savedFontSize = localStorage.getItem("system-font-size") || "md";
+            document.getElementById("settingsFontSizeSelect").value = savedFontSize;
+
+            const savedActiveSession = localStorage.getItem("system-session") || "2025-2026 (Current)";
+            document.getElementById("settingsActiveSession").value = savedActiveSession;
+
+            const savedCurrency = localStorage.getItem("system-currency") || "INR";
+            document.getElementById("settingsCurrency").value = savedCurrency;
+
+            const schoolName = localStorage.getItem("school-name") || "Bright Future School";
+            document.getElementById("instName").value = schoolName;
+            document.getElementById("sidebarSchoolName").textContent = schoolName;
+
+            const schoolCode = localStorage.getItem("school-code") || "BFS-2026";
+            document.getElementById("instCode").value = schoolCode;
+
+            const schoolPhone = localStorage.getItem("school-phone") || "+91 98765 43210";
+            document.getElementById("instPhone").value = schoolPhone;
+
+            const schoolEmail = localStorage.getItem("school-email") || "contact@brightfutureschool.edu";
+            document.getElementById("instEmail").value = schoolEmail;
+
+            const schoolAddress = localStorage.getItem("school-address") || "123 Education Drive, Academic District, New Delhi";
+            document.getElementById("instAddress").value = schoolAddress;
+
+            const profileName = localStorage.getItem("admin-name") || "Admin";
+            document.getElementById("profileName").value = profileName;
+            document.getElementById("headerAdminName").textContent = profileName;
+
+            const profileEmail = localStorage.getItem("admin-email") || "admin@brightfutureschool.edu";
+            document.getElementById("profileEmail").value = profileEmail;
+
+            const selectedAvatar = localStorage.getItem("admin-avatar") || "admin";
+            setAvatarId(selectedAvatar);
+            document.getElementById("headerAdminAvatar").src = `https://i.pravatar.cc/150?u=${selectedAvatar}`;
+
+            // Preferences Submit
+            document.getElementById("formPreferences").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const themeVal = document.getElementById("settingsThemeSelect").value;
+                const sizeVal = document.getElementById("settingsFontSizeSelect").value;
+                const sessionVal = document.getElementById("settingsActiveSession").value;
+                const currencyVal = document.getElementById("settingsCurrency").value;
+
+                window.toggleSystemTheme(themeVal);
+                window.updateSystemFontSize(sizeVal);
+                localStorage.setItem("system-session", sessionVal);
+                localStorage.setItem("system-currency", currencyVal);
+
+                // Add log entry
+                addLogEntry("System Configuration", `Theme: ${themeVal}, Font Size: ${sizeVal}`);
+                alert("Preferences Saved Successfully and Applied Live!");
+            });
+
+            // Institution Details Submit
+            document.getElementById("formInstitution").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const nameVal = document.getElementById("instName").value;
+                const codeVal = document.getElementById("instCode").value;
+                const phoneVal = document.getElementById("instPhone").value;
+                const emailVal = document.getElementById("instEmail").value;
+                const addressVal = document.getElementById("instAddress").value;
+
+                localStorage.setItem("school-name", nameVal);
+                localStorage.setItem("school-code", codeVal);
+                localStorage.setItem("school-phone", phoneVal);
+                localStorage.setItem("school-email", emailVal);
+                localStorage.setItem("school-address", addressVal);
+
+                document.getElementById("sidebarSchoolName").textContent = nameVal;
+
+                addLogEntry("Institution profile", `Updated details for ${nameVal}`);
+                alert("School Profile Details Updated Successfully!");
+            });
+
+            // Profile Settings Submit
+            document.getElementById("formProfile").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const nameVal = document.getElementById("profileName").value;
+                const emailVal = document.getElementById("profileEmail").value;
+
+                localStorage.setItem("admin-name", nameVal);
+                localStorage.setItem("admin-email", emailVal);
+                localStorage.setItem("admin-avatar", currentAvatarId);
+
+                document.getElementById("headerAdminName").textContent = nameVal;
+                document.getElementById("headerAdminAvatar").src = `https://i.pravatar.cc/150?u=${currentAvatarId}`;
+
+                addLogEntry("Administrator Profile", `Changed profile representation to style: ${currentAvatarId}`);
+                alert("Administrator profile saved successfully!");
+            });
+
+            // Database Backup Simulation
+            const btnBackup = document.getElementById("btnBackup");
+            const backupProgress = document.getElementById("backupProgress");
+            const backupProgressBar = backupProgress.querySelector(".progress-bar");
+
+            btnBackup.addEventListener("click", function() {
+                btnBackup.disabled = true;
+                backupProgress.classList.remove("d-none");
+                let percentage = 0;
+                
+                const interval = setInterval(() => {
+                    percentage += 10;
+                    backupProgressBar.style.width = percentage + "%";
+                    backupProgressBar.textContent = percentage + "%";
+                    
+                    if (percentage >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            btnBackup.disabled = false;
+                            backupProgress.classList.add("d-none");
+                            backupProgressBar.style.width = "0%";
+                            
+                            addLogEntry("System Maintenance", "Generated SQL Database Backup");
+                            alert("SQL Database Backup Created and Download Simulated Successfully!");
+                        }, 500);
+                    }
+                }, 150);
+            });
+
+            // Database Reset Simulation
+            document.getElementById("btnSystemReset").addEventListener("click", function() {
+                const confCode = prompt("WARNING: This will wipe all session edits. To proceed, please type 'RESET':");
+                if (confCode === "RESET") {
+                    localStorage.clear();
+                    addLogEntry("System Maintenance", "Wiped all institutional storage");
+                    alert("Local configurations cleared. Reloading page...");
+                    window.location.reload();
+                } else if (confCode !== null) {
+                    alert("Incorrect code. Operation cancelled.");
+                }
+            });
+
+            // Helper to dynamically insert logs
+            function addLogEntry(category, message) {
+                const tbody = document.getElementById("logsTableBody");
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td class="text-muted">Just now</td>
+                    <td><span class="fw-medium">${localStorage.getItem("admin-name") || "Admin"}</span></td>
+                    <td><span class="badge bg-info text-dark">${category}</span></td>
+                    <td>${message}</td>
+                    <td><code>192.168.1.50</code></td>
+                `;
+                tbody.prepend(tr);
+            }
+            // Roles & Permissions
+            function selectAllPerms(state) {
+                document.querySelectorAll('.perm-check').forEach(cb => cb.checked = state);
+            }
+
+            function savePermissions() {
+                const perms = {};
+                document.querySelectorAll('#permissionsTable tbody tr:not(.perm-category-row)').forEach((row, i) => {
+                    const label = row.cells[0].innerText;
+                    perms[label] = [
+                        row.cells[1].querySelector('input')?.checked,
+                        row.cells[2].querySelector('input')?.checked,
+                        row.cells[3].querySelector('input')?.checked,
+                        row.cells[4].querySelector('input')?.checked,
+                    ];
+                });
+                localStorage.setItem('role-permissions', JSON.stringify(perms));
+                addLogEntry('Roles & Permissions', 'Updated role permissions matrix');
+                alert('✅ Role permissions saved successfully!');
+            }
+
+            // SMTP settings
+            function saveSmtp() {
+                const config = {
+                    host: document.getElementById('smtp-host').value,
+                    port: document.getElementById('smtp-port').value,
+                    enc:  document.getElementById('smtp-enc').value,
+                    user: document.getElementById('smtp-user').value,
+                    name: document.getElementById('smtp-name').value,
+                };
+                localStorage.setItem('smtp-config', JSON.stringify(config));
+                addLogEntry('Mail Gateway', 'Saved SMTP mail server configuration');
+                alert('✅ SMTP settings saved successfully!');
+            }
+
+            function testSmtp() {
+                const host = document.getElementById('smtp-host').value;
+                if (!host) { alert('Please enter SMTP host first.'); return; }
+                alert('📧 Test email simulated (sent to logged admin email).\n\nIn a live environment, this would send via: ' + host);
+                addLogEntry('Mail Gateway', 'Sent test SMTP email');
+            }
+
+            // SMS settings
+            function saveSms() {
+                const config = {
+                    provider: document.getElementById('sms-provider').value,
+                    sender:   document.getElementById('sms-sender').value,
+                    sid:      document.getElementById('sms-sid').value,
+                };
+                localStorage.setItem('sms-config', JSON.stringify(config));
+                addLogEntry('SMS Gateway', 'Saved SMS gateway configuration');
+                alert('✅ SMS gateway settings saved successfully!');
+            }
+
+            function testSms() {
+                const provider = document.getElementById('sms-provider').value;
+                alert('📱 Test SMS simulated via ' + provider + '.\n\nIn a live environment, this would send to the admin phone number.');
+                addLogEntry('SMS Gateway', 'Sent test SMS via ' + provider);
+            }
+
+            function updateSmsProvider(val) {
+                document.getElementById('sms-custom-url').style.display = val === 'custom' ? '' : 'none';
+                document.getElementById('sms-sid-row').style.display = val === 'aws' ? 'none' : '';
+            }
+
+            // Password toggle helper for settings
+            function togglePass(inputId, btn) {
+                const inp = document.getElementById(inputId);
+                if (inp.type === 'password') {
+                    inp.type = 'text';
+                    btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+                } else {
+                    inp.type = 'password';
+                    btn.innerHTML = '<i class="bi bi-eye"></i>';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

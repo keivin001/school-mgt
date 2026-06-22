@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student - Bright Future School</title>
+    <meta name="description" content="Edit student profile and details for Bright Future School management system.">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .wizard-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.9rem 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 0.4rem;
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+            color: var(--sidebar-text, #475569);
+        }
+        .wizard-step:hover { background: var(--sidebar-link-hover-bg, #f1f5f9); }
+        .wizard-step.active {
+            background: var(--primary-light, #eff6ff);
+            color: var(--primary, #2563eb);
+            border-color: rgba(37,99,235,0.15);
+            font-weight: 600;
+        }
+        .wizard-step .step-num {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+            background: #e2e8f0;
+            color: #64748b;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+        .wizard-step.active .step-num {
+            background: var(--primary, #2563eb);
+            color: #fff;
+        }
+        .wizard-step.completed .step-num {
+            background: #22c55e;
+            color: #fff;
+        }
+        .wizard-step.completed { color: #16a34a; }
+        .wizard-pane { display: none; }
+        .wizard-pane.active { display: block; animation: fadeSlide 0.3s ease; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .avatar-option {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+            object-fit: cover;
+        }
+        .avatar-option.selected { border-color: var(--primary,#2563eb); box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
+        .form-section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary, #2563eb);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light, #eff6ff);
+        }
+        body.dark-theme .wizard-step.active { background: rgba(37,99,235,0.15); }
+        body.dark-theme .step-num { background: #1e293b; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <div>
+                    <h5 class="mb-0 fw-bold" style="letter-spacing: 0.5px;">Bright Future</h5>
+                    <small class="opacity-50">School SMS</small>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link active"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card" id="sidebarLogout">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="fw-medium">Logout</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold">Edit Student Profile</h4>
+                    <small class="text-muted" id="headerSubtitle">Updating student records</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3 cursor-pointer">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Body -->
+        <div class="container-fluid p-4">
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb small">
+                    <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="students.html" class="text-decoration-none">Students</a></li>
+                    <li class="breadcrumb-item active">Edit Student</li>
+                </ol>
+            </nav>
+
+            <div class="row g-4">
+                <!-- Wizard Sidebar Steps -->
+                <div class="col-lg-3">
+                    <div class="card-custom p-3">
+                        <div class="d-flex align-items-center gap-2 mb-4 p-2 border-bottom pb-3">
+                            <div class="p-2 rounded-3" style="background:var(--primary-light,#eff6ff);color:var(--primary,#2563eb)"><i class="bi bi-pencil-square fs-5"></i></div>
+                            <div>
+                                <h6 class="fw-bold mb-0" id="studentNameBadge">Edit Student</h6>
+                                <small class="text-muted" id="studentIdBadge">ID: 000000</small>
+                            </div>
+                        </div>
+                        <div id="wizardSteps">
+                            <div class="wizard-step active" data-step="1" onclick="goToStep(1)">
+                                <span class="step-num">1</span>
+                                <div>
+                                    <div class="fw-medium" style="font-size:0.85rem;">Personal Info</div>
+                                    <small class="text-muted" style="font-size:0.75rem;">Name, DOB, gender</small>
+                                </div>
+                            </div>
+                            <div class="wizard-step" data-step="2" onclick="goToStep(2)">
+                                <span class="step-num">2</span>
+                                <div>
+                                    <div class="fw-medium" style="font-size:0.85rem;">Parent / Guardian</div>
+                                    <small class="text-muted" style="font-size:0.75rem;">Emergency contacts</small>
+                                </div>
+                            </div>
+                            <div class="wizard-step" data-step="3" onclick="goToStep(3)">
+                                <span class="step-num">3</span>
+                                <div>
+                                    <div class="fw-medium" style="font-size:0.85rem;">Academic History</div>
+                                    <small class="text-muted" style="font-size:0.75rem;">Previous school records</small>
+                                </div>
+                            </div>
+                            <div class="wizard-step" data-step="4" onclick="goToStep(4)">
+                                <span class="step-num">4</span>
+                                <div>
+                                    <div class="fw-medium" style="font-size:0.85rem;">Documents</div>
+                                    <small class="text-muted" style="font-size:0.75rem;">Upload required files</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="small text-muted mb-1">Editing Progress</div>
+                            <div class="progress" style="height:6px;">
+                                <div class="progress-bar bg-primary" id="wizardProgress" style="width:25%;transition:width 0.3s"></div>
+                            </div>
+                            <small class="text-muted" id="wizardProgressLabel">Step 1 of 4</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Form Panels -->
+                <div class="col-lg-9">
+                    <!-- Step 1: Personal Info -->
+                    <div class="wizard-pane active" id="pane-1">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-person text-primary me-2"></i>Personal Information</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Modify the student's personal details and avatar.</p>
+
+                            <div class="form-section-title">Profile Avatar</div>
+                            <div class="d-flex flex-wrap gap-3 mb-4" id="avatarPicker">
+                                <img src="https://i.pravatar.cc/150?u=student1" class="avatar-option selected" data-url="https://i.pravatar.cc/150?u=student1" title="Avatar 1">
+                                <img src="https://i.pravatar.cc/150?u=student2" class="avatar-option" data-url="https://i.pravatar.cc/150?u=student2" title="Avatar 2">
+                                <img src="https://i.pravatar.cc/150?u=student3" class="avatar-option" data-url="https://i.pravatar.cc/150?u=student3" title="Avatar 3">
+                                <img src="https://i.pravatar.cc/150?u=student4" class="avatar-option" data-url="https://i.pravatar.cc/150?u=student4" title="Avatar 4">
+                                <img src="https://i.pravatar.cc/150?u=student5" class="avatar-option" data-url="https://i.pravatar.cc/150?u=student5" title="Avatar 5">
+                                <img src="https://i.pravatar.cc/150?u=student6" class="avatar-option" data-url="https://i.pravatar.cc/150?u=student6" title="Avatar 6">
+                            </div>
+                            <input type="hidden" id="selectedAvatar" value="https://i.pravatar.cc/150?u=student1">
+
+                            <div class="form-section-title">Basic Details</div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">First Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="stu-first-name" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Middle Name</label>
+                                    <input type="text" class="form-control" id="stu-middle-name" placeholder="Optional">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Last Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="stu-last-name" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Date of Birth <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="stu-dob" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Gender <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="stu-gender" required>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Blood Group</label>
+                                    <select class="form-select" id="stu-blood">
+                                        <option value="">Select</option>
+                                        <option>A+</option><option>A-</option>
+                                        <option>B+</option><option>B-</option>
+                                        <option>O+</option><option>O-</option>
+                                        <option>AB+</option><option>AB-</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Nationality</label>
+                                    <input type="text" class="form-control" id="stu-nationality" value="Indian">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Religion</label>
+                                    <input type="text" class="form-control" id="stu-religion" value="Hindu">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Caste / Category</label>
+                                    <select class="form-select" id="stu-category">
+                                        <option>General</option><option>OBC</option>
+                                        <option>SC</option><option>ST</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Mother Tongue</label>
+                                    <input type="text" class="form-control" id="stu-tongue" value="Hindi">
+                                </div>
+                            </div>
+
+                            <div class="form-section-title mt-4">Academic Placement</div>
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Class <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="stu-class" required>
+                                        <option value="Class 10">Class 10</option>
+                                        <option value="Class 9">Class 9</option>
+                                        <option value="Class 8">Class 8</option>
+                                        <option value="Class 7">Class 7</option>
+                                        <option value="Class 6">Class 6</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label small fw-bold">Section <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="stu-section" required>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Roll Number</label>
+                                    <input type="text" class="form-control" id="stu-roll" value="12">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Academic Year <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="stu-year" required>
+                                        <option value="2024-2025">2024-2025</option>
+                                        <option value="2023-2024">2023-2024</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Home Address <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="stu-address" rows="2" required>789 Sector V, Salt Lake City</textarea>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">City</label>
+                                    <input type="text" class="form-control" id="stu-city" value="Kolkata">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">PIN Code</label>
+                                    <input type="text" class="form-control" id="stu-pin" value="700091">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Parent/Guardian -->
+                    <div class="wizard-pane" id="pane-2">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-people text-primary me-2"></i>Parent / Guardian Information</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Edit parent/guardian details and emergency contacts.</p>
+
+                            <div class="form-section-title">Primary Parent/Guardian Name <span class="text-danger">*</span></div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Father's or Guardian Name</label>
+                                    <input type="text" class="form-control" id="stu-father" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Mother's Full Name</label>
+                                    <input type="text" class="form-control" id="stu-mother" value="Sita Sharma">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Occupation</label>
+                                    <input type="text" class="form-control" value="Business Analyst">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Mobile Number</label>
+                                    <input type="tel" class="form-control" value="+91 98300 12345">
+                                </div>
+                            </div>
+
+                            <div class="form-section-title">Emergency Contact</div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Emergency Contact Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="stu-emergency-name" value="Ram Sharma" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Relationship</label>
+                                    <select class="form-select">
+                                        <option>Father</option><option>Mother</option>
+                                        <option>Uncle</option><option>Aunt</option>
+                                        <option>Sibling</option><option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label small fw-bold">Emergency Phone <span class="text-danger">*</span></label>
+                                    <input type="tel" class="form-control" id="stu-emergency-phone" value="+91 98300 12345" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Academic History -->
+                    <div class="wizard-pane" id="pane-3">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-journal-bookmark text-primary me-2"></i>Previous Academic History</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">Educational history and health information.</p>
+
+                            <div class="form-section-title">Previous School Details</div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Previous School Name</label>
+                                    <input type="text" class="form-control" value="St. Xavier's Secondary School">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Last Class Attended</label>
+                                    <input type="text" class="form-control" value="Class 9">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Last Passing Year</label>
+                                    <input type="number" class="form-control" value="2024" min="2000" max="2030">
+                                </div>
+                            </div>
+
+                            <div class="form-section-title">Health Details</div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Known Allergies</label>
+                                    <input type="text" class="form-control" value="None">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Chronic Medical Conditions</label>
+                                    <input type="text" class="form-control" value="None">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Documents -->
+                    <div class="wizard-pane" id="pane-4">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-1"><i class="bi bi-paperclip text-primary me-2"></i>Document Verification</h5>
+                            <p class="text-muted small border-bottom pb-3 mb-4">View or replace uploaded student identity files.</p>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Birth Certificate</label>
+                                    <div class="text-success small mb-2"><i class="bi bi-file-earmark-check-fill me-1"></i> birth_certificate.pdf (Uploaded)</div>
+                                    <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">National ID / Aadhar Card</label>
+                                    <div class="text-success small mb-2"><i class="bi bi-file-earmark-check-fill me-1"></i> national_id.pdf (Uploaded)</div>
+                                    <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                                </div>
+                            </div>
+
+                            <div class="form-section-title">Review &amp; Update</div>
+                            <div class="alert alert-primary border-0 d-flex align-items-center gap-3 mb-4">
+                                <i class="bi bi-info-circle-fill fs-5 flex-shrink-0"></i>
+                                <div>
+                                    Click "Save Student Changes" below to submit updates to the database. These updates will be reflected instantly.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <a href="students.html" class="btn btn-light border">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-light border" id="btnPrev" onclick="navigateStep(-1)" style="display:none!important;">
+                                <i class="bi bi-chevron-left me-1"></i>Previous
+                            </button>
+                            <button class="btn btn-primary-custom" id="btnNext" onclick="navigateStep(1)">
+                                Next <i class="bi bi-chevron-right ms-1"></i>
+                            </button>
+                            <button class="btn btn-success d-none" id="btnSubmit" onclick="updateStudentProfile()">
+                                <i class="bi bi-check-circle me-2"></i>Save Student Changes
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        // Parse query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('id');
+
+        // Load student data from DB
+        let studentsList = JSON.parse(localStorage.getItem('students-db') || '[]');
+        let student = studentsList.find(s => s.id === studentId);
+
+        if (!student) {
+            alert("Error: Student ID not found in database.");
+            window.location.href = 'students.html';
+        } else {
+            // Update badges and headers
+            document.getElementById('studentIdBadge').textContent = 'ID: ' + student.id;
+            document.getElementById('studentNameBadge').textContent = student.name;
+            document.getElementById('headerSubtitle').textContent = 'Editing Profile of ' + student.name;
+
+            // Prefill names
+            const nameParts = student.name.split(" ");
+            document.getElementById('stu-first-name').value = nameParts[0] || '';
+            document.getElementById('stu-last-name').value = nameParts.slice(1).join(" ") || '';
+
+            // Convert DOB from DD/MM/YYYY to YYYY-MM-DD
+            if (student.dob && student.dob.includes("/")) {
+                const parts = student.dob.split("/");
+                if (parts.length === 3) {
+                    document.getElementById('stu-dob').value = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                }
+            } else {
+                document.getElementById('stu-dob').value = student.dob || '';
+            }
+
+            // Prefill Class and Section
+            document.getElementById('stu-class').value = student.cls || 'Class 10';
+            document.getElementById('stu-section').value = student.section || 'A';
+            document.getElementById('stu-father').value = student.parent || '';
+
+            // Set Avatar Selection
+            const avatarUrl = student.avatarUrl || 'https://i.pravatar.cc/150?u=student1';
+            document.getElementById('selectedAvatar').value = avatarUrl;
+            document.querySelectorAll('.avatar-option').forEach(img => {
+                if (img.dataset.url === avatarUrl) {
+                    img.classList.add('selected');
+                } else {
+                    img.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateWizardUI() {
+            // Update panes
+            document.querySelectorAll('.wizard-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById('pane-' + currentStep).classList.add('active');
+
+            // Update step indicators
+            document.querySelectorAll('.wizard-step').forEach(s => {
+                const n = parseInt(s.dataset.step);
+                s.classList.remove('active','completed');
+                if (n === currentStep) s.classList.add('active');
+                else if (n < currentStep) s.classList.add('completed');
+            });
+
+            // Update progress bar
+            const pct = Math.round((currentStep / totalSteps) * 100);
+            document.getElementById('wizardProgress').style.width = pct + '%';
+            document.getElementById('wizardProgressLabel').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
+
+            // Buttons
+            const btnPrev = document.getElementById('btnPrev');
+            const btnNext = document.getElementById('btnNext');
+            const btnSubmit = document.getElementById('btnSubmit');
+            btnPrev.style.display = currentStep > 1 ? '' : 'none';
+            if (currentStep === totalSteps) {
+                btnNext.classList.add('d-none');
+                btnSubmit.classList.remove('d-none');
+            } else {
+                btnNext.classList.remove('d-none');
+                btnSubmit.classList.add('d-none');
+            }
+        }
+
+        function goToStep(n) {
+            currentStep = n;
+            updateWizardUI();
+        }
+
+        function navigateStep(dir) {
+            const next = currentStep + dir;
+            if (next < 1 || next > totalSteps) return;
+            currentStep = next;
+            updateWizardUI();
+        }
+
+        function updateStudentProfile() {
+            const firstName = document.getElementById('stu-first-name').value.trim();
+            const lastName = document.getElementById('stu-last-name').value.trim();
+            const cls = document.getElementById('stu-class').value;
+            const section = document.getElementById('stu-section').value;
+
+            if (!firstName || !lastName || !cls || !section) {
+                alert('Please complete all required fields (Step 1: Name, Class, Section).');
+                goToStep(1); return;
+            }
+
+            const dob = document.getElementById('stu-dob').value;
+            let formattedDob = dob;
+            if (dob && dob.includes("-")) {
+                const parts = dob.split("-");
+                if (parts.length === 3) {
+                    formattedDob = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+            }
+
+            const avatarUrl = document.getElementById('selectedAvatar').value;
+            const parent = document.getElementById('stu-father').value || 'N/A';
+
+            // Find and update student in students-db
+            const studentIdx = studentsList.findIndex(s => s.id === studentId);
+            if (studentIdx !== -1) {
+                studentsList[studentIdx].name = firstName + ' ' + lastName;
+                studentsList[studentIdx].cls = cls;
+                studentsList[studentIdx].section = section;
+                studentsList[studentIdx].dob = formattedDob;
+                studentsList[studentIdx].avatarUrl = avatarUrl;
+                studentsList[studentIdx].parent = parent;
+
+                localStorage.setItem('students-db', JSON.stringify(studentsList));
+                alert("✅ Student Information Updated Successfully!");
+                window.location.href = 'students.html';
+            } else {
+                alert("Error: Student could not be found to update.");
+            }
+        }
+
+        // Avatar picker interaction
+        document.querySelectorAll('.avatar-option').forEach(img => {
+            img.addEventListener('click', () => {
+                document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
+                img.classList.add('selected');
+                document.getElementById('selectedAvatar').value = img.dataset.url;
+            });
+        });
+
+        updateWizardUI();
+    </script>
+</body>
+</html>

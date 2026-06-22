@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile - Bright Future School</title>
+    <meta name="description" content="Full student profile page for Bright Future School management system.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ── HERO ── */
+        .profile-hero {
+            background: linear-gradient(135deg,#1d4ed8 0%,#7c3aed 55%,#0d9488 100%);
+            border-radius: 22px;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 0;
+        }
+        .profile-hero::before {
+            content:'';position:absolute;top:-80px;right:-60px;
+            width:280px;height:280px;border-radius:50%;
+            background:rgba(255,255,255,0.05);pointer-events:none;
+        }
+        .profile-hero::after {
+            content:'';position:absolute;bottom:-100px;right:120px;
+            width:360px;height:360px;border-radius:50%;
+            background:rgba(255,255,255,0.04);pointer-events:none;
+        }
+        .hero-inner {
+            padding: 2.2rem 2.4rem 5rem;
+            position: relative; z-index: 1;
+        }
+        .hero-avatar-wrap {
+            position: relative; display: inline-block;
+        }
+        .hero-avatar {
+            width: 96px; height: 96px; border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255,255,255,0.6);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+        .hero-status-dot {
+            position: absolute; bottom: 4px; right: 4px;
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 3px solid #fff;
+        }
+        .hero-stat-pill {
+            background: rgba(255,255,255,0.13);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 14px; padding: 12px 18px;
+            text-align: center; flex: 1; min-width: 72px;
+            backdrop-filter: blur(10px);
+        }
+        .hero-stat-pill .v { font-size:1.4rem;font-weight:800;line-height:1; }
+        .hero-stat-pill .l { font-size:0.65rem;opacity:.75;text-transform:uppercase;letter-spacing:.07em;margin-top:3px; }
+        /* ── TAB NAV ── */
+        .profile-tab-nav {
+            display: flex; gap: 2px;
+            background: var(--bg-secondary,#f8fafc);
+            border: 1.5px solid var(--border-color,#e2e8f0);
+            border-radius: 14px; padding: 4px;
+        }
+        .ptab-btn {
+            flex: 1; border: none; background: transparent;
+            border-radius: 10px; padding: 9px 12px;
+            font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; color: var(--text-muted,#64748b);
+            transition: all 0.2s; display: flex; align-items: center;
+            justify-content: center; gap: 6px; white-space: nowrap;
+        }
+        .ptab-btn.active {
+            background: #fff;
+            color: var(--primary,#2563eb);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .ptab-btn:hover:not(.active) { background: rgba(37,99,235,0.06); color: var(--primary,#2563eb); }
+        .ptab-panel { display: none; animation: fadeUp .22s ease; }
+        .ptab-panel.active { display: block; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ── INFO ROW ── */
+        .info-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color,#f1f5f9);
+            font-size: 0.83rem;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-row .lbl { color: var(--text-muted,#94a3b8); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .info-row .val { font-weight: 700; color: var(--text-primary,#0f172a); text-align: right; max-width: 55%; }
+
+        /* ── SUBJECT GRADE ITEM ── */
+        .subj-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 14px; border-radius: 12px;
+            border: 1.5px solid var(--border-color,#e8edf5);
+            background: var(--card-bg,#fff);
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+        .subj-item:hover { border-color: rgba(37,99,235,0.2); box-shadow: 0 3px 14px rgba(37,99,235,0.07); }
+        .subj-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+        }
+        .subj-bar {
+            flex: 1; height: 6px; border-radius: 99px;
+            background: var(--bg-secondary,#e2e8f0); overflow: hidden;
+        }
+        .subj-bar-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
+        .grade-badge-lg {
+            font-size: 1rem; font-weight: 900; min-width: 38px; text-align: center;
+        }
+
+        /* ── ATTENDANCE CALENDAR ── */
+        .att-legend { display: flex; gap: 14px; flex-wrap: wrap; }
+        .att-dot-legend { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+        .att-week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .att-day-cell {
+            aspect-ratio: 1; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.67rem; font-weight: 700;
+            transition: transform 0.15s;
+        }
+        .att-day-cell:hover { transform: scale(1.15); }
+        .att-p { background: #dcfce7; color: #15803d; }
+        .att-a { background: #fee2e2; color: #dc2626; }
+        .att-l { background: #fef9c3; color: #a16207; }
+        .att-h { background: #e0e7ff; color: #4338ca; }
+        .att-w { background: #f8fafc; color: #94a3b8; }
+
+        /* ── ACTIVITY TIMELINE ── */
+        .timeline { position: relative; padding-left: 20px; }
+        .timeline::before {
+            content:''; position: absolute; left: 6px; top: 0; bottom: 0;
+            width: 2px; background: var(--border-color,#e2e8f0);
+        }
+        .tl-item {
+            position: relative; margin-bottom: 18px;
+        }
+        .tl-dot {
+            position: absolute; left: -17px; top: 2px;
+            width: 12px; height: 12px; border-radius: 50%;
+            border: 2px solid #fff; flex-shrink: 0;
+        }
+        .tl-content {
+            background: var(--bg-secondary,#f8fafc);
+            border-radius: 10px; padding: 10px 14px;
+            font-size: 0.81rem;
+        }
+        .tl-content .tl-title { font-weight: 700; color: var(--text-primary,#0f172a); }
+        .tl-content .tl-time  { font-size: 0.7rem; color: var(--text-muted,#94a3b8); margin-top: 2px; }
+
+        /* ── SIDEBAR MINI CARD ── */
+        .mini-info-card {
+            border-radius: 14px;
+            border: 1.5px solid var(--border-color,#e8edf5);
+            background: var(--card-bg,#fff);
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .mini-info-card .title {
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: .08em; color: var(--text-muted,#94a3b8); margin-bottom: 12px;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        /* ── STATUS BADGE ── */
+        .status-pill-active   { background:#dcfce7;color:#15803d; padding:4px 14px;border-radius:999px;font-size:.75rem;font-weight:700; }
+        .status-pill-inactive { background:#fee2e2;color:#dc2626; padding:4px 14px;border-radius:999px;font-size:.75rem;font-weight:700; }
+
+        /* ── TOAST ── */
+        @keyframes slideInToast { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+
+        /* ── DARK THEME ── */
+        body.dark-theme .ptab-btn.active { background: #1e293b; }
+        body.dark-theme .subj-item { background: var(--card-bg); border-color: var(--border-color); }
+        body.dark-theme .mini-info-card { background: var(--card-bg); border-color: var(--border-color); }
+        body.dark-theme .tl-content { background: rgba(255,255,255,0.05); }
+        body.dark-theme .att-p { background: rgba(34,197,94,0.15); }
+        body.dark-theme .att-a { background: rgba(239,68,68,0.15); }
+        body.dark-theme .att-l { background: rgba(234,179,8,0.15); }
+        body.dark-theme .att-h { background: rgba(99,102,241,0.15); }
+        body.dark-theme .att-w { background: rgba(255,255,255,0.04); color: #475569; }
+        body.dark-theme .profile-tab-nav { background: rgba(255,255,255,0.04); border-color: var(--border-color); }
+        body.dark-theme .ptab-btn.active { background: rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <div>
+                    <h5 class="mb-0 fw-bold">Bright Future</h5>
+                    <small class="opacity-50">School SMS</small>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link active"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card"><i class="bi bi-box-arrow-left"></i><span class="fw-medium">Logout</span></a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold" id="pageTitle">Student Profile</h4>
+                    <small class="text-muted" id="pageSubtitle">Loading student details...</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid p-4">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb small">
+                    <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="classes.html" class="text-decoration-none">Classes</a></li>
+                    <li class="breadcrumb-item"><a href="#" id="bcClass" class="text-decoration-none">Class Roster</a></li>
+                    <li class="breadcrumb-item active" id="bcStudent">Student Profile</li>
+                </ol>
+            </nav>
+            <!-- ═══ HERO BANNER ═══ -->
+            <div class="profile-hero mb-4">
+                <div class="hero-inner">
+                    <div class="row align-items-center g-4">
+                        <!-- Left: Avatar + Name -->
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center gap-4">
+                                <div class="hero-avatar-wrap flex-shrink-0">
+                                    <img id="heroAvatar" src="" class="hero-avatar" alt="Student">
+                                    <span class="hero-status-dot" id="heroStatusDot"></span>
+                                </div>
+                                <div class="text-white">
+                                    <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                        <span id="heroStatusPill" class="badge rounded-pill px-3 py-1" style="font-size:.7rem;"></span>
+                                        <span id="heroGradePill" class="badge rounded-pill px-3 py-1" style="font-size:.7rem;background:rgba(255,255,255,.15);"></span>
+                                    </div>
+                                    <h2 class="fw-bold mb-1" id="heroName" style="font-size:1.6rem;">—</h2>
+                                    <div class="opacity-75 mb-2" style="font-size:.85rem;" id="heroMeta">—</div>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <button class="btn btn-sm fw-semibold" id="btnEdit"
+                                            style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:10px;backdrop-filter:blur(8px);"
+                                            onclick="goEditPage()">
+                                            <i class="bi bi-pencil-fill me-1"></i>Edit Profile
+                                        </button>
+                                        <button class="btn btn-sm fw-semibold" id="btnToggle"
+                                            style="border-radius:10px;backdrop-filter:blur(8px);"
+                                            onclick="toggleStudentStatus()">
+                                        </button>
+                                        <button class="btn btn-sm fw-semibold"
+                                            style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:10px;backdrop-filter:blur(8px);"
+                                            onclick="window.print()">
+                                            <i class="bi bi-printer-fill me-1"></i>Print
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Right: Stats -->
+                        <div class="col-lg-6">
+                            <div class="d-flex gap-2 flex-wrap justify-content-lg-end text-white">
+                                <div class="hero-stat-pill">
+                                    <div class="v" id="hsSummaryGrade">—</div>
+                                    <div class="l">Overall Grade</div>
+                                </div>
+                                <div class="hero-stat-pill">
+                                    <div class="v" id="hsSummaryScore">—</div>
+                                    <div class="l">Avg Score</div>
+                                </div>
+                                <div class="hero-stat-pill">
+                                    <div class="v" id="hsSummaryAtt">—</div>
+                                    <div class="l">Attendance</div>
+                                </div>
+                                <div class="hero-stat-pill">
+                                    <div class="v" id="hsSummaryRank">—</div>
+                                    <div class="l">Class Rank</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Decorative wave bottom -->
+                <div style="height:28px;background:var(--body-bg,#f8fafc);border-radius:0 0 22px 22px;margin-top:-2px;"></div>
+            </div>
+
+            <!-- ═══ TWO-COLUMN LAYOUT ═══ -->
+            <div class="row g-4">
+
+                <!-- LEFT SIDEBAR: quick info cards -->
+                <div class="col-lg-3">
+
+                    <!-- Personal Info -->
+                    <div class="mini-info-card">
+                        <div class="title"><i class="bi bi-person-fill" style="color:var(--primary,#2563eb);"></i>Personal Info</div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-hash"></i>Student ID</span><span class="val" id="siStudentId">—</span></div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-calendar3"></i>Date of Birth</span><span class="val" id="siDob">—</span></div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-gender-ambiguous"></i>Gender</span><span class="val" id="siGender">—</span></div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-droplet-half"></i>Blood Group</span><span class="val" id="siBlood">—</span></div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-globe2"></i>Nationality</span><span class="val" id="siNationality">—</span></div>
+                    </div>
+
+                    <!-- Academic Info -->
+                    <div class="mini-info-card">
+                        <div class="title"><i class="bi bi-door-open-fill" style="color:#7c3aed;"></i>Academic Info</div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-building"></i>Class</span><span class="val" id="siClass">—</span></div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-journal-bookmark"></i>Year</span><span class="val" id="siYear">—</span></div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-list-ol"></i>Roll No</span><span class="val" id="siRoll">—</span></div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-mortarboard"></i>Section</span><span class="val" id="siSection">—</span></div>
+                    </div>
+
+                    <!-- Guardian Info -->
+                    <div class="mini-info-card">
+                        <div class="title"><i class="bi bi-person-heart" style="color:#db2777;"></i>Guardian</div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-person"></i>Name</span><span class="val" id="siParent">—</span></div>
+                        <div class="info-row"><span class="lbl"><i class="bi bi-telephone"></i>Contact</span><span class="val" id="siContact">—</span></div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="mini-info-card">
+                        <div class="title"><i class="bi bi-lightning-fill" style="color:#ea580c;"></i>Quick Actions</div>
+                        <div class="d-flex flex-column gap-2">
+                            <button class="btn btn-sm btn-primary-custom w-100 text-start d-flex align-items-center gap-2" onclick="goEditPage()">
+                                <i class="bi bi-pencil-fill"></i> Edit Student Profile
+                            </button>
+                            <button class="btn btn-sm w-100 text-start d-flex align-items-center gap-2"
+                                style="border:1.5px solid #e2e8f0;background:var(--bg-secondary,#f8fafc);color:var(--text-primary,#0f172a);"
+                                onclick="goBackToClass()">
+                                <i class="bi bi-arrow-left-circle"></i> Back to Class Roster
+                            </button>
+                            <button class="btn btn-sm w-100 text-start d-flex align-items-center gap-2"
+                                style="border:1.5px solid #e2e8f0;background:var(--bg-secondary,#f8fafc);color:var(--text-primary,#0f172a);"
+                                onclick="window.print()">
+                                <i class="bi bi-printer"></i> Print Profile
+                            </button>
+                            <button class="btn btn-sm w-100 text-start d-flex align-items-center gap-2" id="sideToggleBtn"
+                                onclick="toggleStudentStatus()">
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT: Tabbed Content -->
+                <div class="col-lg-9">
+
+                    <!-- Tab Navigation -->
+                    <div class="profile-tab-nav mb-4">
+                        <button class="ptab-btn active" data-tab="overview" onclick="switchTab('overview',this)">
+                            <i class="bi bi-person-lines-fill"></i><span class="d-none d-sm-inline">Overview</span>
+                        </button>
+                        <button class="ptab-btn" data-tab="grades" onclick="switchTab('grades',this)">
+                            <i class="bi bi-bar-chart-fill"></i><span class="d-none d-sm-inline">Grades</span>
+                        </button>
+                        <button class="ptab-btn" data-tab="attendance" onclick="switchTab('attendance',this)">
+                            <i class="bi bi-calendar-check-fill"></i><span class="d-none d-sm-inline">Attendance</span>
+                        </button>
+                        <button class="ptab-btn" data-tab="activity" onclick="switchTab('activity',this)">
+                            <i class="bi bi-clock-history"></i><span class="d-none d-sm-inline">Activity</span>
+                        </button>
+                    </div>
+                    <!-- ─ Tab: Overview ─ -->
+                    <div class="ptab-panel active" id="tab-overview">
+                        <div class="row g-4">
+                            <!-- Personal Details Card -->
+                            <div class="col-md-6">
+                                <div class="card-custom h-100">
+                                    <h6 class="fw-bold mb-3" style="color:var(--primary,#2563eb);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;">
+                                        <i class="bi bi-person-vcard me-2"></i>Personal Details
+                                    </h6>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-calendar-event"></i>Date of Birth</span><span class="val" id="ovDob">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-gender-ambiguous"></i>Gender</span><span class="val" id="ovGender">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-droplet-half"></i>Blood Group</span><span class="val" id="ovBlood">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-globe2"></i>Nationality</span><span class="val" id="ovNationality">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-translate"></i>Mother Tongue</span><span class="val" id="ovTongue">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-geo-alt"></i>Address</span><span class="val" id="ovAddress">—</span></div>
+                                </div>
+                            </div>
+                            <!-- Academic Details Card -->
+                            <div class="col-md-6">
+                                <div class="card-custom h-100">
+                                    <h6 class="fw-bold mb-3" style="color:#7c3aed;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;">
+                                        <i class="bi bi-mortarboard me-2"></i>Academic Details
+                                    </h6>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-door-open"></i>Class</span><span class="val" id="ovClass">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-hash"></i>Roll Number</span><span class="val" id="ovRoll">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-calendar3"></i>Academic Year</span><span class="val" id="ovYear">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-circle-fill" style="font-size:.55rem;"></i>Status</span><span class="val" id="ovStatus">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-star-fill"></i>Overall Grade</span><span class="val fw-bold fs-5" id="ovGrade" style="font-size:1.1rem!important;">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-graph-up"></i>Avg Score</span><span class="val" id="ovScore">—</span></div>
+                                </div>
+                            </div>
+                            <!-- Guardian Card -->
+                            <div class="col-md-6">
+                                <div class="card-custom">
+                                    <h6 class="fw-bold mb-3" style="color:#db2777;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;">
+                                        <i class="bi bi-person-heart me-2"></i>Guardian Information
+                                    </h6>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-person"></i>Parent/Guardian</span><span class="val" id="ovParent">—</span></div>
+                                    <div class="info-row"><span class="lbl"><i class="bi bi-telephone"></i>Contact</span><span class="val" id="ovContact">—</span></div>
+                                </div>
+                            </div>
+                            <!-- Quick Stats Card -->
+                            <div class="col-md-6">
+                                <div class="card-custom">
+                                    <h6 class="fw-bold mb-3" style="color:#16a34a;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;">
+                                        <i class="bi bi-speedometer2 me-2"></i>Quick Stats
+                                    </h6>
+                                    <div class="row g-2 text-center">
+                                        <div class="col-4">
+                                            <div style="background:var(--bg-secondary,#f8fafc);border-radius:12px;padding:14px 6px;">
+                                                <div class="fw-800 fs-5" id="qsGrade" style="font-weight:900;">—</div>
+                                                <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted,#94a3b8);margin-top:3px;">Grade</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div style="background:var(--bg-secondary,#f8fafc);border-radius:12px;padding:14px 6px;">
+                                                <div class="fw-800 fs-5" id="qsAtt" style="font-weight:900;">—</div>
+                                                <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted,#94a3b8);margin-top:3px;">Attend.</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div style="background:var(--bg-secondary,#f8fafc);border-radius:12px;padding:14px 6px;">
+                                                <div class="fw-800 fs-5" id="qsScore" style="font-weight:900;">—</div>
+                                                <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted,#94a3b8);margin-top:3px;">Score</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Progress bar for avg score -->
+                                    <div class="mt-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small class="text-muted" style="font-size:.71rem;">Academic Performance</small>
+                                            <small class="fw-bold" id="qsScoreLabel" style="font-size:.71rem;">—</small>
+                                        </div>
+                                        <div style="height:8px;border-radius:99px;background:#e2e8f0;overflow:hidden;">
+                                            <div id="qsProgressBar" style="height:100%;border-radius:99px;width:0%;transition:width .7s ease;background:linear-gradient(90deg,#2563eb,#7c3aed);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ─ Tab: Grades ─ -->
+                    <div class="ptab-panel" id="tab-grades">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="card-custom">
+                                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                                        <h6 class="fw-bold mb-0" style="color:var(--primary,#2563eb);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;">
+                                            <i class="bi bi-bar-chart-fill me-2"></i>Subject-wise Performance
+                                        </h6>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span class="text-muted" style="font-size:.78rem;">Term Average:</span>
+                                            <span class="fw-bold fs-5" id="termAvgDisplay" style="color:var(--primary,#2563eb);">—</span>
+                                        </div>
+                                    </div>
+                                    <div id="gradesListContainer"></div>
+                                    <!-- Overall bar -->
+                                    <div class="mt-4 p-3 rounded-3" style="background:var(--bg-secondary,#f8fafc);">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="fw-bold" style="font-size:.83rem;">Overall Performance</span>
+                                            <span class="fw-bold fs-4" id="overallGradeDisplay" style="color:var(--primary,#2563eb);">—</span>
+                                        </div>
+                                        <div style="height:10px;border-radius:99px;background:#e2e8f0;overflow:hidden;">
+                                            <div id="overallProgressBar" style="height:100%;border-radius:99px;width:0%;transition:width .7s ease;background:linear-gradient(90deg,#2563eb,#7c3aed);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ─ Tab: Attendance ─ -->
+                    <div class="ptab-panel" id="tab-attendance">
+                        <div class="row g-4">
+                            <!-- Summary stats -->
+                            <div class="col-12">
+                                <div class="row g-3 mb-4">
+                                    <div class="col-6 col-md-3">
+                                        <div class="card-custom text-center" style="border-color:#bbf7d0;">
+                                            <div class="fw-bold mb-1" style="font-size:1.8rem;color:#16a34a;" id="attTotalPresent">—</div>
+                                            <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Present</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="card-custom text-center" style="border-color:#fed7aa;">
+                                            <div class="fw-bold mb-1" style="font-size:1.8rem;color:#ea580c;" id="attTotalLate">—</div>
+                                            <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Late</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="card-custom text-center" style="border-color:#fecaca;">
+                                            <div class="fw-bold mb-1" style="font-size:1.8rem;color:#dc2626;" id="attTotalAbsent">—</div>
+                                            <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Absent</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="card-custom text-center" style="border-color:#bfdbfe;">
+                                            <div class="fw-bold mb-1" style="font-size:1.8rem;color:#2563eb;" id="attPct">—%</div>
+                                            <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Rate</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Calendar grid -->
+                            <div class="col-12">
+                                <div class="card-custom">
+                                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                                        <h6 class="fw-bold mb-0" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--primary,#2563eb);">
+                                            <i class="bi bi-calendar3 me-2"></i>Monthly View — June 2026
+                                        </h6>
+                                        <div class="att-legend">
+                                            <span style="font-size:.72rem;"><span class="att-dot-legend" style="background:#16a34a;"></span>Present</span>
+                                            <span style="font-size:.72rem;"><span class="att-dot-legend" style="background:#dc2626;"></span>Absent</span>
+                                            <span style="font-size:.72rem;"><span class="att-dot-legend" style="background:#ca8a04;"></span>Late</span>
+                                            <span style="font-size:.72rem;"><span class="att-dot-legend" style="background:#4338ca;"></span>Holiday</span>
+                                        </div>
+                                    </div>
+                                    <!-- Day headers -->
+                                    <div class="att-week-grid mb-2">
+                                        <div class="text-center" style="font-size:.65rem;font-weight:700;color:var(--text-muted,#94a3b8);">Sun</div>
+                                        <div class="text-center" style="font-size:.65rem;font-weight:700;color:var(--text-muted,#94a3b8);">Mon</div>
+                                        <div class="text-center" style="font-size:.65rem;font-weight:700;color:var(--text-muted,#94a3b8);">Tue</div>
+                                        <div class="text-center" style="font-size:.65rem;font-weight:700;color:var(--text-muted,#94a3b8);">Wed</div>
+                                        <div class="text-center" style="font-size:.65rem;font-weight:700;color:var(--text-muted,#94a3b8);">Thu</div>
+                                        <div class="text-center" style="font-size:.65rem;font-weight:700;color:var(--text-muted,#94a3b8);">Fri</div>
+                                        <div class="text-center" style="font-size:.65rem;font-weight:700;color:var(--text-muted,#94a3b8);">Sat</div>
+                                    </div>
+                                    <div class="att-week-grid" id="attendanceCalendar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ─ Tab: Activity ─ -->
+                    <div class="ptab-panel" id="tab-activity">
+                        <div class="card-custom">
+                            <h6 class="fw-bold mb-4" style="color:var(--primary,#2563eb);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;">
+                                <i class="bi bi-clock-history me-2"></i>Recent Activity Timeline
+                            </h6>
+                            <div class="timeline" id="activityTimeline"></div>
+                        </div>
+                    </div>
+
+                </div><!-- end col-lg-9 -->
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </div><!-- end #content -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    // ═══════════════════════════════════════════════
+    //  DATA — same seed used in class-students.html
+    // ═══════════════════════════════════════════════
+    const mockStudentsByClass = {
+        'cls-10a': [
+            { id:'S10001',name:'Aiden Clarke',  dob:'12/03/2008',gender:'Male',  status:'Active',  photo:'https://i.pravatar.cc/150?img=8', parent:'James Clarke',  contact:'+1 555-1001',grade:'A', pct:91,roll:'01',section:'A',blood:'O+',nationality:'British',tongue:'English',address:'12 Baker St, London' },
+            { id:'S10002',name:'Priya Sharma',  dob:'22/07/2008',gender:'Female',status:'Active',  photo:'https://i.pravatar.cc/150?img=47',parent:'Raj Sharma',    contact:'+1 555-1002',grade:'A+',pct:97,roll:'02',section:'A',blood:'B+',nationality:'Indian', tongue:'Hindi',  address:'45 Sector 4, New Delhi' },
+            { id:'S10003',name:'Luca Ferrari',  dob:'05/11/2007',gender:'Male',  status:'Active',  photo:'https://i.pravatar.cc/150?img=15',parent:'Marco Ferrari', contact:'+1 555-1003',grade:'B+',pct:83,roll:'03',section:'A',blood:'A+',nationality:'Italian',tongue:'Italian',address:'Via Roma 7, Milan' },
+            { id:'S10004',name:'Sofia Garcia',  dob:'18/01/2008',gender:'Female',status:'Active',  photo:'https://i.pravatar.cc/150?img=45',parent:'Carlos Garcia', contact:'+1 555-1004',grade:'A', pct:90,roll:'04',section:'A',blood:'A-',nationality:'Spanish',tongue:'Spanish',address:'Calle Mayor 3, Madrid' },
+            { id:'S10005',name:'Yuki Tanaka',   dob:'09/06/2008',gender:'Female',status:'Active',  photo:'https://i.pravatar.cc/150?img=49',parent:'Hiroshi Tanaka',contact:'+1 555-1005',grade:'B', pct:76,roll:'05',section:'A',blood:'O-',nationality:'Japanese',tongue:'Japanese',address:'1-2-3 Shibuya, Tokyo' },
+            { id:'S10006',name:'Ethan Moore',   dob:'30/09/2007',gender:'Male',  status:'Inactive',photo:'https://i.pravatar.cc/150?img=18',parent:'Brian Moore',   contact:'+1 555-1006',grade:'C+',pct:62,roll:'06',section:'A',blood:'B-',nationality:'American',tongue:'English',address:'55 Elm St, New York' },
+        ],
+        'cls-10b': [
+            { id:'S10007',name:'Amara Osei',   dob:'14/02/2008',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=44',parent:'Kofi Osei',    contact:'+1 555-2001',grade:'A', pct:92,roll:'01',section:'B',blood:'A+',nationality:'Ghanaian',tongue:'Twi',    address:'5 Accra Rd, Accra' },
+            { id:'S10008',name:"Finn O'Brien", dob:'27/08/2008',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=12',parent:"Liam O'Brien",contact:'+1 555-2002',grade:'B+',pct:82,roll:'02',section:'B',blood:'O+',nationality:'Irish',  tongue:'English',address:'Dublin 4, Ireland' },
+            { id:'S10009',name:'Mei Ling',     dob:'03/04/2007',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=43',parent:'Wei Ling',    contact:'+1 555-2003',grade:'A+',pct:96,roll:'03',section:'B',blood:'B+',nationality:'Chinese',tongue:'Mandarin',address:'88 Nanjing Rd, Shanghai' },
+        ],
+        'cls-9a': [
+            { id:'S09001',name:'Carlos Rivera',dob:'11/05/2009',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=7', parent:'Diego Rivera',  contact:'+1 555-3001',grade:'B', pct:74,roll:'01',section:'A',blood:'O+',nationality:'Mexican', tongue:'Spanish',address:'Av. Insurgentes, CDMX' },
+            { id:'S09002',name:'Anya Patel',   dob:'22/11/2009',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=48',parent:'Sunita Patel',  contact:'+1 555-3002',grade:'A', pct:89,roll:'02',section:'A',blood:'A+',nationality:'Indian', tongue:'Gujarati',address:'MG Road, Ahmedabad' },
+            { id:'S09003',name:'Jack Thompson',dob:'06/07/2009',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=11',parent:'Steven Thompson',contact:'+1 555-3003',grade:'A+',pct:95,roll:'03',section:'A',blood:'AB+',nationality:'American',tongue:'English',address:'300 Park Ave, Chicago' },
+            { id:'S09004',name:'Nina Volkov',  dob:'15/03/2009',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=46',parent:'Ivan Volkov',   contact:'+1 555-3004',grade:'B+',pct:85,roll:'04',section:'A',blood:'A-',nationality:'Russian', tongue:'Russian',address:'Arbat St 12, Moscow' },
+        ],
+        'cls-9b': [
+            { id:'S09005',name:'Omar Hassan',dob:'19/09/2009',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=6', parent:'Khalid Hassan',contact:'+1 555-4001',grade:'A', pct:91,roll:'01',section:'B',blood:'O+',nationality:'Egyptian',tongue:'Arabic', address:'Tahrir Sq, Cairo' },
+            { id:'S09006',name:'Elena Cruz', dob:'04/12/2009',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=41',parent:'Miguel Cruz',  contact:'+1 555-4002',grade:'B', pct:75,roll:'02',section:'B',blood:'B+',nationality:'Brazilian',tongue:'Portuguese',address:'Copacabana, Rio' },
+            { id:'S09007',name:'Ravi Kumar', dob:'28/02/2009',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=14',parent:'Suresh Kumar', contact:'+1 555-4003',grade:'A+',pct:98,roll:'03',section:'B',blood:'O-',nationality:'Indian', tongue:'Tamil',  address:'Anna Nagar, Chennai' },
+        ],
+        'cls-5a': [
+            { id:'S05001',name:'Lily Johnson', dob:'08/04/2013',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=50',parent:'Mark Johnson',contact:'+1 555-5001',grade:'A', pct:93,roll:'01',section:'A',blood:'A+',nationality:'American',tongue:'English',address:'12 Oak Lane, Boston' },
+            { id:'S05002',name:'Noah Williams',dob:'17/06/2013',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=3', parent:'Tom Williams', contact:'+1 555-5002',grade:'B+',pct:81,roll:'02',section:'A',blood:'O+',nationality:'American',tongue:'English',address:'99 Maple St, Austin' },
+            { id:'S05003',name:'Zara Ahmed',   dob:'25/10/2013',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=42',parent:'Ali Ahmed',   contact:'+1 555-5003',grade:'A+',pct:96,roll:'03',section:'A',blood:'B-',nationality:'Pakistani',tongue:'Urdu',  address:'Blue Area, Islamabad' },
+        ],
+        'cls-5b': [
+            { id:'S05004',name:'Leo Nguyen',  dob:'13/01/2013',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=4', parent:'Minh Nguyen',contact:'+1 555-6001',grade:'B', pct:78,roll:'01',section:'B',blood:'A+',nationality:'Vietnamese',tongue:'Vietnamese',address:'Ba Dinh, Hanoi' },
+            { id:'S05005',name:'Grace Kim',   dob:'21/07/2013',gender:'Female',status:'Active',photo:'https://i.pravatar.cc/150?img=51',parent:'Jae Kim',    contact:'+1 555-6002',grade:'A', pct:88,roll:'02',section:'B',blood:'O+',nationality:'Korean', tongue:'Korean',   address:'Gangnam, Seoul' },
+            { id:'S05006',name:'Adam Okafor', dob:'09/03/2013',gender:'Male',  status:'Active',photo:'https://i.pravatar.cc/150?img=5', parent:'Emeka Okafor',contact:'+1 555-6003',grade:'A+',pct:97,roll:'03',section:'B',blood:'B+',nationality:'Nigerian',tongue:'Igbo',    address:'Victoria Island, Lagos' },
+        ],
+    };
+    </script>
+    <script>
+    // ═══════════════════════════════════════════════
+    //  INIT
+    // ═══════════════════════════════════════════════
+    const urlParams  = new URLSearchParams(window.location.search);
+    const studentId  = urlParams.get('id')    || '';
+    const classParam = urlParams.get('class') || '';
+
+    const classesList = JSON.parse(localStorage.getItem('classes-db') || '[]');
+    const classInfo   = classesList.find(c => c.id === classParam) || null;
+
+    // Resolve student — check overrides first, then mock, then students-db
+    function findStudent() {
+        const overrides = JSON.parse(localStorage.getItem('student-status-overrides') || '{}');
+        const edits     = JSON.parse(localStorage.getItem('student-edits') || '{}');
+        // search all mock classes
+        for (const list of Object.values(mockStudentsByClass)) {
+            const s = list.find(x => x.id === studentId);
+            if (s) {
+                const merged = { ...s, ...(edits[s.id] || {}) };
+                if (overrides[s.id]) merged.status = overrides[s.id];
+                return merged;
+            }
+        }
+        // fallback: students-db
+        const dbStudents = JSON.parse(localStorage.getItem('students-db') || '[]');
+        const s = dbStudents.find(x => x.id === studentId);
+        if (s) {
+            const merged = { ...s, ...(edits[s.id] || {}) };
+            if (overrides[s.id]) merged.status = overrides[s.id];
+            return merged;
+        }
+        return null;
+    }
+
+    // ─ Grade helpers ─
+    const gradeColors = { 'A+':'#16a34a','A':'#2563eb','B+':'#7c3aed','B':'#ea580c','C+':'#d97706','C':'#dc2626','D':'#9f1239' };
+    const gradeSubjects = [
+        { name:'Mathematics',   icon:'bi-calculator-fill',  color:'#2563eb', bg:'#eff6ff' },
+        { name:'English',       icon:'bi-book-fill',        color:'#7c3aed', bg:'#f5f3ff' },
+        { name:'Science',       icon:'bi-lightning-fill',   color:'#16a34a', bg:'#f0fdf4' },
+        { name:'History',       icon:'bi-hourglass-split',  color:'#ea580c', bg:'#fff7ed' },
+        { name:'Geography',     icon:'bi-globe-americas',   color:'#0d9488', bg:'#f0fdfa' },
+        { name:'Computer Sci.', icon:'bi-cpu-fill',         color:'#db2777', bg:'#fdf2f8' },
+    ];
+
+    function getSubjectGrades(s) {
+        const base = s.pct || 80;
+        return gradeSubjects.map((sub, i) => {
+            const offset = ((s.id.charCodeAt(s.id.length - 1) + i * 7) % 20) - 10;
+            const score  = Math.min(100, Math.max(40, base + offset));
+            const letter = score>=95?'A+':score>=85?'A':score>=75?'B+':score>=65?'B':score>=55?'C+':'C';
+            return { ...sub, score, letter };
+        });
+    }
+
+    // ─ Attendance data ─
+    function getAttendance(s) {
+        const rng = s.id.charCodeAt(s.id.length - 1);
+        const present = 18 + (rng % 4);
+        const late    = 2  + (rng % 2);
+        const absent  = Math.max(0, 22 - present - late);
+        const pct     = Math.round((present / 22) * 100);
+        return { present, late, absent, pct };
+    }
+
+    // June 2026 calendar: starts Sunday (offset=0)
+    // day 1 = Monday => offset=1 in 0=Sun grid
+    function buildCalendar(s) {
+        const rng      = s.id.charCodeAt(s.id.length - 1);
+        const calendar = document.getElementById('attendanceCalendar');
+        calendar.innerHTML = '';
+        const daysInJune = 30;
+        const startDay   = 1; // June 1 2026 = Monday → index 1 (0=Sun)
+
+        // Blank cells before day 1
+        for (let b = 0; b < startDay; b++) {
+            const blank = document.createElement('div');
+            blank.className = 'att-day-cell att-w';
+            calendar.appendChild(blank);
+        }
+
+        for (let d = 1; d <= daysInJune; d++) {
+            const dayOfWeek = (startDay + d - 1) % 7;
+            const cell = document.createElement('div');
+            let cls = '', title = '';
+
+            if (dayOfWeek === 0 || dayOfWeek === 6) {
+                cls = 'att-w'; title = 'Weekend';
+            } else if ([5,12,19].includes(d)) {
+                cls = 'att-h'; title = 'Holiday';
+            } else {
+                const rand = (rng * d * 13) % 10;
+                if (rand < 1)      { cls = 'att-a'; title = 'Absent'; }
+                else if (rand < 2) { cls = 'att-l'; title = 'Late'; }
+                else               { cls = 'att-p'; title = 'Present'; }
+            }
+
+            cell.className = 'att-day-cell ' + cls;
+            cell.title     = `Jun ${d} — ${title}`;
+            cell.textContent = d;
+            calendar.appendChild(cell);
+        }
+    }
+
+    // ─ Activity timeline ─
+    function buildTimeline(s) {
+        const items = [
+            { color:'#2563eb', icon:'bi-journal-check',    title:`Submitted Mathematics assignment`,     time:'Today, 10:22 AM' },
+            { color:'#16a34a', icon:'bi-check-circle-fill', title:`Marked Present — Monday Jun 16`,      time:'Mon, 16 Jun · 8:05 AM' },
+            { color:'#7c3aed', icon:'bi-star-fill',         title:`Grade A+ in Science mid-term`,        time:'Jun 14, 2026' },
+            { color:'#ea580c', icon:'bi-exclamation-triangle-fill',title:`Arrived Late — Thursday Jun 12`,time:'Thu, 12 Jun · 8:44 AM' },
+            { color:'#16a34a', icon:'bi-person-check-fill', title:`Enrolled in ${classInfo?classInfo.name:'Class'}`, time:'Apr 1, 2026' },
+            { color:'#db2777', icon:'bi-trophy-fill',       title:`Ranked Top 3 in Computer Science`,    time:'Mar 22, 2026' },
+            { color:'#0d9488', icon:'bi-award-fill',        title:`Participated in Science Fair`,         time:'Feb 15, 2026' },
+        ];
+        const tl = document.getElementById('activityTimeline');
+        tl.innerHTML = items.map(it => `
+            <div class="tl-item">
+                <div class="tl-dot" style="background:${it.color};box-shadow:0 0 0 3px ${it.color}25;"></div>
+                <div class="tl-content">
+                    <div class="tl-title"><i class="bi ${it.icon} me-2" style="color:${it.color};"></i>${it.title}</div>
+                    <div class="tl-time">${it.time}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ─ Tab switch ─
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.ptab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.ptab-panel').forEach(p => p.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // ─ Toast ─
+    function showToast(html, type = 'success') {
+        let c = document.getElementById('toastContainer');
+        if (!c) {
+            c = document.createElement('div');
+            c.id = 'toastContainer';
+            c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
+            document.body.appendChild(c);
+        }
+        const colors = { success:'#16a34a', warning:'#ea580c', info:'#2563eb' };
+        const icons  = { success:'bi-check-circle-fill', warning:'bi-dash-circle-fill', info:'bi-info-circle-fill' };
+        const t = document.createElement('div');
+        t.style.cssText = `display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid ${colors[type]}30;border-left:4px solid ${colors[type]};border-radius:12px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,.1);min-width:260px;animation:slideInToast .3s ease;`;
+        t.innerHTML = `<i class="bi ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;flex-shrink:0;"></i><span style="font-size:.83rem;color:#0f172a;">${html}</span>`;
+        c.appendChild(t);
+        setTimeout(() => { t.style.cssText += 'opacity:0;transform:translateX(20px);transition:all .3s ease;'; setTimeout(() => t.remove(), 300); }, 2800);
+    }
+
+    // ─ Status toggle ─
+    function toggleStudentStatus() {
+        const s = findStudent();
+        if (!s) return;
+        const newStatus = s.status === 'Active' ? 'Inactive' : 'Active';
+        let overrides = JSON.parse(localStorage.getItem('student-status-overrides') || '{}');
+        overrides[studentId] = newStatus;
+        localStorage.setItem('student-status-overrides', JSON.stringify(overrides));
+
+        // Also update students-db if exists
+        let dbStudents = JSON.parse(localStorage.getItem('students-db') || '[]');
+        const idx = dbStudents.findIndex(x => x.id === studentId);
+        if (idx !== -1) { dbStudents[idx].status = newStatus; localStorage.setItem('students-db', JSON.stringify(dbStudents)); }
+
+        showToast(`${s.name} marked as <strong>${newStatus}</strong>`, newStatus === 'Active' ? 'success' : 'warning');
+        renderPage(); // re-render with new status
+    }
+
+    function goEditPage() {
+        window.location.href = `edit-student-profile.html?id=${studentId}&class=${encodeURIComponent(classParam)}`;
+    }
+
+    function goBackToClass() {
+        if (classParam) {
+            window.location.href = `class-students.html?class=${encodeURIComponent(classParam)}`;
+        } else {
+            window.location.href = 'classes.html';
+        }
+    }
+    </script>
+    <script>
+    // ═══════════════════════════════════════════════
+    //  MAIN RENDER
+    // ═══════════════════════════════════════════════
+    function renderPage() {
+        const s = findStudent();
+
+        if (!s) {
+            document.getElementById('pageTitle').textContent = 'Student Not Found';
+            document.getElementById('pageSubtitle').textContent = '';
+            document.querySelector('.container-fluid').innerHTML = `
+                <div class="text-center py-5 card-custom mt-4">
+                    <div style="width:80px;height:80px;border-radius:50%;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#2563eb;margin:0 auto 1rem;">
+                        <i class="bi bi-person-x"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Student Not Found</h5>
+                    <p class="text-muted mb-4">The student ID <strong>${studentId}</strong> doesn't match any record.</p>
+                    <a href="classes.html" class="btn btn-primary-custom px-5"><i class="bi bi-arrow-left me-2"></i>Back to Classes</a>
+                </div>`;
+            return;
+        }
+
+        const isActive  = s.status === 'Active';
+        const gc        = gradeColors[s.grade] || '#64748b';
+        const subGrades = getSubjectGrades(s);
+        const avgScore  = Math.round(subGrades.reduce((a,b) => a+b.score, 0) / subGrades.length);
+        const avgLetter = avgScore>=95?'A+':avgScore>=85?'A':avgScore>=75?'B+':avgScore>=65?'B':avgScore>=55?'C+':'C';
+        const avgColor  = gradeColors[avgLetter] || '#64748b';
+        const att       = getAttendance(s);
+        const clsName   = classInfo ? classInfo.name : (s.class || '—');
+
+        // ── Page title ──
+        document.title = `${s.name} — Student Profile`;
+        document.getElementById('pageTitle').textContent = s.name;
+        document.getElementById('pageSubtitle').textContent = `${clsName} · ID: ${s.id}`;
+        document.getElementById('bcStudent').textContent = s.name;
+        if (classParam) {
+            document.getElementById('bcClass').textContent = clsName;
+            document.getElementById('bcClass').href = `class-students.html?class=${encodeURIComponent(classParam)}`;
+        }
+
+        // ── Hero ──
+        document.getElementById('heroAvatar').src = s.photo;
+        document.getElementById('heroAvatar').onerror = function(){ this.src='https://i.pravatar.cc/150?u='+studentId; };
+        document.getElementById('heroStatusDot').style.background = isActive ? '#22c55e' : '#ef4444';
+        document.getElementById('heroStatusPill').textContent = isActive ? '● Active' : '● Inactive';
+        document.getElementById('heroStatusPill').style.cssText = `font-size:.7rem;background:${isActive?'rgba(34,197,94,.25)':'rgba(239,68,68,.25)'};color:#fff;border:1px solid ${isActive?'rgba(34,197,94,.4)':'rgba(239,68,68,.4)'};`;
+        document.getElementById('heroGradePill').textContent = `Grade ${s.grade}`;
+        document.getElementById('heroGradePill').style.cssText = `font-size:.7rem;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);`;
+        document.getElementById('heroName').textContent = s.name;
+        document.getElementById('heroMeta').textContent = `${clsName} · ID: ${s.id} · ${s.gender}`;
+        document.getElementById('hsSummaryGrade').textContent = s.grade;
+        document.getElementById('hsSummaryScore').textContent = avgScore + '%';
+        document.getElementById('hsSummaryAtt').textContent = att.pct + '%';
+        document.getElementById('hsSummaryRank').textContent = '#' + (s.pct > 90 ? 1 : s.pct > 80 ? 2 : s.pct > 70 ? 4 : 7);
+
+        // ── Toggle button in hero ──
+        const btnToggle = document.getElementById('btnToggle');
+        if (isActive) {
+            btnToggle.style.cssText = 'background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.35);border-radius:10px;backdrop-filter:blur(8px);';
+            btnToggle.innerHTML = '<i class="bi bi-dash-circle-fill me-1"></i>Set Inactive';
+        } else {
+            btnToggle.style.cssText = 'background:rgba(34,197,94,.2);color:#86efac;border:1px solid rgba(34,197,94,.35);border-radius:10px;backdrop-filter:blur(8px);';
+            btnToggle.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Set Active';
+        }
+
+        // ── Sidebar toggle button ──
+        const sideBtn = document.getElementById('sideToggleBtn');
+        if (isActive) {
+            sideBtn.style.cssText = 'border:1.5px solid #fca5a5;background:#fef2f2;color:#dc2626;';
+            sideBtn.innerHTML = '<i class="bi bi-dash-circle-fill me-1"></i> Set Inactive';
+        } else {
+            sideBtn.style.cssText = 'border:1.5px solid #86efac;background:#f0fdf4;color:#16a34a;';
+            sideBtn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Set Active';
+        }
+
+        // ── Sidebar mini cards ──
+        document.getElementById('siStudentId').textContent   = s.id;
+        document.getElementById('siDob').textContent         = s.dob || '—';
+        document.getElementById('siGender').textContent      = s.gender || '—';
+        document.getElementById('siBlood').textContent       = s.blood || '—';
+        document.getElementById('siNationality').textContent = s.nationality || '—';
+        document.getElementById('siClass').textContent       = clsName;
+        document.getElementById('siYear').textContent        = classInfo?.academicYear || '2025-2026';
+        document.getElementById('siRoll').textContent        = s.roll || '—';
+        document.getElementById('siSection').textContent     = s.section || '—';
+        document.getElementById('siParent').textContent      = s.parent || '—';
+        document.getElementById('siContact').textContent     = s.contact || '—';
+
+        // ── Overview tab ──
+        document.getElementById('ovDob').textContent         = s.dob || '—';
+        document.getElementById('ovGender').textContent      = s.gender || '—';
+        document.getElementById('ovBlood').textContent       = s.blood || '—';
+        document.getElementById('ovNationality').textContent = s.nationality || '—';
+        document.getElementById('ovTongue').textContent      = s.tongue || '—';
+        document.getElementById('ovAddress').textContent     = s.address || '—';
+        document.getElementById('ovClass').textContent       = clsName;
+        document.getElementById('ovRoll').textContent        = s.roll || '—';
+        document.getElementById('ovYear').textContent        = classInfo?.academicYear || '2025-2026';
+        document.getElementById('ovStatus').innerHTML        = `<span class="${isActive?'status-pill-active':'status-pill-inactive'}">${s.status}</span>`;
+        document.getElementById('ovGrade').textContent       = s.grade; document.getElementById('ovGrade').style.color = gc;
+        document.getElementById('ovScore').textContent       = avgScore + '%';
+        document.getElementById('ovParent').textContent      = s.parent || '—';
+        document.getElementById('ovContact').textContent     = s.contact || '—';
+
+        // Quick stats
+        document.getElementById('qsGrade').textContent = s.grade; document.getElementById('qsGrade').style.color = gc;
+        document.getElementById('qsAtt').textContent   = att.pct + '%'; document.getElementById('qsAtt').style.color = att.pct >= 85 ? '#16a34a' : att.pct >= 70 ? '#ea580c' : '#dc2626';
+        document.getElementById('qsScore').textContent = avgScore + '%'; document.getElementById('qsScore').style.color = avgColor;
+        document.getElementById('qsScoreLabel').textContent = avgScore + '% — ' + avgLetter;
+        document.getElementById('qsScoreLabel').style.color = avgColor;
+        document.getElementById('qsProgressBar').style.width = avgScore + '%';
+
+        // ── Grades tab ──
+        document.getElementById('termAvgDisplay').textContent   = avgLetter; document.getElementById('termAvgDisplay').style.color = avgColor;
+        document.getElementById('overallGradeDisplay').textContent = avgLetter; document.getElementById('overallGradeDisplay').style.color = avgColor;
+        document.getElementById('overallProgressBar').style.width   = avgScore + '%';
+        document.getElementById('overallProgressBar').style.background = `linear-gradient(90deg,${avgColor},${avgColor}99)`;
+
+        document.getElementById('gradesListContainer').innerHTML = subGrades.map(g => `
+            <div class="subj-item">
+                <div class="subj-icon" style="background:${g.bg};color:${g.color};"><i class="bi ${g.icon}"></i></div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:.85rem;color:var(--text-primary,#0f172a);">${g.name}</div>
+                    <div style="font-size:.7rem;color:var(--text-muted,#94a3b8);">${g.score} / 100</div>
+                </div>
+                <div style="width:120px;">
+                    <div class="subj-bar"><div class="subj-bar-fill" style="width:${g.score}%;background:${gradeColors[g.letter]||'#64748b'};"></div></div>
+                </div>
+                <div class="grade-badge-lg" style="color:${gradeColors[g.letter]||'#64748b'};">${g.letter}</div>
+            </div>
+        `).join('');
+
+        // ── Attendance tab ──
+        document.getElementById('attTotalPresent').textContent = att.present;
+        document.getElementById('attTotalLate').textContent    = att.late;
+        document.getElementById('attTotalAbsent').textContent  = att.absent;
+        document.getElementById('attPct').textContent = att.pct + '%';
+        document.getElementById('attPct').style.color = att.pct >= 85 ? '#2563eb' : att.pct >= 70 ? '#ea580c' : '#dc2626';
+        buildCalendar(s);
+
+        // ── Activity tab ──
+        buildTimeline(s);
+    }
+
+    // ─ Init ─
+    renderPage();
+    </script>
+</body>
+</html>

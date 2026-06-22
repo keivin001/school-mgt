@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bright Future School - Reports</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand text-white">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <h5 class="mb-0 fw-bold">Bright Future</h5>
+                <small class="opacity-50">School SMS</small>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="fw-medium">Logout</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold">Reports & Analytics</h4>
+                    <small class="text-muted">Generate and review institutional indicators</small>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                        <i class="bi bi-bell fs-5 cursor-pointer"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">5</span>
+                    </div>
+                    <div class="position-relative">
+                        <i class="bi bi-chat-dots fs-5 cursor-pointer"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">3</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Body -->
+        <div class="container-fluid p-4">
+            <!-- Stat Cards Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue"><i class="bi bi-file-earmark-bar-graph"></i></div>
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">15</h3>
+                            <p class="text-muted small mb-0">Total Formats</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green"><i class="bi bi-cloud-arrow-down-fill"></i></div>
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">24</h3>
+                            <p class="text-muted small mb-0">Downloads Today</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple"><i class="bi bi-cpu-fill"></i></div>
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">3</h3>
+                            <p class="text-muted small mb-0">Custom Queries Run</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-orange"><i class="bi bi-shield-fill-check"></i></div>
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">Healthy</h3>
+                            <p class="text-muted small mb-0">Database Link</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom report generation settings -->
+            <div class="card-custom">
+                <h5 class="fw-bold mb-3">Custom Exporter Utility</h5>
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold text-muted">Select Target Report</label>
+                        <select class="form-select">
+                            <option>Student Enrollment Audit</option>
+                            <option>Academic Pass/Fail Distribution</option>
+                            <option>Fee Collection Ledgers</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold text-muted">File Format</label>
+                        <select class="form-select">
+                            <option>PDF Document (.pdf)</option>
+                            <option>Excel Worksheet (.xlsx)</option>
+                            <option>CSV Format (.csv)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold text-muted">Reporting Period</label>
+                        <select class="form-select">
+                            <option>This Session (2025-2026)</option>
+                            <option>Last Quarter</option>
+                            <option>Custom Date Range</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary rounded-pill w-100 d-flex align-items-center justify-content-center gap-2" onclick="alert('Report generated and download started!')">
+                            <i class="bi bi-cloud-arrow-down"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Academic Performance Chart -->
+                <div class="col-lg-6">
+                    <div class="card-custom">
+                        <h5 class="fw-bold mb-3">Term Grades Average</h5>
+                        <div id="academicReportChart" style="min-height: 300px;"></div>
+                    </div>
+                </div>
+
+                <!-- Monthly Attendance Chart -->
+                <div class="col-lg-6">
+                    <div class="card-custom">
+                        <h5 class="fw-bold mb-3">Monthly Attendance Trend</h5>
+                        <div id="attendanceReportChart" style="min-height: 300px;"></div>
+                    </div>
+                </div>
+
+                <!-- Financial Area Chart -->
+                <div class="col-12">
+                    <div class="card-custom">
+                        <h5 class="fw-bold mb-3">Quarterly Fee Invoicing & Collection Analysis</h5>
+                        <div id="revenueReportChart" style="min-height: 320px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Academic Chart
+        var optionsAcademic = {
+            series: [{
+                name: 'Class Average',
+                data: [72, 78, 75, 84, 82, 89]
+            }],
+            chart: { height: 300, type: 'line', toolbar: { show: false } },
+            colors: ['#0d6efd'],
+            stroke: { curve: 'smooth', width: 4 },
+            xaxis: { categories: ['Term 1', 'Term 2', 'Mid Term', 'Term 3', 'Pre-Board', 'Final Exam'] },
+            yaxis: { max: 100, labels: { formatter: (val) => val + "%" } }
+        };
+        new ApexCharts(document.querySelector("#academicReportChart"), optionsAcademic).render();
+
+        // Attendance Chart
+        var optionsAttendance = {
+            series: [{
+                name: 'Present Rate',
+                data: [94, 91, 95, 93, 88, 92]
+            }],
+            chart: { height: 300, type: 'bar', toolbar: { show: false } },
+            colors: ['#198754'],
+            plotOptions: { bar: { borderRadius: 6, columnWidth: '45%' } },
+            xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
+            yaxis: { max: 100, labels: { formatter: (val) => val + "%" } }
+        };
+        new ApexCharts(document.querySelector("#attendanceReportChart"), optionsAttendance).render();
+
+        // Revenue Area Chart
+        var optionsRevenue = {
+            series: [
+                { name: 'Target Collection', data: [300000, 320000, 310000, 350000] },
+                { name: 'Actual Collection', data: [280000, 290000, 305000, 345000] }
+            ],
+            chart: { height: 320, type: 'area', toolbar: { show: false } },
+            colors: ['#0d6efd', '#198754'],
+            stroke: { curve: 'smooth', width: 3 },
+            fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0.05 } },
+            xaxis: { categories: ['Q1 (Jul-Sep)', 'Q2 (Oct-Dec)', 'Q3 (Jan-Mar)', 'Q4 (Apr-Jun)'] },
+            yaxis: { labels: { formatter: (val) => '₹' + val.toLocaleString('en-IN') } }
+        };
+        new ApexCharts(document.querySelector("#revenueReportChart"), optionsRevenue).render();
+    </script>
+</body>
+</html>

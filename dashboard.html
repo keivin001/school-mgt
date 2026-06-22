@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bright Future School - Admin Dashboard</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand text-white">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <div>
+                    <h5 class="mb-0 fw-bold" style="letter-spacing: 0.5px;">Bright Future</h5>
+                    <small class="opacity-50">School SMS</small>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="fw-medium">Logout</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold">Dashboard</h4>
+                    <small class="text-muted">Welcome back, Admin!</small>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">5</span>
+                    </div>
+                    <div class="position-relative cursor-pointer">
+                        <i class="bi bi-chat-dots fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">3</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3 cursor-pointer">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="fw-bold lh-1">Admin</div>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Body -->
+        <div class="container-fluid p-4">
+            <!-- Stat Cards Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">1,245</h3>
+                            <p class="text-muted small mb-2">Total Students</p>
+                            <a href="students.html" class="text-primary text-decoration-none small fw-medium">View all <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="stat-icon icon-blue"><i class="bi bi-people-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">85</h3>
+                            <p class="text-muted small mb-2">Total Teachers</p>
+                            <a href="teachers.html" class="text-success text-decoration-none small fw-medium">View all <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="stat-icon icon-green"><i class="bi bi-person-badge-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">36</h3>
+                            <p class="text-muted small mb-2">Total Classes</p>
+                            <a href="classes.html" class="text-purple text-decoration-none small fw-medium" style="color: #a855f7;">View all <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="stat-icon icon-purple"><i class="bi bi-door-open-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="next-card">
+                            <h3 class="fw-bold mb-1">₹ 2,45,600</h3>
+                            <p class="text-muted small mb-2">Total Fees Collection</p>
+                            <a href="fees.html" class="text-warning text-decoration-none small fw-medium" style="color: #f97316;">View all <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="stat-icon icon-orange"><i class="bi bi-wallet2"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Row: Chart & Notice -->
+            <div class="row g-4 mb-4">
+                <!-- Attendance Chart -->
+                <div class="col-lg-8">
+                    <div class="card-custom h-100">
+                        <div class="card-header-custom">
+                            <h5 class="fw-bold mb-0">Attendance Overview</h5>
+                            <select class="form-select form-select-sm" style="width: auto;">
+                                <option>This Month</option>
+                                <option>Last Month</option>
+                            </select>
+                        </div>
+                        <div id="attendanceChart" style="min-height: 330px;"></div>
+                    </div>
+                </div>
+                <!-- Notice Board -->
+                <div class="col-lg-4">
+                    <div class="card-custom h-100">
+                        <div class="card-header-custom">
+                            <h5 class="fw-bold mb-0">Notice Board</h5>
+                            <a href="notice-board.html" class="text-primary small text-decoration-none fw-medium">View all</a>
+                        </div>
+                        <div class="notice-list">
+                            <div class="notice-item cursor-pointer" onclick="viewNoticeDetail('ptm')">
+                                <div class="notice-icon bg-primary-subtle text-primary"><i class="bi bi-calendar-event"></i></div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="fw-bold small">Parent Teacher Meeting</div>
+                                        <small class="text-muted" style="font-size: 11px;">20 May 2024</small>
+                                    </div>
+                                    <p class="mb-0 text-muted small mt-1">PTM will be held on 25 May 2024 (Saturday).</p>
+                                </div>
+                            </div>
+                            <div class="notice-item cursor-pointer" onclick="viewNoticeDetail('summer')">
+                                <div class="notice-icon bg-success-subtle text-success"><i class="bi bi-megaphone"></i></div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="fw-bold small">Summer Break</div>
+                                        <small class="text-muted" style="font-size: 11px;">18 May 2024</small>
+                                    </div>
+                                    <p class="mb-0 text-muted small mt-1">School will remain closed from 1 June to 15 June.</p>
+                                </div>
+                            </div>
+                            <div class="notice-item cursor-pointer" onclick="viewNoticeDetail('annual')">
+                                <div class="notice-icon bg-warning-subtle text-warning"><i class="bi bi-stars"></i></div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="fw-bold small">Annual Day Celebration</div>
+                                        <small class="text-muted" style="font-size: 11px;">16 May 2024</small>
+                                    </div>
+                                    <p class="mb-0 text-muted small mt-1">Functions will be held on 30 May 2024.</p>
+                                </div>
+                            </div>
+                            <div class="notice-item cursor-pointer" onclick="viewNoticeDetail('transport')">
+                                <div class="notice-icon bg-danger-subtle text-danger"><i class="bi bi-bus-front"></i></div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="fw-bold small">Transport Update</div>
+                                        <small class="text-muted" style="font-size: 11px;">15 May 2024</small>
+                                    </div>
+                                    <p class="mb-0 text-muted small mt-1">New transport routes from 1 June 2024.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Row -->
+            <div class="row g-4">
+                <!-- Fees Collection Donut -->
+                <div class="col-lg-4">
+                    <div class="card-custom h-100">
+                        <div class="card-header-custom">
+                            <h5 class="fw-bold mb-0">Fees Collection</h5>
+                            <select class="form-select form-select-sm" style="width: auto;">
+                                <option>This Month</option>
+                            </select>
+                        </div>
+                        <div id="feesChart"></div>
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between mb-2 small">
+                                <span><i class="bi bi-circle-fill text-primary me-2"></i> Collected</span>
+                                <span class="fw-bold">₹ 2,45,600 (70%)</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 small">
+                                <span><i class="bi bi-circle-fill text-info me-2"></i> Pending</span>
+                                <span class="fw-bold">₹ 97,200 (28%)</span>
+                            </div>
+                            <div class="d-flex justify-content-between small">
+                                <span><i class="bi bi-circle-fill text-warning me-2"></i> Overdue</span>
+                                <span class="fw-bold">₹ 7,200 (2%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Students -->
+                <div class="col-lg-4">
+                    <div class="card-custom h-100">
+                        <div class="card-header-custom">
+                            <h5 class="fw-bold mb-0">Top Students</h5>
+                            <a href="students.html" class="text-primary small text-decoration-none fw-medium">View all</a>
+                        </div>
+                        <div class="student-rank">
+                            <span class="fw-bold text-muted me-3">1</span>
+                            <img src="https://i.pravatar.cc/150?u=1" class="avatar" alt="Student 1">
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">Ananya Sharma</div>
+                                <div class="text-muted small">Class 10 - A</div>
+                            </div>
+                            <span class="score-badge">95.6%</span>
+                        </div>
+                        <div class="student-rank">
+                            <span class="fw-bold text-muted me-3">2</span>
+                            <img src="https://i.pravatar.cc/150?u=2" class="avatar" alt="Student 2">
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">Rohan Verma</div>
+                                <div class="text-muted small">Class 10 - B</div>
+                            </div>
+                            <span class="score-badge">93.2%</span>
+                        </div>
+                        <div class="student-rank">
+                            <span class="fw-bold text-muted me-3">3</span>
+                            <img src="https://i.pravatar.cc/150?u=3" class="avatar" alt="Student 3">
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">Ishita Singh</div>
+                                <div class="text-muted small">Class 10 - A</div>
+                            </div>
+                            <span class="score-badge">92.8%</span>
+                        </div>
+                        <div class="student-rank">
+                            <span class="fw-bold text-muted me-3">4</span>
+                            <img src="https://i.pravatar.cc/150?u=4" class="avatar" alt="Student 4">
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">Arjun Mehta</div>
+                                <div class="text-muted small">Class 10 - C</div>
+                            </div>
+                            <span class="score-badge">91.4%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-lg-4">
+                    <div class="card-custom h-100">
+                        <div class="card-header-custom">
+                            <h5 class="fw-bold mb-0">Quick Links</h5>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <a href="students.html?action=add" class="quick-link-btn">
+                                    <i class="bi bi-person-plus"></i>
+                                    <div class="small fw-medium">Add Student</div>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="teachers.html?action=add" class="quick-link-btn">
+                                    <i class="bi bi-person-vcard"></i>
+                                    <div class="small fw-medium">Add Teacher</div>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="classes.html?action=add" class="quick-link-btn">
+                                    <i class="bi bi-building-add"></i>
+                                    <div class="small fw-medium">Add Class</div>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="attendance.html" class="quick-link-btn">
+                                    <i class="bi bi-calendar-check"></i>
+                                    <div class="small fw-medium">Attendance</div>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="fees.html" class="quick-link-btn">
+                                    <i class="bi bi-credit-card"></i>
+                                    <div class="small fw-medium">Collect Fees</div>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="reports.html" class="quick-link-btn">
+                                    <i class="bi bi-file-earmark-bar-graph"></i>
+                                    <div class="small fw-medium">Report</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Attendance Overview Chart (ApexCharts)
+        var optionsAttendance = {
+            series: [{
+                name: 'Attendance',
+                data: [60, 75, 68, 72, 85, 65, 58, 62, 78, 82, 80, 88, 75, 65, 70, 72, 68, 75, 80, 84, 87, 80, 75, 78, 82, 85, 88]
+            }],
+            chart: {
+                height: 310,
+                type: 'area',
+                toolbar: { show: false },
+                zoom: { enabled: false }
+            },
+            colors: ['#2563eb'],
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 3 },
+            fill: {
+                type: 'gradient',
+                gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1, stops: [0, 90, 100] }
+            },
+            xaxis: {
+                categories: ['1 May', '2 May', '3 May', '4 May', '5 May', '6 May', '7 May', '8 May', '9 May', '10 May', '11 May', '12 May', '13 May', '14 May', '15 May', '16 May', '17 May', '18 May', '19 May', '20 May', '21 May', '22 May', '23 May', '24 May', '25 May', '26 May', '27 May'],
+                labels: {
+                    show: true,
+                    rotate: -45,
+                    style: { fontSize: '10px' }
+                }
+            },
+            yaxis: {
+                min: 0,
+                max: 100,
+                labels: { formatter: (val) => val + "%" }
+            },
+            grid: { borderColor: '#f1f5f9' }
+        };
+
+        var chartAttendance = new ApexCharts(document.querySelector("#attendanceChart"), optionsAttendance);
+        chartAttendance.render();
+
+        // Fees Collection Donut Chart
+        var optionsFees = {
+            series: [70, 28, 2],
+            chart: {
+                type: 'donut',
+                height: 260
+            },
+            labels: ['Collected', 'Pending', 'Overdue'],
+            colors: ['#2563eb', '#0ea5e9', '#f59e0b'],
+            legend: { show: false },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '75%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'Total Collection',
+                                formatter: function () { return '₹ 2,45,600' }
+                            }
+                        }
+                    }
+                }
+            },
+            dataLabels: { enabled: false }
+        };
+
+        var chartFees = new ApexCharts(document.querySelector("#feesChart"), optionsFees);
+        chartFees.render();
+
+        // Notice Details Panel Trigger
+        function viewNoticeDetail(noticeId) {
+            let title = "";
+            let html = "";
+            if (noticeId === 'ptm') {
+                title = "Parent Teacher Meeting Details";
+                html = `
+                    <div class="mb-3"><span class="badge bg-primary-subtle text-primary">Meeting</span> <span class="text-muted ms-2">Posted on 20 May 2024</span></div>
+                    <h6 class="fw-bold">Agenda: Academic Performance & Attendance</h6>
+                    <p class="text-muted small">Dear parents, the school will host the standard term 1 review. We request you to meet class coordinators between 9:00 AM and 1:00 PM.</p>
+                    <div class="alert alert-info py-2 small">
+                        <i class="bi bi-info-circle me-1"></i> Attendance is mandatory for all students along with their guardians.
+                    </div>
+                `;
+            } else if (noticeId === 'summer') {
+                title = "Summer Break Notification";
+                html = `
+                    <div class="mb-3"><span class="badge bg-success-subtle text-success">Vacation</span> <span class="text-muted ms-2">Posted on 18 May 2024</span></div>
+                    <h6 class="fw-bold">Summer Vacation 2024</h6>
+                    <p class="text-muted small">School remains shut from 1 June to 15 June. Worksheets and summer holiday homework will be mailed by teachers individually via the portal.</p>
+                `;
+            } else if (noticeId === 'annual') {
+                title = "Annual Day Celebration";
+                html = `
+                    <div class="mb-3"><span class="badge bg-warning-subtle text-warning">Event</span> <span class="text-muted ms-2">Posted on 16 May 2024</span></div>
+                    <h6 class="fw-bold">Bright Future Annual Gala</h6>
+                    <p class="text-muted small">Annual day function will commence on 30 May at the main auditorium. Chief guest will be arriving at 10:00 AM sharp.</p>
+                `;
+            } else if (noticeId === 'transport') {
+                title = "Transport Update Info";
+                html = `
+                    <div class="mb-3"><span class="badge bg-danger-subtle text-danger">Alert</span> <span class="text-muted ms-2">Posted on 15 May 2024</span></div>
+                    <h6 class="fw-bold">Route Expansion for Bus Sector 4</h6>
+                    <p class="text-muted small">New route lines are active starting 1 June. Students registered under sector 4 should coordinate timing changes with driver Rohan Verma.</p>
+                `;
+            }
+            window.showDrilldown(title, html);
+        }
+    </script>
+</body>
+</html>

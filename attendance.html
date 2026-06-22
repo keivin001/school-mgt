@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance - Bright Future School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* ── Tab Nav ── */
+        .att-tab-nav { display:flex; gap:2px; background:var(--bg-secondary,#f8fafc); border:1.5px solid var(--border-color,#e2e8f0); border-radius:14px; padding:4px; }
+        .att-tab-btn { flex:1; border:none; background:transparent; border-radius:10px; padding:9px 12px; font-size:.8rem; font-weight:600; cursor:pointer; color:var(--text-muted,#64748b); transition:all .2s; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
+        .att-tab-btn.active { background:#fff; color:var(--primary,#2563eb); box-shadow:0 2px 10px rgba(0,0,0,.08); }
+        .att-tab-btn:hover:not(.active) { background:rgba(37,99,235,.06); color:var(--primary,#2563eb); }
+        .att-tab-panel { display:none; animation:fadeUp .22s ease; }
+        .att-tab-panel.active { display:block; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ── Hero banner ── */
+        .att-hero { background:linear-gradient(135deg,#1d4ed8 0%,#7c3aed 55%,#0d9488 100%); border-radius:20px; padding:1.8rem 2.2rem; color:#fff; position:relative; overflow:hidden; margin-bottom:1.8rem; }
+        .att-hero::before { content:''; position:absolute; top:-60px; right:-40px; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,.05); pointer-events:none; }
+        .att-hero::after  { content:''; position:absolute; bottom:-80px; right:80px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,.04); pointer-events:none; }
+        .hero-kpi { background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.2); border-radius:14px; padding:14px 18px; text-align:center; flex:1; min-width:80px; backdrop-filter:blur(10px); }
+        .hero-kpi .v { font-size:1.5rem; font-weight:800; line-height:1; }
+        .hero-kpi .l { font-size:.65rem; opacity:.75; text-transform:uppercase; letter-spacing:.07em; margin-top:3px; }
+
+        /* ── Chart cards ── */
+        .chart-card { background:var(--card-bg,#fff); border:1.5px solid var(--border-color,#e8edf5); border-radius:18px; padding:1.4rem; height:100%; }
+        .chart-card .chart-title { font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--text-muted,#94a3b8); margin-bottom:1rem; display:flex; align-items:center; gap:6px; }
+
+        /* ── Class attendance bar rows ── */
+        .cls-att-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border-color,#f1f5f9); }
+        .cls-att-row:last-child { border-bottom:none; }
+        .cls-att-name { min-width:110px; font-size:.8rem; font-weight:700; color:var(--text-primary,#0f172a); }
+        .cls-att-bar-wrap { flex:1; height:8px; border-radius:99px; background:var(--bg-secondary,#e2e8f0); overflow:hidden; }
+        .cls-att-bar-fill { height:100%; border-radius:99px; transition:width .6s ease; }
+        .cls-att-pct { min-width:42px; text-align:right; font-size:.8rem; font-weight:800; }
+
+        /* ── Marking table ── */
+        .att-status-btn { width:32px; height:32px; border-radius:8px; border:1.5px solid var(--border-color,#e2e8f0); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.85rem; transition:all .18s; }
+        .att-status-btn.sel-present { background:#dcfce7; border-color:#86efac; color:#16a34a; }
+        .att-status-btn.sel-absent  { background:#fee2e2; border-color:#fca5a5; color:#dc2626; }
+        .att-status-btn.sel-late    { background:#fef9c3; border-color:#fde047; color:#a16207; }
+        .att-status-btn:not([class*='sel-']):hover { border-color:var(--primary,#2563eb); color:var(--primary,#2563eb); }
+
+        /* ── Trend dots in table ── */
+        .trend-dots { display:flex; gap:3px; align-items:center; }
+        .trend-dot   { width:8px; height:8px; border-radius:50%; }
+
+        /* ── Filter pills ── */
+        .filter-pill { padding:.32rem 1rem; border-radius:999px; border:1.5px solid var(--border-color,#e2e8f0); background:transparent; font-size:.78rem; font-weight:600; cursor:pointer; transition:all .18s; color:var(--text-muted,#64748b); }
+        .filter-pill.active,.filter-pill:hover { background:var(--primary,#2563eb); color:#fff; border-color:var(--primary,#2563eb); }
+
+        /* ── Absentee alert card ── */
+        .absentee-card { border-radius:12px; border:1.5px solid var(--border-color,#e8edf5); background:var(--card-bg,#fff); padding:10px 14px; display:flex; align-items:center; gap:12px; margin-bottom:8px; transition:all .2s; }
+        .absentee-card:hover { border-color:rgba(239,68,68,.25); box-shadow:0 4px 16px rgba(239,68,68,.08); }
+        .ab-avatar { width:40px; height:40px; border-radius:50%; object-fit:cover; flex-shrink:0; border:2px solid #fee2e2; }
+
+        /* ── Toast ── */
+        @keyframes slideInToast { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+
+        /* ── Export dropdown ── */
+        .export-dropdown-wrap { position:relative; display:inline-block; }
+        .export-dropdown-menu {
+            position:absolute; top:calc(100% + 6px); left:50%;
+            transform:translateX(-50%);
+            background:#fff; border:1.5px solid #e2e8f0;
+            border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,.14);
+            padding:6px; min-width:190px; z-index:500;
+            display:none; flex-direction:column; gap:2px;
+            animation:fadeUp .18s ease;
+        }
+        .export-dropdown-menu.open { display:flex; }
+        .export-opt {
+            display:flex; align-items:center; gap:10px;
+            padding:9px 13px; border-radius:9px; border:none;
+            background:transparent; width:100%; cursor:pointer;
+            font-size:.82rem; font-weight:600;
+            color:var(--text-primary,#0f172a); transition:all .15s;
+            text-align:left;
+        }
+        .export-opt:hover { background:var(--primary-light,#eff6ff); color:var(--primary,#2563eb); }
+        .export-opt .exp-icon {
+            width:28px; height:28px; border-radius:7px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:.85rem; flex-shrink:0;
+        }
+
+        /* ── Teacher compliance cards ── */
+        .teacher-comp-card {
+            border-radius:14px; border:1.5px solid var(--border-color,#e8edf5);
+            background:var(--card-bg,#fff); padding:12px 16px;
+            display:flex; align-items:center; gap:14px;
+            margin-bottom:9px; transition:all .2s;
+            position:relative; overflow:hidden;
+        }
+        .teacher-comp-card::before {
+            content:''; position:absolute; left:0; top:0; bottom:0;
+            width:4px; border-radius:0 3px 3px 0;
+        }
+        .teacher-comp-card.status-missing::before   { background:#ef4444; }
+        .teacher-comp-card.status-late::before      { background:#f59e0b; }
+        .teacher-comp-card.status-submitted::before { background:#22c55e; }
+        .teacher-comp-card:hover { box-shadow:0 4px 18px rgba(0,0,0,.07); transform:translateX(3px); }
+        .tc-avatar {
+            width:44px; height:44px; border-radius:50%;
+            object-fit:cover; flex-shrink:0;
+        }
+        .tc-status-badge {
+            padding:3px 10px; border-radius:999px;
+            font-size:.7rem; font-weight:700; white-space:nowrap; flex-shrink:0;
+        }
+        .badge-missing   { background:#fef2f2; color:#dc2626; }
+        .badge-late      { background:#fff7ed; color:#ea580c; }
+        .badge-submitted { background:#f0fdf4; color:#16a34a; }
+        .deadline-clock  { font-size:.72rem; color:#94a3b8; white-space:nowrap; }
+        .deadline-clock.overdue { color:#ef4444; font-weight:700; }
+
+        /* ── Teacher compliance stats ── */
+        .tc-stat {
+            border-radius:14px; border:1.5px solid var(--border-color,#e8edf5);
+            background:var(--card-bg,#fff); padding:16px; text-align:center;
+        }
+        .tc-stat .v { font-size:1.7rem; font-weight:900; line-height:1; }
+        .tc-stat .l { font-size:.68rem; text-transform:uppercase; letter-spacing:.07em; color:var(--text-muted,#94a3b8); margin-top:4px; }
+
+        /* ── Dark theme extras ── */
+        body.dark-theme .export-dropdown-menu { background:#0f172a; border-color:#1e293b; box-shadow:0 12px 40px rgba(0,0,0,.4); }
+        body.dark-theme .export-opt { color:#f8fafc; }
+        body.dark-theme .export-opt:hover { background:rgba(37,99,235,.15); color:#60a5fa; }
+        body.dark-theme .teacher-comp-card { background:var(--card-bg); border-color:var(--border-color); }
+        body.dark-theme .tc-stat { background:var(--card-bg); border-color:var(--border-color); }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div>
+            <div class="sidebar-brand text-white">
+                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+                <h5 class="mb-0 fw-bold">Bright Future</h5>
+                <small class="opacity-50">School SMS</small>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+                <div class="nav-item"><a href="attendance.html" class="nav-link active"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+            </div>
+        </div>
+        <a href="#" class="sidebar-logout-card"><i class="bi bi-box-arrow-left"></i><span class="fw-medium">Logout</span></a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <header class="main-header">
+            <div class="d-flex align-items-center">
+                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+                <div>
+                    <h4 class="mb-0 fw-bold">Attendance</h4>
+                    <small class="text-muted">Track, mark and analyse student attendance</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="search-bar d-none d-md-flex">
+                    <i class="bi bi-search text-muted"></i>
+                    <input type="text" id="attSearch" placeholder="Search students...">
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                        <i class="bi bi-bell fs-5 cursor-pointer"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3">
+                        <div class="text-end d-none d-sm-block"><div class="fw-bold lh-1">Admin</div><small class="text-muted">Administrator</small></div>
+                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                        <i class="bi bi-chevron-down text-muted small"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid p-4">
+
+            <!-- ═══ HERO KPI BANNER ═══ -->
+            <div class="att-hero">
+                <div class="row align-items-center g-3 position-relative" style="z-index:1;">
+                    <div class="col-md-5">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.4rem;backdrop-filter:blur(10px);">
+                                <i class="bi bi-calendar-check-fill"></i>
+                            </div>
+                            <div>
+                                <h3 class="fw-bold mb-0">Attendance Overview</h3>
+                                <div class="opacity-75 small" id="heroDate">Loading…</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-3 flex-wrap">
+                            <button class="btn btn-sm fw-semibold" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:10px;"
+                                onclick="switchTab('mark', document.querySelector('.att-tab-btn[data-tab=mark]'))">
+                                <i class="bi bi-plus-circle me-1"></i>Mark Today
+                            </button>
+                            <!-- Export dropdown -->
+                            <div class="export-dropdown-wrap" id="heroExportWrap">
+                                <button class="btn btn-sm fw-semibold" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:10px;"
+                                    onclick="toggleExportMenu('heroExportMenu')">
+                                    <i class="bi bi-download me-1"></i>Export <i class="bi bi-chevron-down ms-1" style="font-size:.65rem;"></i>
+                                </button>
+                                <div class="export-dropdown-menu" id="heroExportMenu">
+                                    <button class="export-opt" onclick="exportData('csv');  closeExportMenus()"><div class="exp-icon" style="background:#e0f2fe;color:#0284c7;"><i class="bi bi-filetype-csv"></i></div>CSV (.csv)</button>
+                                    <button class="export-opt" onclick="exportData('excel');closeExportMenus()"><div class="exp-icon" style="background:#dcfce7;color:#16a34a;"><i class="bi bi-file-earmark-excel-fill"></i></div>Excel (.xlsx)</button>
+                                    <button class="export-opt" onclick="exportData('pdf');  closeExportMenus()"><div class="exp-icon" style="background:#fee2e2;color:#dc2626;"><i class="bi bi-file-earmark-pdf-fill"></i></div>PDF (.pdf)</button>
+                                    <button class="export-opt" onclick="exportData('word'); closeExportMenus()"><div class="exp-icon" style="background:#eff6ff;color:#2563eb;"><i class="bi bi-file-earmark-word-fill"></i></div>Word (.docx)</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm fw-semibold" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:10px;" onclick="window.print()">
+                                <i class="bi bi-printer me-1"></i>Print
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="d-flex gap-2 flex-wrap justify-content-md-end text-white">
+                            <div class="hero-kpi"><div class="v" id="kpiToday">92%</div><div class="l">Today</div></div>
+                            <div class="hero-kpi"><div class="v" id="kpiPresent">1,145</div><div class="l">Present</div></div>
+                            <div class="hero-kpi"><div class="v" id="kpiAbsent">100</div><div class="l">Absent</div></div>
+                            <div class="hero-kpi"><div class="v" id="kpiLate">25</div><div class="l">Late</div></div>
+                            <div class="hero-kpi"><div class="v" id="kpiMonthly">88%</div><div class="l">Monthly Avg</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ TAB NAV ═══ -->
+            <div class="att-tab-nav mb-4">
+                <button class="att-tab-btn active" data-tab="overview" onclick="switchTab('overview',this)">
+                    <i class="bi bi-graph-up-arrow"></i><span class="d-none d-sm-inline">Overview & Charts</span>
+                </button>
+                <button class="att-tab-btn" data-tab="mark" onclick="switchTab('mark',this)">
+                    <i class="bi bi-pencil-fill"></i><span class="d-none d-sm-inline">Mark Attendance</span>
+                </button>
+                <button class="att-tab-btn" data-tab="records" onclick="switchTab('records',this)">
+                    <i class="bi bi-table"></i><span class="d-none d-sm-inline">Records</span>
+                </button>
+                <button class="att-tab-btn" data-tab="teachers" onclick="switchTab('teachers',this)">
+                    <i class="bi bi-person-badge-fill"></i><span class="d-none d-sm-inline">Teacher Compliance</span>
+                </button>
+                <button class="att-tab-btn" data-tab="alerts" onclick="switchTab('alerts',this)">
+                    <i class="bi bi-exclamation-triangle-fill"></i><span class="d-none d-sm-inline">Alerts</span>
+                </button>
+            </div>
+            <!-- ═══ TAB: OVERVIEW & CHARTS ═══ -->
+            <div class="att-tab-panel active" id="tab-overview">
+                <div class="row g-4">
+
+                    <!-- Line chart: 30-day trend -->
+                    <div class="col-lg-8">
+                        <div class="chart-card">
+                            <div class="chart-title"><i class="bi bi-graph-up-arrow" style="color:var(--primary,#2563eb);"></i>30-Day Attendance Trend — School Overall</div>
+                            <canvas id="chartTrend" height="110"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Doughnut: today breakdown -->
+                    <div class="col-lg-4">
+                        <div class="chart-card">
+                            <div class="chart-title"><i class="bi bi-pie-chart-fill" style="color:#7c3aed;"></i>Today's Breakdown</div>
+                            <canvas id="chartDoughnut" height="190"></canvas>
+                            <div class="d-flex justify-content-center gap-3 mt-2 flex-wrap">
+                                <span style="font-size:.72rem;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;margin-right:4px;"></span>Present</span>
+                                <span style="font-size:.72rem;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ef4444;margin-right:4px;"></span>Absent</span>
+                                <span style="font-size:.72rem;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;margin-right:4px;"></span>Late</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bar chart: class-by-class comparison -->
+                    <div class="col-lg-7">
+                        <div class="chart-card">
+                            <div class="chart-title"><i class="bi bi-bar-chart-fill" style="color:#16a34a;"></i>Class-by-Class Attendance Average</div>
+                            <canvas id="chartClassBar" height="150"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Class attendance list with bar -->
+                    <div class="col-lg-5">
+                        <div class="chart-card">
+                            <div class="chart-title"><i class="bi bi-list-check" style="color:#ea580c;"></i>Class Attendance Rates</div>
+                            <div id="classAttList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly heatmap -->
+                    <div class="col-lg-6">
+                        <div class="chart-card">
+                            <div class="chart-title"><i class="bi bi-calendar3" style="color:#db2777;"></i>Weekly Heatmap — Last 4 Weeks</div>
+                            <canvas id="chartHeatmap" height="140"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Monthly comparison bar -->
+                    <div class="col-lg-6">
+                        <div class="chart-card">
+                            <div class="chart-title"><i class="bi bi-calendar-month" style="color:#0d9488;"></i>Monthly Average — 2025-2026</div>
+                            <canvas id="chartMonthly" height="140"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Polar area: class comparison -->
+                    <div class="col-lg-4">
+                        <div class="chart-card">
+                            <div class="chart-title"><i class="bi bi-bullseye" style="color:#7c3aed;"></i>Class Comparison — Polar View</div>
+                            <canvas id="chartPolar" height="220"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Student-level top/bottom summary -->
+                    <div class="col-lg-8">
+                        <div class="chart-card">
+                            <div class="chart-title"><i class="bi bi-person-lines-fill" style="color:#2563eb;"></i>Student Attendance Summary — All Classes</div>
+                            <!-- Mini stat pills -->
+                            <div class="d-flex gap-2 flex-wrap mb-3" id="overviewSummaryPills"></div>
+                            <div id="overviewStudentTable"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- ═══ TAB: MARK ATTENDANCE ═══ -->
+            <div class="att-tab-panel" id="tab-mark">
+                <div class="row g-4">
+                    <!-- Filter panel -->
+                    <div class="col-lg-3">
+                        <div class="card-custom">
+                            <h6 class="fw-bold mb-3" style="color:var(--primary,#2563eb);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;">
+                                <i class="bi bi-funnel-fill me-2"></i>Select Class & Date
+                            </h6>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Class</label>
+                                <select class="form-select" id="markClass">
+                                    <option value="">All Classes</option>
+                                    <option value="cls-10a">Class 10 - A</option>
+                                    <option value="cls-10b">Class 10 - B</option>
+                                    <option value="cls-9a">Class 9 - A</option>
+                                    <option value="cls-9b">Class 9 - B</option>
+                                    <option value="cls-5a">Class 5 - A</option>
+                                    <option value="cls-5b">Class 5 - B</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Date</label>
+                                <input type="date" class="form-control" id="markDate">
+                            </div>
+                            <button class="btn btn-primary-custom w-100" onclick="loadMarkTable()">
+                                <i class="bi bi-people me-2"></i>Load Students
+                            </button>
+                            <hr class="my-3">
+                            <div class="d-flex flex-column gap-2">
+                                <button class="btn btn-sm w-100 text-start d-flex align-items-center gap-2" style="background:#dcfce7;color:#16a34a;border:1.5px solid #86efac;border-radius:9px;" onclick="markAllStatus('present')">
+                                    <i class="bi bi-check-circle-fill"></i> Mark All Present
+                                </button>
+                                <button class="btn btn-sm w-100 text-start d-flex align-items-center gap-2" style="background:#fee2e2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:9px;" onclick="markAllStatus('absent')">
+                                    <i class="bi bi-x-circle-fill"></i> Mark All Absent
+                                </button>
+                                <button class="btn btn-sm w-100 text-start d-flex align-items-center gap-2" style="background:#fef9c3;color:#a16207;border:1.5px solid #fde047;border-radius:9px;" onclick="markAllStatus('late')">
+                                    <i class="bi bi-clock-fill"></i> Mark All Late
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Live summary while marking -->
+                        <div class="card-custom mt-3" id="markSummaryCard" style="display:none;">
+                            <h6 class="fw-bold mb-3" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted,#94a3b8);">Live Summary</h6>
+                            <div class="d-flex gap-2">
+                                <div class="flex-fill text-center p-2 rounded-3" style="background:#f0fdf4;">
+                                    <div class="fw-bold" style="color:#16a34a;" id="livePresentCount">0</div>
+                                    <div style="font-size:.65rem;color:#94a3b8;text-transform:uppercase;">Present</div>
+                                </div>
+                                <div class="flex-fill text-center p-2 rounded-3" style="background:#fef2f2;">
+                                    <div class="fw-bold" style="color:#dc2626;" id="liveAbsentCount">0</div>
+                                    <div style="font-size:.65rem;color:#94a3b8;text-transform:uppercase;">Absent</div>
+                                </div>
+                                <div class="flex-fill text-center p-2 rounded-3" style="background:#fef9c3;">
+                                    <div class="fw-bold" style="color:#a16207;" id="liveLateCount">0</div>
+                                    <div style="font-size:.65rem;color:#94a3b8;text-transform:uppercase;">Late</div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div style="height:6px;border-radius:99px;background:#e2e8f0;overflow:hidden;">
+                                    <div id="livePresentBar" style="height:100%;background:#22c55e;border-radius:99px;width:0%;transition:width .4s;"></div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-1">
+                                    <small class="text-muted" style="font-size:.7rem;">Attendance rate</small>
+                                    <small class="fw-bold" id="liveRatePct" style="font-size:.7rem;">0%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Marking table -->
+                    <div class="col-lg-9">
+                        <div class="card-custom" id="markTableCard" style="display:none;">
+                            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                                <div>
+                                    <h6 class="fw-bold mb-0" id="markTableTitle">Class Attendance</h6>
+                                    <small class="text-muted" id="markTableSub">—</small>
+                                </div>
+                                <button class="btn btn-success btn-sm px-4 fw-semibold" onclick="saveAttendance()">
+                                    <i class="bi bi-check-circle me-2"></i>Save Attendance
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-custom" id="markTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:46px;">#</th>
+                                            <th>Student</th>
+                                            <th class="text-center" style="width:110px;">Status</th>
+                                            <th class="text-center d-none d-md-table-cell">Last 5 Days</th>
+                                            <th class="text-center d-none d-md-table-cell" style="width:80px;">Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="markTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Placeholder -->
+                        <div class="card-custom text-center p-5" id="markPlaceholder">
+                            <i class="bi bi-calendar-plus fs-1 text-muted mb-3 d-block"></i>
+                            <h6 class="fw-bold text-muted">Select a class and date to begin marking</h6>
+                            <p class="text-muted small">Use the panel on the left to choose a class and date, then click Load Students.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ═══ TAB: RECORDS ═══ -->
+            <div class="att-tab-panel" id="tab-records">
+                <!-- Summary stats strip -->
+                <div class="row g-3 mb-3" id="recordsSummaryStrip">
+                    <div class="col-6 col-md-3">
+                        <div class="card-custom text-center py-3">
+                            <div class="fw-bold fs-5" id="recTotalCount" style="color:var(--primary,#2563eb);">—</div>
+                            <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Records</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card-custom text-center py-3">
+                            <div class="fw-bold fs-5" id="recPresentPct" style="color:#16a34a;">—</div>
+                            <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Present %</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card-custom text-center py-3">
+                            <div class="fw-bold fs-5" id="recAbsentPct" style="color:#dc2626;">—</div>
+                            <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Absent %</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card-custom text-center py-3">
+                            <div class="fw-bold fs-5" id="recLatePct" style="color:#a16207;">—</div>
+                            <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Late %</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-custom">
+                    <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-3">
+                        <h6 class="fw-bold mb-0" style="color:var(--primary,#2563eb);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;">
+                            <i class="bi bi-table me-2"></i>Attendance Records
+                        </h6>
+                        <div class="d-flex gap-2 flex-wrap align-items-center">
+                            <!-- Date range filter -->
+                            <input type="date" class="form-control form-control-sm" id="recordDateFrom" onchange="renderRecords()" style="width:auto;" title="From date">
+                            <span class="text-muted small">to</span>
+                            <input type="date" class="form-control form-control-sm" id="recordDateTo" onchange="renderRecords()" style="width:auto;" title="To date">
+                            <select class="form-select form-select-sm" id="recordClassFilter" style="width:auto;" onchange="renderRecords()">
+                                <option value="all">All Classes</option>
+                                <option value="cls-10a">Class 10 - A</option>
+                                <option value="cls-10b">Class 10 - B</option>
+                                <option value="cls-9a">Class 9 - A</option>
+                                <option value="cls-9b">Class 9 - B</option>
+                                <option value="cls-5a">Class 5 - A</option>
+                                <option value="cls-5b">Class 5 - B</option>
+                            </select>
+                            <div class="d-flex gap-1">
+                                <button class="filter-pill active" data-status="all"    onclick="setRecordFilter('all',this)">All</button>
+                                <button class="filter-pill" data-status="present" onclick="setRecordFilter('present',this)">Present</button>
+                                <button class="filter-pill" data-status="absent"  onclick="setRecordFilter('absent',this)">Absent</button>
+                                <button class="filter-pill" data-status="late"    onclick="setRecordFilter('late',this)">Late</button>
+                            </div>
+                            <div class="export-dropdown-wrap" id="recExportWrap">
+                                <button class="btn btn-sm" style="background:var(--primary-light,#eff6ff);color:var(--primary,#2563eb);border:none;border-radius:8px;font-weight:600;" onclick="toggleExportMenu('recExportMenu')">
+                                    <i class="bi bi-download me-1"></i>Export <i class="bi bi-chevron-down ms-1" style="font-size:.6rem;"></i>
+                                </button>
+                                <div class="export-dropdown-menu" id="recExportMenu">
+                                    <button class="export-opt" onclick="exportData('csv');  closeExportMenus()"><div class="exp-icon" style="background:#e0f2fe;color:#0284c7;"><i class="bi bi-filetype-csv"></i></div>CSV (.csv)</button>
+                                    <button class="export-opt" onclick="exportData('excel');closeExportMenus()"><div class="exp-icon" style="background:#dcfce7;color:#16a34a;"><i class="bi bi-file-earmark-excel-fill"></i></div>Excel (.xlsx)</button>
+                                    <button class="export-opt" onclick="exportData('pdf');  closeExportMenus()"><div class="exp-icon" style="background:#fee2e2;color:#dc2626;"><i class="bi bi-file-earmark-pdf-fill"></i></div>PDF (.pdf)</button>
+                                    <button class="export-opt" onclick="exportData('word'); closeExportMenus()"><div class="exp-icon" style="background:#eff6ff;color:#2563eb;"><i class="bi bi-file-earmark-word-fill"></i></div>Word (.docx)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom" id="recordsTable">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Class</th>
+                                    <th>Date</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center d-none d-md-table-cell">Monthly Rate</th>
+                                    <th class="text-center d-none d-md-table-cell">Streak</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                        <small class="text-muted" id="recordsPaginationInfo">—</small>
+                        <div class="d-flex gap-1" id="recordsPaginationBtns"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ TAB: TEACHER COMPLIANCE ═══ -->
+            <div class="att-tab-panel" id="tab-teachers">
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3"><div class="tc-stat"><div class="v" id="tcTotal" style="color:var(--primary,#2563eb);">6</div><div class="l">Total Teachers</div></div></div>
+                    <div class="col-6 col-md-3"><div class="tc-stat"><div class="v" id="tcSubmitted" style="color:#16a34a;">0</div><div class="l">Submitted Today</div></div></div>
+                    <div class="col-6 col-md-3"><div class="tc-stat"><div class="v" id="tcLate" style="color:#ea580c;">0</div><div class="l">Submitted Late</div></div></div>
+                    <div class="col-6 col-md-3"><div class="tc-stat"><div class="v" id="tcMissing" style="color:#dc2626;">0</div><div class="l">Not Submitted</div></div></div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Left: compliance list -->
+                    <div class="col-lg-8">
+                        <div class="card-custom">
+                            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                                <h6 class="fw-bold mb-0" style="color:var(--primary,#2563eb);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;">
+                                    <i class="bi bi-person-badge-fill me-2"></i>Teacher Daily Attendance Compliance
+                                </h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="text-muted" style="font-size:.78rem;" id="tcDateLabel">—</span>
+                                    <div class="d-flex gap-1">
+                                        <button class="filter-pill active" data-tcf="all"       onclick="filterTeachers('all',this)">All</button>
+                                        <button class="filter-pill"        data-tcf="missing"   onclick="filterTeachers('missing',this)">Missing</button>
+                                        <button class="filter-pill"        data-tcf="late"      onclick="filterTeachers('late',this)">Late</button>
+                                        <button class="filter-pill"        data-tcf="submitted" onclick="filterTeachers('submitted',this)">Done</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Deadline notice bar -->
+                            <div class="d-flex align-items-center gap-3 p-3 rounded-3 mb-3" style="background:#fff7ed;border:1.5px solid #fed7aa;">
+                                <i class="bi bi-clock-fill text-warning fs-5 flex-shrink-0"></i>
+                                <div>
+                                    <div class="fw-bold" style="font-size:.82rem;color:#ea580c;">Daily Attendance Deadline: <span id="tcDeadline">9:30 AM</span></div>
+                                    <div class="text-muted" style="font-size:.72rem;">Teachers must submit class attendance before this time each school day.</div>
+                                </div>
+                            </div>
+                            <div id="teacherComplianceList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: chart + summary -->
+                    <div class="col-lg-4">
+                        <div class="chart-card mb-3">
+                            <div class="chart-title"><i class="bi bi-pie-chart-fill" style="color:#7c3aed;"></i>Today's Compliance Rate</div>
+                            <canvas id="chartTeacherComp" height="180"></canvas>
+                            <div id="tcChartLegend" class="d-flex flex-column gap-1 mt-2"></div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-title"><i class="bi bi-bar-chart-fill" style="color:#16a34a;"></i>Weekly Submission Trend</div>
+                            <canvas id="chartTeacherWeek" height="130"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ TAB: ALERTS ═══ -->
+            <div class="att-tab-panel" id="tab-alerts">
+                <div class="row g-4">
+                    <!-- At-risk students -->
+                    <div class="col-lg-6">
+                        <div class="card-custom">
+                            <div class="chart-title" style="color:#dc2626;">
+                                <i class="bi bi-exclamation-triangle-fill" style="color:#dc2626;"></i>At-Risk Students (Below 75%)
+                            </div>
+                            <div id="alertAtRisk"></div>
+                        </div>
+                    </div>
+                    <!-- Consecutive absent -->
+                    <div class="col-lg-6">
+                        <div class="card-custom">
+                            <div class="chart-title" style="color:#ea580c;">
+                                <i class="bi bi-calendar-x-fill" style="color:#ea580c;"></i>Consecutive Absences (3+ days)
+                            </div>
+                            <div id="alertConsecutive"></div>
+                        </div>
+                    </div>
+                    <!-- Perfect attendance -->
+                    <div class="col-lg-12">
+                        <div class="card-custom">
+                            <div class="chart-title" style="color:#16a34a;">
+                                <i class="bi bi-award-fill" style="color:#16a34a;"></i>Perfect Attendance — This Month
+                            </div>
+                            <div class="row g-2" id="alertPerfect"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- container -->
+    </div><!-- #content -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    // ═══════════════════════════════════════════════════
+    //  DATA SEED
+    // ═══════════════════════════════════════════════════
+    const CLASSES = [
+        { id:'cls-10a', name:'Class 10 - A', students: [
+            { id:'S10001',name:'Aiden Clarke',  photo:'https://i.pravatar.cc/150?img=8',  roll:'01', rate:91 },
+            { id:'S10002',name:'Priya Sharma',  photo:'https://i.pravatar.cc/150?img=47', roll:'02', rate:97 },
+            { id:'S10003',name:'Luca Ferrari',  photo:'https://i.pravatar.cc/150?img=15', roll:'03', rate:83 },
+            { id:'S10004',name:'Sofia Garcia',  photo:'https://i.pravatar.cc/150?img=45', roll:'04', rate:90 },
+            { id:'S10005',name:'Yuki Tanaka',   photo:'https://i.pravatar.cc/150?img=49', roll:'05', rate:76 },
+            { id:'S10006',name:'Ethan Moore',   photo:'https://i.pravatar.cc/150?img=18', roll:'06', rate:62 },
+        ]},
+        { id:'cls-10b', name:'Class 10 - B', students: [
+            { id:'S10007',name:'Amara Osei',   photo:'https://i.pravatar.cc/150?img=44', roll:'01', rate:92 },
+            { id:'S10008',name:"Finn O'Brien", photo:'https://i.pravatar.cc/150?img=12', roll:'02', rate:82 },
+            { id:'S10009',name:'Mei Ling',     photo:'https://i.pravatar.cc/150?img=43', roll:'03', rate:96 },
+        ]},
+        { id:'cls-9a', name:'Class 9 - A', students: [
+            { id:'S09001',name:'Carlos Rivera', photo:'https://i.pravatar.cc/150?img=7',  roll:'01', rate:74 },
+            { id:'S09002',name:'Anya Patel',    photo:'https://i.pravatar.cc/150?img=48', roll:'02', rate:89 },
+            { id:'S09003',name:'Jack Thompson', photo:'https://i.pravatar.cc/150?img=11', roll:'03', rate:95 },
+            { id:'S09004',name:'Nina Volkov',   photo:'https://i.pravatar.cc/150?img=46', roll:'04', rate:85 },
+        ]},
+        { id:'cls-9b', name:'Class 9 - B', students: [
+            { id:'S09005',name:'Omar Hassan', photo:'https://i.pravatar.cc/150?img=6',  roll:'01', rate:91 },
+            { id:'S09006',name:'Elena Cruz',  photo:'https://i.pravatar.cc/150?img=41', roll:'02', rate:75 },
+            { id:'S09007',name:'Ravi Kumar',  photo:'https://i.pravatar.cc/150?img=14', roll:'03', rate:98 },
+        ]},
+        { id:'cls-5a', name:'Class 5 - A', students: [
+            { id:'S05001',name:'Lily Johnson', photo:'https://i.pravatar.cc/150?img=50', roll:'01', rate:93 },
+            { id:'S05002',name:'Noah Williams',photo:'https://i.pravatar.cc/150?img=3',  roll:'02', rate:81 },
+            { id:'S05003',name:'Zara Ahmed',   photo:'https://i.pravatar.cc/150?img=42', roll:'03', rate:96 },
+        ]},
+        { id:'cls-5b', name:'Class 5 - B', students: [
+            { id:'S05004',name:'Leo Nguyen', photo:'https://i.pravatar.cc/150?img=4',  roll:'01', rate:78 },
+            { id:'S05005',name:'Grace Kim',  photo:'https://i.pravatar.cc/150?img=51', roll:'02', rate:88 },
+            { id:'S05006',name:'Adam Okafor',photo:'https://i.pravatar.cc/150?img=5',  roll:'03', rate:97 },
+        ]},
+    ];
+
+    // Class average attendance (pre-computed)
+    const CLASS_AVGS = {
+        'cls-10a':84,'cls-10b':90,'cls-9a':86,'cls-9b':88,'cls-5a':90,'cls-5b':88
+    };
+
+    // 30-day trend data (school overall %)
+    const TREND_DATA = [88,85,90,92,87,91,89,93,90,88,86,92,94,90,88,91,89,93,92,87,90,88,86,91,93,90,89,92,88,92];
+    // Monthly averages Apr-2025 to Jun-2026
+    const MONTHLY_LABELS = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
+    const MONTHLY_DATA   = [87,89,88,0,0,91,90,88,87,92,89,91,90,88,92];
+
+    // Status colour helper
+    const SC = { present:'#22c55e', absent:'#ef4444', late:'#f59e0b' };
+    const SB = { present:'#f0fdf4', absent:'#fef2f2', late:'#fef9c3' };
+    const ST = { present:'Present', absent:'Absent', late:'Late' };
+
+    // ── state ──
+    let recordFilter = 'all';
+    let markData     = {};   // { studentId: status }
+    let markClassId  = '';
+    let savedRecords = JSON.parse(localStorage.getItem('att-records') || '[]');
+
+    // ═══════════════════════════════════════════════════
+    //  TAB SWITCH
+    // ═══════════════════════════════════════════════════
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.att-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.att-tab-panel').forEach(p => p.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  CHARTS
+    // ═══════════════════════════════════════════════════
+    const isDark = () => document.body.classList.contains('dark-theme');
+    const gridColor = () => isDark() ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+    const textColor = () => isDark() ? '#94a3b8' : '#64748b';
+
+    // 1. Trend line chart
+    function buildTrendChart() {
+        const labels = Array.from({length:30},(_,i)=>{
+            const d = new Date(2026,5,21-29+i);
+            return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+        });
+        const ctx = document.getElementById('chartTrend').getContext('2d');
+        new Chart(ctx, {
+            type:'line',
+            data:{
+                labels,
+                datasets:[{
+                    label:'Attendance %',
+                    data: TREND_DATA,
+                    borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,.1)',
+                    fill:true, tension:.4, pointRadius:3, pointBackgroundColor:'#2563eb',
+                    borderWidth:2.5
+                }]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:true,
+                plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.parsed.y + '%' } } },
+                scales:{
+                    x:{ grid:{color:gridColor()}, ticks:{color:textColor(),font:{size:10},maxTicksLimit:8} },
+                    y:{ min:75,max:100, grid:{color:gridColor()}, ticks:{color:textColor(),font:{size:10},callback:v=>v+'%'} }
+                }
+            }
+        });
+    }
+
+    // 2. Doughnut
+    function buildDoughnut() {
+        const ctx = document.getElementById('chartDoughnut').getContext('2d');
+        new Chart(ctx, {
+            type:'doughnut',
+            data:{
+                labels:['Present','Absent','Late'],
+                datasets:[{ data:[1145,100,25], backgroundColor:['#22c55e','#ef4444','#f59e0b'], borderWidth:0, hoverOffset:6 }]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:true, cutout:'70%',
+                plugins:{
+                    legend:{display:false},
+                    tooltip:{ callbacks:{ label: ctx => ctx.label+': '+ctx.parsed } }
+                }
+            }
+        });
+    }
+
+    // 3. Class bar chart
+    function buildClassBar() {
+        const labels = CLASSES.map(c => c.name.replace('Class ','Cls '));
+        const data   = CLASSES.map(c => CLASS_AVGS[c.id]);
+        const colors = ['#2563eb','#7c3aed','#16a34a','#ea580c','#db2777','#0d9488'];
+        const ctx    = document.getElementById('chartClassBar').getContext('2d');
+        new Chart(ctx, {
+            type:'bar',
+            data:{
+                labels,
+                datasets:[{
+                    label:'Avg Attendance %',
+                    data,
+                    backgroundColor: colors.map(c => c+'cc'),
+                    borderColor: colors,
+                    borderWidth:1.5, borderRadius:8
+                }]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:true,
+                plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.parsed.y + '%' } } },
+                scales:{
+                    x:{ grid:{display:false}, ticks:{color:textColor(),font:{size:10}} },
+                    y:{ min:70,max:100, grid:{color:gridColor()}, ticks:{color:textColor(),font:{size:10},callback:v=>v+'%'} }
+                }
+            }
+        });
+    }
+
+    // 4. Heatmap (using a grouped bar as heat proxy)
+    function buildHeatmap() {
+        const weeks  = ['Week 1','Week 2','Week 3','Week 4'];
+        const days   = ['Mon','Tue','Wed','Thu','Fri'];
+        const colors = ['#2563eb','#7c3aed','#16a34a','#ea580c','#0d9488'];
+        const rng    = (base,i,j) => Math.min(100,Math.max(70, base - i*2 + j*3 + (i*j)%7));
+        const datasets = days.map((day,i) => ({
+            label: day,
+            data: weeks.map((_,j) => rng(90,i,j)),
+            backgroundColor: colors[i]+'bb', borderColor: colors[i], borderWidth:1, borderRadius:6
+        }));
+        const ctx = document.getElementById('chartHeatmap').getContext('2d');
+        new Chart(ctx, {
+            type:'bar',
+            data:{ labels:weeks, datasets },
+            options:{
+                responsive:true, maintainAspectRatio:true,
+                plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, font:{size:10}, color:textColor() } },
+                          tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+': '+ctx.parsed.y+'%' } } },
+                scales:{
+                    x:{ stacked:false, grid:{display:false}, ticks:{color:textColor(),font:{size:10}} },
+                    y:{ min:70,max:100, grid:{color:gridColor()}, ticks:{color:textColor(),font:{size:10},callback:v=>v+'%'} }
+                }
+            }
+        });
+    }
+
+    // 5. Monthly
+    function buildMonthly() {
+        const ctx = document.getElementById('chartMonthly').getContext('2d');
+        new Chart(ctx, {
+            type:'bar',
+            data:{
+                labels: MONTHLY_LABELS,
+                datasets:[{
+                    label:'Monthly Avg %',
+                    data: MONTHLY_DATA.map(v => v||null),
+                    backgroundColor: MONTHLY_DATA.map(v => v ? '#0d9488cc':'transparent'),
+                    borderColor: '#0d9488', borderWidth:1.5, borderRadius:7
+                }]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:true,
+                plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.parsed.y+'%' } } },
+                scales:{
+                    x:{ grid:{display:false}, ticks:{color:textColor(),font:{size:10}} },
+                    y:{ min:75,max:100, grid:{color:gridColor()}, ticks:{color:textColor(),font:{size:10},callback:v=>v+'%'} }
+                }
+            }
+        });
+    }
+
+    // ── class att list ──
+    function buildClassAttList() {
+        const colors = ['#2563eb','#7c3aed','#16a34a','#ea580c','#db2777','#0d9488'];
+        const el = document.getElementById('classAttList');
+        el.innerHTML = CLASSES.map((c,i) => {
+            const avg = CLASS_AVGS[c.id];
+            const col = avg >= 90 ? '#16a34a' : avg >= 80 ? '#2563eb' : avg >= 70 ? '#ea580c' : '#dc2626';
+            return `<div class="cls-att-row">
+                <div class="cls-att-name">${c.name}</div>
+                <div class="cls-att-bar-wrap">
+                    <div class="cls-att-bar-fill" style="width:${avg}%;background:${colors[i]};"></div>
+                </div>
+                <div class="cls-att-pct" style="color:${col};">${avg}%</div>
+            </div>`;
+        }).join('');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  MARK ATTENDANCE
+    // ═══════════════════════════════════════════════════
+    function loadMarkTable() {
+        markClassId = document.getElementById('markClass').value;
+        const dateVal = document.getElementById('markDate').value;
+        if (!markClassId) { showToast('Please select a class.','warning'); return; }
+        if (!dateVal)     { showToast('Please select a date.','warning'); return; }
+
+        const cls = CLASSES.find(c => c.id === markClassId);
+        if (!cls) return;
+
+        // Pre-load any saved data for this date/class
+        const key = markClassId + '_' + dateVal;
+        const saved = JSON.parse(localStorage.getItem('att-day-' + key) || '{}');
+
+        markData = {};
+        cls.students.forEach(s => { markData[s.id] = saved[s.id] || 'present'; });
+
+        const dateLabel = new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+        document.getElementById('markTableTitle').textContent = cls.name + ' — Attendance';
+        document.getElementById('markTableSub').textContent   = dateLabel;
+        document.getElementById('markTableCard').style.display = '';
+        document.getElementById('markPlaceholder').style.display = 'none';
+        document.getElementById('markSummaryCard').style.display = '';
+
+        renderMarkTable(cls);
+        updateLiveSummary();
+    }
+
+    function renderMarkTable(cls) {
+        const body = document.getElementById('markTableBody');
+        body.innerHTML = cls.students.map(s => {
+            const status  = markData[s.id] || 'present';
+            const trendDots = Array.from({length:5},(_,i) => {
+                const rng = (s.id.charCodeAt(s.id.length-1) * (i+1) * 13) % 10;
+                const st  = rng < 1 ? 'absent' : rng < 2 ? 'late' : 'present';
+                return `<div class="trend-dot" style="background:${SC[st]};" title="${ST[st]}"></div>`;
+            }).join('');
+            return `<tr id="row-${s.id}">
+                <td class="align-middle fw-bold text-muted small">${s.roll}</td>
+                <td class="align-middle">
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="${s.photo}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--border-color,#e2e8f0);" alt="" onerror="this.src='https://i.pravatar.cc/60?u=${s.id}'">
+                        <div>
+                            <div class="fw-bold" style="font-size:.83rem;">${s.name}</div>
+                            <div class="text-muted" style="font-size:.7rem;">ID: ${s.id}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="align-middle text-center">
+                    <div class="d-flex justify-content-center gap-1">
+                        <button class="att-status-btn ${status==='present'?'sel-present':''}" title="Present"
+                            onclick="setStatus('${s.id}','present')"><i class="bi bi-check-lg"></i></button>
+                        <button class="att-status-btn ${status==='absent'?'sel-absent':''}" title="Absent"
+                            onclick="setStatus('${s.id}','absent')"><i class="bi bi-x-lg"></i></button>
+                        <button class="att-status-btn ${status==='late'?'sel-late':''}" title="Late"
+                            onclick="setStatus('${s.id}','late')"><i class="bi bi-clock"></i></button>
+                    </div>
+                </td>
+                <td class="align-middle text-center d-none d-md-table-cell">
+                    <div class="trend-dots justify-content-center">${trendDots}</div>
+                </td>
+                <td class="align-middle text-center d-none d-md-table-cell">
+                    <span class="fw-bold" style="font-size:.82rem;color:${s.rate>=85?'#16a34a':s.rate>=70?'#ea580c':'#dc2626'};">${s.rate}%</span>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function setStatus(studentId, status) {
+        markData[studentId] = status;
+        // Update buttons for this row
+        const row = document.getElementById('row-' + studentId);
+        if (!row) return;
+        const btns = row.querySelectorAll('.att-status-btn');
+        btns[0].className = 'att-status-btn' + (status==='present'?' sel-present':'');
+        btns[1].className = 'att-status-btn' + (status==='absent'?' sel-absent':'');
+        btns[2].className = 'att-status-btn' + (status==='late'?' sel-late':'');
+        updateLiveSummary();
+    }
+
+    function markAllStatus(status) {
+        Object.keys(markData).forEach(id => { markData[id] = status; });
+        const cls = CLASSES.find(c => c.id === markClassId);
+        if (cls) renderMarkTable(cls);
+        updateLiveSummary();
+    }
+
+    function updateLiveSummary() {
+        const vals   = Object.values(markData);
+        const total  = vals.length;
+        const p      = vals.filter(v=>v==='present').length;
+        const a      = vals.filter(v=>v==='absent').length;
+        const l      = vals.filter(v=>v==='late').length;
+        const pct    = total ? Math.round((p/total)*100) : 0;
+        document.getElementById('livePresentCount').textContent = p;
+        document.getElementById('liveAbsentCount').textContent  = a;
+        document.getElementById('liveLateCount').textContent    = l;
+        document.getElementById('livePresentBar').style.width   = pct+'%';
+        document.getElementById('liveRatePct').textContent      = pct+'%';
+    }
+
+    function saveAttendance() {
+        const dateVal = document.getElementById('markDate').value;
+        const key     = markClassId + '_' + dateVal;
+        localStorage.setItem('att-day-' + key, JSON.stringify(markData));
+
+        // Also push to global records list
+        const dateLabel = new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+        const cls       = CLASSES.find(c => c.id === markClassId);
+        Object.entries(markData).forEach(([sid,status]) => {
+            const stu = cls?.students.find(s => s.id === sid);
+            // Remove old entry for same student+date
+            savedRecords = savedRecords.filter(r => !(r.sid === sid && r.date === dateVal));
+            savedRecords.unshift({ sid, name:stu?.name||sid, photo:stu?.photo||'', classId:markClassId, className:cls?.name||markClassId, date:dateVal, dateLabel, status, rate:stu?.rate||80 });
+        });
+        if (savedRecords.length > 500) savedRecords = savedRecords.slice(0,500);
+        localStorage.setItem('att-records', JSON.stringify(savedRecords));
+
+        showToast(`Attendance saved for <strong>${cls?.name}</strong> — ${dateLabel}!`,'success');
+        renderRecords();
+    }
+    </script>
+    <script>
+    // ═══════════════════════════════════════════════════
+    //  RECORDS  (pagination + date range + summary strip)
+    // ═══════════════════════════════════════════════════
+    let recordsPage = 1;
+    const REC_PER_PAGE = 15;
+
+    function setRecordFilter(status, btn) {
+        recordFilter = status;
+        recordsPage  = 1;
+        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderRecords();
+    }
+
+    function getFilteredRecords() {
+        const clsFilter = document.getElementById('recordClassFilter').value;
+        const dateFrom  = document.getElementById('recordDateFrom')?.value || '';
+        const dateTo    = document.getElementById('recordDateTo')?.value   || '';
+        let list = savedRecords.length ? savedRecords : CLASSES.flatMap(cls => cls.students.slice(0,2).map(s => {
+            const rng=(s.id.charCodeAt(s.id.length-1)*7)%10;
+            const st=rng<1?'absent':rng<2?'late':'present';
+            return {sid:s.id,name:s.name,photo:s.photo,classId:cls.id,className:cls.name,date:'2026-06-21',dateLabel:'21 Jun 2026',status:st,rate:s.rate};
+        }));
+        return list.filter(r=>{
+            const mC=clsFilter==='all'||r.classId===clsFilter;
+            const mS=recordFilter==='all'||r.status===recordFilter;
+            const mF=!dateFrom||r.date>=dateFrom;
+            const mT=!dateTo||r.date<=dateTo;
+            return mC&&mS&&mF&&mT;
+        });
+    }
+
+    function renderRecords() {
+        const list  = getFilteredRecords();
+        const total = list.length;
+        const pages = Math.max(1,Math.ceil(total/REC_PER_PAGE));
+        if (recordsPage>pages) recordsPage=pages;
+        const slice = list.slice((recordsPage-1)*REC_PER_PAGE, recordsPage*REC_PER_PAGE);
+
+        // Summary strip
+        const p=list.filter(r=>r.status==='present').length;
+        const a=list.filter(r=>r.status==='absent').length;
+        const l=list.filter(r=>r.status==='late').length;
+        const safe = n=>total?Math.round(n/total*100):0;
+        const ids=['recTotalCount','recPresentPct','recAbsentPct','recLatePct'];
+        const vals=[total, safe(p)+'%', safe(a)+'%', safe(l)+'%'];
+        ids.forEach((id,i)=>{ const el=document.getElementById(id); if(el) el.textContent=vals[i]; });
+
+        const ic={present:'bi-check-circle-fill',absent:'bi-x-circle-fill',late:'bi-clock-fill'};
+        const body=document.getElementById('recordsTableBody');
+        if(!slice.length){
+            body.innerHTML=`<tr><td colspan="6" class="text-center text-muted py-5"><i class="bi bi-inbox fs-2 d-block mb-2 opacity-50"></i>No records match your filters.</td></tr>`;
+        } else {
+            body.innerHTML=slice.map(r=>{
+                const streak=Math.floor((r.rate-60)/5);
+                return `<tr>
+                    <td class="align-middle"><div class="d-flex align-items-center gap-2">
+                        <img src="${r.photo}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" alt="" onerror="this.src='https://i.pravatar.cc/60?u=${r.sid}'">
+                        <div><div class="fw-bold" style="font-size:.82rem;">${r.name}</div><div class="text-muted" style="font-size:.7rem;">${r.sid}</div></div>
+                    </div></td>
+                    <td class="align-middle"><span class="badge rounded-pill px-2" style="background:var(--primary-light,#eff6ff);color:var(--primary,#2563eb);font-size:.7rem;">${r.className}</span></td>
+                    <td class="align-middle" style="font-size:.8rem;">${r.dateLabel}</td>
+                    <td class="align-middle text-center"><span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:.75rem;font-weight:700;background:${SB[r.status]};color:${SC[r.status]};"><i class="bi ${ic[r.status]}" style="font-size:.65rem;"></i>${ST[r.status]}</span></td>
+                    <td class="align-middle text-center d-none d-md-table-cell"><div style="display:flex;align-items:center;gap:8px;">
+                        <div style="flex:1;height:5px;border-radius:99px;background:#e2e8f0;overflow:hidden;"><div style="height:100%;width:${r.rate}%;background:${r.rate>=85?'#16a34a':r.rate>=70?'#ea580c':'#dc2626'};border-radius:99px;"></div></div>
+                        <span class="fw-bold" style="font-size:.78rem;color:${r.rate>=85?'#16a34a':r.rate>=70?'#ea580c':'#dc2626'};">${r.rate}%</span>
+                    </div></td>
+                    <td class="align-middle text-center d-none d-md-table-cell"><span style="font-size:.78rem;font-weight:700;color:${streak>5?'#16a34a':streak>3?'#2563eb':'#64748b'};">${streak>0?'🔥 '+streak+' days':'—'}</span></td>
+                </tr>`;
+            }).join('');
+        }
+
+        // Pagination
+        const info=document.getElementById('recordsPaginationInfo');
+        const btns=document.getElementById('recordsPaginationBtns');
+        if(info) info.textContent=`Showing ${Math.min((recordsPage-1)*REC_PER_PAGE+1,total)}–${Math.min(recordsPage*REC_PER_PAGE,total)} of ${total}`;
+        if(btns){
+            btns.innerHTML='';
+            const mb=(label,pg,dis,act)=>{
+                const b=document.createElement('button');
+                b.className='btn btn-sm'+(act?' btn-primary-custom':' btn-light border')+(dis?' disabled':'');
+                b.style.cssText='min-width:34px;font-size:.78rem;border-radius:8px;';
+                b.innerHTML=label;
+                if(!dis&&!act) b.onclick=()=>{recordsPage=pg;renderRecords();};
+                return b;
+            };
+            btns.appendChild(mb('<i class="bi bi-chevron-left"></i>',recordsPage-1,recordsPage===1,false));
+            for(let i=1;i<=pages;i++){
+                if(pages<=7||i===1||i===pages||Math.abs(i-recordsPage)<=1){
+                    btns.appendChild(mb(i,i,false,i===recordsPage));
+                } else if(Math.abs(i-recordsPage)===2){
+                    const sp=document.createElement('span');sp.textContent='…';sp.style.cssText='padding:0 4px;line-height:32px;font-size:.78rem;color:#94a3b8;';btns.appendChild(sp);
+                }
+            }
+            btns.appendChild(mb('<i class="bi bi-chevron-right"></i>',recordsPage+1,recordsPage===pages,false));
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  ALERTS TAB
+    // ═══════════════════════════════════════════════════
+    function buildAlerts() {
+        const all=CLASSES.flatMap(c=>c.students.map(s=>({...s,className:c.name})));
+        const atRisk=all.filter(s=>s.rate<75);
+        const atRiskEl=document.getElementById('alertAtRisk');
+        atRiskEl.innerHTML=atRisk.length===0
+            ?`<div class="text-center py-4 text-muted"><i class="bi bi-check-circle-fill text-success fs-4 d-block mb-2"></i>No at-risk students — great job!</div>`
+            :atRisk.map(s=>`<div class="absentee-card">
+                <img src="${s.photo}" class="ab-avatar" alt="" onerror="this.src='https://i.pravatar.cc/60?u=${s.id}'">
+                <div style="flex:1;min-width:0;"><div class="fw-bold" style="font-size:.83rem;">${s.name}</div><div class="text-muted" style="font-size:.7rem;">${s.className} · ${s.id}</div></div>
+                <div class="text-end"><div class="fw-bold" style="font-size:1.1rem;color:#dc2626;">${s.rate}%</div><div style="font-size:.62rem;color:#94a3b8;">Att. Rate</div></div>
+                <div style="width:56px;"><div style="height:5px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:4px;"><div style="height:100%;width:${s.rate}%;background:#dc2626;border-radius:99px;"></div></div></div>
+            </div>`).join('');
+
+        const cons=all.filter((_,i)=>i%4===0).map(s=>({...s,days:3+(s.id.charCodeAt(s.id.length-1)%3)}));
+        document.getElementById('alertConsecutive').innerHTML=cons.map(s=>`<div class="absentee-card">
+            <img src="${s.photo}" class="ab-avatar" alt="" style="border-color:#fed7aa;" onerror="this.src='https://i.pravatar.cc/60?u=${s.id}'">
+            <div style="flex:1;min-width:0;"><div class="fw-bold" style="font-size:.83rem;">${s.name}</div><div class="text-muted" style="font-size:.7rem;">${s.className}</div></div>
+            <span style="background:#fff7ed;color:#ea580c;border-radius:999px;padding:3px 10px;font-size:.75rem;font-weight:700;white-space:nowrap;"><i class="bi bi-calendar-x me-1"></i>${s.days} days</span>
+        </div>`).join('');
+
+        const perfect=all.filter(s=>s.rate>=96);
+        document.getElementById('alertPerfect').innerHTML=perfect.map(s=>`<div class="col-md-3 col-sm-4 col-6">
+            <div class="text-center p-3 rounded-3" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;">
+                <img src="${s.photo}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2.5px solid #22c55e;margin-bottom:8px;" alt="" onerror="this.src='https://i.pravatar.cc/60?u=${s.id}'">
+                <div class="fw-bold" style="font-size:.8rem;color:#0f172a;">${s.name}</div>
+                <div style="font-size:.72rem;color:#16a34a;font-weight:800;">${s.rate}% 🏆</div>
+                <div style="font-size:.65rem;color:#94a3b8;">${s.className}</div>
+            </div>
+        </div>`).join('');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  POLAR CHART  (class comparison)
+    // ═══════════════════════════════════════════════════
+    function buildPolarChart() {
+        const ctx=document.getElementById('chartPolar'); if(!ctx) return;
+        const labels=CLASSES.map(c=>c.name.replace('Class ','Cls '));
+        const data=CLASSES.map(c=>CLASS_AVGS[c.id]);
+        const colors=['#2563ebbb','#7c3aedbb','#16a34abb','#ea580cbb','#db2777bb','#0d9488bb'];
+        new Chart(ctx,{
+            type:'polarArea',
+            data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0}]},
+            options:{responsive:true,maintainAspectRatio:true,
+                plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10},color:textColor()}},
+                    tooltip:{callbacks:{label:c=>c.label+': '+c.parsed.r+'%'}}},
+                scales:{r:{min:60,grid:{color:gridColor()},ticks:{color:textColor(),font:{size:9},backdropColor:'transparent',callback:v=>v+'%'}}}
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  STUDENT OVERVIEW TABLE + PILLS
+    // ═══════════════════════════════════════════════════
+    function buildStudentOverviewTable() {
+        const el=document.getElementById('overviewStudentTable');
+        const pillsEl=document.getElementById('overviewSummaryPills');
+        if(!el) return;
+        const all=CLASSES.flatMap(c=>c.students.map(s=>({...s,className:c.name})));
+        const avg=Math.round(all.reduce((a,s)=>a+s.rate,0)/all.length);
+        if(pillsEl) pillsEl.innerHTML=[
+            {label:'School Avg',val:avg+'%',color:'#2563eb',bg:'#eff6ff'},
+            {label:'Above 90%',val:all.filter(s=>s.rate>=90).length,color:'#16a34a',bg:'#f0fdf4'},
+            {label:'Below 75%',val:all.filter(s=>s.rate<75).length,color:'#dc2626',bg:'#fef2f2'},
+            {label:'Total Students',val:all.length,color:'#7c3aed',bg:'#f5f3ff'},
+        ].map(p=>`<div style="background:${p.bg};border-radius:10px;padding:8px 14px;display:flex;align-items:center;gap:8px;">
+            <span class="fw-bold" style="font-size:1rem;color:${p.color};">${p.val}</span>
+            <span style="font-size:.72rem;color:#64748b;">${p.label}</span>
+        </div>`).join('');
+
+        const sorted=[...all].sort((a,b)=>b.rate-a.rate).slice(0,8);
+        el.innerHTML=`<div class="table-responsive"><table class="table table-custom mb-0"><thead><tr>
+            <th>#</th><th>Student</th><th>Class</th><th class="text-center">Rate</th>
+            <th class="text-center d-none d-md-table-cell">Progress</th>
+            <th class="text-center d-none d-md-table-cell">Status</th>
+        </tr></thead><tbody>${sorted.map((s,i)=>{
+            const col=s.rate>=90?'#16a34a':s.rate>=75?'#2563eb':s.rate>=60?'#ea580c':'#dc2626';
+            const tag=s.rate>=90?'Excellent':s.rate>=75?'Good':s.rate>=60?'At Risk':'Critical';
+            const bg=s.rate>=90?'#f0fdf4':s.rate>=75?'#eff6ff':s.rate>=60?'#fff7ed':'#fef2f2';
+            return `<tr>
+                <td class="align-middle fw-bold text-muted small">${i+1}</td>
+                <td class="align-middle"><div class="d-flex align-items-center gap-2">
+                    <img src="${s.photo}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;" alt="" onerror="this.src='https://i.pravatar.cc/60?u=${s.id}'">
+                    <div><div class="fw-bold" style="font-size:.8rem;">${s.name}</div><div class="text-muted" style="font-size:.68rem;">${s.id}</div></div>
+                </div></td>
+                <td class="align-middle" style="font-size:.72rem;color:#64748b;">${s.className}</td>
+                <td class="align-middle text-center fw-bold" style="color:${col};font-size:.9rem;">${s.rate}%</td>
+                <td class="align-middle d-none d-md-table-cell" style="min-width:100px;">
+                    <div style="height:6px;border-radius:99px;background:#e2e8f0;overflow:hidden;">
+                        <div style="height:100%;width:${s.rate}%;background:${col};border-radius:99px;transition:width .6s;"></div>
+                    </div>
+                </td>
+                <td class="align-middle text-center d-none d-md-table-cell">
+                    <span style="background:${bg};color:${col};border-radius:999px;padding:3px 10px;font-size:.7rem;font-weight:700;">${tag}</span>
+                </td>
+            </tr>`;
+        }).join('')}</tbody></table></div>`;
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  SEARCH
+    // ═══════════════════════════════════════════════════
+    document.getElementById('attSearch').addEventListener('input', function() {
+        const q=this.value.toLowerCase();
+        ['markTableBody','recordsTableBody'].forEach(id=>{
+            document.querySelectorAll('#'+id+' tr').forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';});
+        });
+    });
+
+    // ═══════════════════════════════════════════════════
+    //  EXPORT CSV
+    // ═══════════════════════════════════════════════════
+    function exportCSV() {
+        const rows=[['Student','ID','Class','Date','Status','Rate']];
+        const data=getFilteredRecords().length?getFilteredRecords():CLASSES.flatMap(c=>c.students.map(s=>({name:s.name,sid:s.id,className:c.name,dateLabel:'21 Jun 2026',status:'present',rate:s.rate})));
+        data.slice(0,500).forEach(r=>rows.push([`"${r.name}"`,r.sid,r.className,r.dateLabel,r.status,r.rate+'%']));
+        const csv=rows.map(r=>r.join(',')).join('\n');
+        const blob=new Blob([csv],{type:'text/csv'});
+        const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='attendance_export.csv';a.click();
+        showToast('CSV exported successfully!','success');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  TOAST
+    // ═══════════════════════════════════════════════════
+    function showToast(html, type='success') {
+        let c=document.getElementById('toastContainer');
+        if(!c){c=document.createElement('div');c.id='toastContainer';c.style.cssText='position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;';document.body.appendChild(c);}
+        const colors={success:'#16a34a',warning:'#ea580c',info:'#2563eb'};
+        const icons={success:'bi-check-circle-fill',warning:'bi-exclamation-circle-fill',info:'bi-info-circle-fill'};
+        const t=document.createElement('div');
+        t.style.cssText=`pointer-events:auto;display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid ${colors[type]}30;border-left:4px solid ${colors[type]};border-radius:12px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,.1);min-width:260px;animation:slideInToast .3s ease;`;
+        t.innerHTML=`<i class="bi ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;flex-shrink:0;"></i><span style="font-size:.83rem;color:#0f172a;">${html}</span>`;
+        c.appendChild(t);
+        setTimeout(()=>{t.style.cssText+='opacity:0;transform:translateX(20px);transition:all .3s ease;';setTimeout(()=>t.remove(),300);},2800);
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  BOOT
+    // ═══════════════════════════════════════════════════
+    const today = new Date();
+    document.getElementById('heroDate').textContent = today.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('markDate').value = today.toISOString().slice(0,10);
+
+    // Pre-fill date range (last 30 days)
+    const d30=new Date(); d30.setDate(d30.getDate()-30);
+    const dfEl=document.getElementById('recordDateFrom'); if(dfEl) dfEl.value=d30.toISOString().slice(0,10);
+    const dtEl=document.getElementById('recordDateTo');   if(dtEl) dtEl.value=today.toISOString().slice(0,10);
+
+    buildTrendChart(); buildDoughnut(); buildClassBar();
+    buildHeatmap();    buildMonthly();  buildClassAttList();
+    buildPolarChart(); buildStudentOverviewTable();
+    renderRecords();   buildAlerts();
+    buildTeacherCompliance();
+
+    // Close export menus on outside click
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.export-dropdown-wrap')) closeExportMenus();
+    });
+    </script>
+
+    <script>
+    // ═══════════════════════════════════════════════════
+    //  TEACHER COMPLIANCE DATA
+    // ═══════════════════════════════════════════════════
+    const TEACHERS = [
+        { id:'T01', name:'Sarah Jenkins',  photo:'https://images.unsplash.com/photo-1544717305-2782549b5136?w=60', class:'Class 10 - A', subject:'Mathematics',  deadline:'09:30 AM' },
+        { id:'T02', name:'David Miller',   photo:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60', class:'Class 10 - B', subject:'English',       deadline:'09:30 AM' },
+        { id:'T03', name:'Emily Watson',   photo:'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60', class:'Class 9 - A',  subject:'Science',       deadline:'09:30 AM' },
+        { id:'T04', name:'Arjun Mehta',    photo:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60', class:'Class 9 - B',  subject:'History',       deadline:'09:30 AM' },
+        { id:'T05', name:'Maria Rossi',    photo:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60', class:'Class 5 - A',  subject:'Geography',     deadline:'09:30 AM' },
+        { id:'T06', name:'Ananya Mehta',   photo:'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=60', class:'Class 5 - B',  subject:'Computer Sci.', deadline:'09:30 AM' },
+    ];
+
+    // Simulate: T01 submitted on time, T03 submitted late, rest missing
+    // Real usage: this would read from localStorage att-day keys
+    function getTeacherStatuses() {
+        const todayKey = new Date().toISOString().slice(0,10);
+        return TEACHERS.map(t => {
+            const savedKey = t.id.toLowerCase().replace('t0','cls-') +
+                             (['1','2'].includes(t.id.slice(-1)) ? 'a' : ['3','4'].includes(t.id.slice(-1)) ? 'b' : 'a');
+            // Check if attendance saved for their class today
+            const classMapping = { T01:'cls-10a', T02:'cls-10b', T03:'cls-9a', T04:'cls-9b', T05:'cls-5a', T06:'cls-5b' };
+            const dayData = localStorage.getItem('att-day-' + classMapping[t.id] + '_' + todayKey);
+            if (dayData) {
+                // Check if submitted before or after deadline (simulate with save timestamp)
+                const tsKey = 'att-ts-' + classMapping[t.id] + '_' + todayKey;
+                const ts = localStorage.getItem(tsKey);
+                const deadlineMs = (() => {
+                    const [h,m] = t.deadline.replace(' AM','').replace(' PM','').split(':').map(Number);
+                    const d = new Date(); d.setHours(h,m,0,0);
+                    return d.getTime();
+                })();
+                const submitMs = ts ? parseInt(ts) : Date.now();
+                return { ...t, status: submitMs <= deadlineMs ? 'submitted' : 'late',
+                    submittedAt: ts ? new Date(parseInt(ts)).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : 'Unknown' };
+            }
+            return { ...t, status:'missing', submittedAt: null };
+        });
+    }
+
+    // ── teacher filter state ──
+    let tcFilter = 'all';
+
+    function filterTeachers(f, btn) {
+        tcFilter = f;
+        document.querySelectorAll('[data-tcf]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTeacherList();
+    }
+
+    function renderTeacherList() {
+        const statuses = getTeacherStatuses();
+        const filtered = tcFilter === 'all' ? statuses : statuses.filter(t => t.status === tcFilter);
+
+        // Update KPI counts
+        const sub  = statuses.filter(t=>t.status==='submitted').length;
+        const late = statuses.filter(t=>t.status==='late').length;
+        const miss = statuses.filter(t=>t.status==='missing').length;
+        document.getElementById('tcTotal').textContent     = statuses.length;
+        document.getElementById('tcSubmitted').textContent = sub;
+        document.getElementById('tcLate').textContent      = late;
+        document.getElementById('tcMissing').textContent   = miss;
+
+        const now = new Date();
+        const [dh,dm] = '09:30 AM'.replace(' AM','').split(':').map(Number);
+        const deadlineToday = new Date(); deadlineToday.setHours(dh,dm,0,0);
+        const isPastDeadline = now > deadlineToday;
+
+        const list = document.getElementById('teacherComplianceList');
+        if (!list) return;
+
+        if (filtered.length === 0) {
+            list.innerHTML = `<div class="text-center py-4 text-muted"><i class="bi bi-check-circle-fill text-success fs-4 d-block mb-2"></i>No teachers in this category.</div>`;
+            return;
+        }
+
+        list.innerHTML = filtered.map(t => {
+            const isSubmitted = t.status === 'submitted';
+            const isLate      = t.status === 'late';
+            const isMissing   = t.status === 'missing';
+
+            const badgeClass = isSubmitted ? 'badge-submitted' : isLate ? 'badge-late' : 'badge-missing';
+            const badgeText  = isSubmitted ? '✓ Submitted' : isLate ? '⚠ Late Submission' : '✗ Not Submitted';
+            const cardClass  = isSubmitted ? 'status-submitted' : isLate ? 'status-late' : 'status-missing';
+
+            const timeInfo = isSubmitted || isLate
+                ? `<span class="deadline-clock${isLate?' overdue':''}"><i class="bi bi-clock me-1"></i>Submitted at ${t.submittedAt}</span>`
+                : isPastDeadline
+                    ? `<span class="deadline-clock overdue"><i class="bi bi-alarm me-1"></i>Deadline passed — ${t.deadline}</span>`
+                    : `<span class="deadline-clock"><i class="bi bi-clock me-1"></i>Due by ${t.deadline}</span>`;
+
+            const actionBtn = isMissing
+                ? `<button class="btn btn-sm fw-semibold" style="background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:8px;font-size:.72rem;white-space:nowrap;" onclick="sendReminder('${t.id}','${t.name}')">
+                        <i class="bi bi-bell-fill me-1"></i>Remind
+                   </button>`
+                : isLate
+                    ? `<button class="btn btn-sm fw-semibold" style="background:#fff7ed;color:#ea580c;border:1.5px solid #fed7aa;border-radius:8px;font-size:.72rem;white-space:nowrap;" onclick="sendReminder('${t.id}','${t.name}')">
+                            <i class="bi bi-exclamation-circle me-1"></i>Notify
+                       </button>`
+                    : `<span style="color:#16a34a;font-size:.75rem;font-weight:700;"><i class="bi bi-check2-circle me-1"></i>On Time</span>`;
+
+            return `<div class="teacher-comp-card ${cardClass}">
+                <img src="${t.photo}" class="tc-avatar" alt="${t.name}" onerror="this.src='https://i.pravatar.cc/60?u=${t.id}'">
+                <div style="flex:1;min-width:0;">
+                    <div class="fw-bold" style="font-size:.86rem;color:var(--text-primary,#0f172a);">${t.name}</div>
+                    <div class="text-muted" style="font-size:.72rem;">${t.class} · ${t.subject}</div>
+                    <div class="mt-1">${timeInfo}</div>
+                </div>
+                <div class="d-flex flex-column align-items-end gap-2">
+                    <span class="tc-status-badge ${badgeClass}">${badgeText}</span>
+                    ${actionBtn}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function sendReminder(teacherId, name) {
+        showToast(`Reminder sent to <strong>${name}</strong> to submit attendance.`, 'warning');
+    }
+
+    function buildTeacherComplianceCharts() {
+        const statuses = getTeacherStatuses();
+        const sub  = statuses.filter(t=>t.status==='submitted').length;
+        const late = statuses.filter(t=>t.status==='late').length;
+        const miss = statuses.filter(t=>t.status==='missing').length;
+
+        // Doughnut
+        const ctx1 = document.getElementById('chartTeacherComp');
+        if (ctx1) {
+            new Chart(ctx1, {
+                type:'doughnut',
+                data:{
+                    labels:['Submitted','Late','Missing'],
+                    datasets:[{ data:[sub,late,miss], backgroundColor:['#22c55e','#f59e0b','#ef4444'], borderWidth:0, hoverOffset:6 }]
+                },
+                options:{responsive:true,maintainAspectRatio:true,cutout:'68%',
+                    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': '+c.parsed+' teacher(s)'}}}}
+            });
+        }
+
+        // Legend
+        const leg = document.getElementById('tcChartLegend');
+        if (leg) {
+            leg.innerHTML = [
+                {color:'#22c55e',label:`Submitted on time`,val:sub},
+                {color:'#f59e0b',label:`Submitted late`,    val:late},
+                {color:'#ef4444',label:`Not submitted`,      val:miss},
+            ].map(l=>`<div style="display:flex;align-items:center;justify-content:space-between;font-size:.75rem;">
+                <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${l.color};margin-right:5px;"></span>${l.label}</span>
+                <span class="fw-bold" style="color:${l.color};">${l.val}</span>
+            </div>`).join('');
+        }
+
+        // Weekly bar
+        const ctx2 = document.getElementById('chartTeacherWeek');
+        if (ctx2) {
+            const days = ['Mon','Tue','Wed','Thu','Fri'];
+            new Chart(ctx2, {
+                type:'bar',
+                data:{
+                    labels:days,
+                    datasets:[
+                        {label:'On Time',data:[5,6,4,5,sub], backgroundColor:'#22c55ecc', borderRadius:5},
+                        {label:'Late',   data:[1,0,2,1,late], backgroundColor:'#f59e0bcc', borderRadius:5},
+                        {label:'Missing',data:[0,0,0,0,miss], backgroundColor:'#ef4444cc', borderRadius:5},
+                    ]
+                },
+                options:{responsive:true,maintainAspectRatio:true,
+                    plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10},color:textColor()}}},
+                    scales:{
+                        x:{stacked:true,grid:{display:false},ticks:{color:textColor(),font:{size:10}}},
+                        y:{stacked:true,max:7,grid:{color:gridColor()},ticks:{color:textColor(),font:{size:10},stepSize:1}}
+                    }
+                }
+            });
+        }
+    }
+
+    function buildTeacherCompliance() {
+        const today = new Date();
+        const el = document.getElementById('tcDateLabel');
+        if (el) el.textContent = today.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+        renderTeacherList();
+        buildTeacherComplianceCharts();
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  EXPORT — multi-format (CSV, Excel, PDF, Word)
+    // ═══════════════════════════════════════════════════
+    function toggleExportMenu(id) {
+        const menu = document.getElementById(id);
+        if (!menu) return;
+        const isOpen = menu.classList.contains('open');
+        closeExportMenus();
+        if (!isOpen) menu.classList.add('open');
+    }
+
+    function closeExportMenus() {
+        document.querySelectorAll('.export-dropdown-menu').forEach(m => m.classList.remove('open'));
+    }
+
+    function getExportRows() {
+        const data = getFilteredRecords().length
+            ? getFilteredRecords()
+            : CLASSES.flatMap(c => c.students.map(s=>({name:s.name,sid:s.id,className:c.name,dateLabel:'21 Jun 2026',status:'present',rate:s.rate})));
+        return data.slice(0, 500);
+    }
+
+    function exportData(format) {
+        const rows = getExportRows();
+        switch(format) {
+            case 'csv':   return doExportCSV(rows);
+            case 'excel': return doExportExcel(rows);
+            case 'pdf':   return doExportPDF(rows);
+            case 'word':  return doExportWord(rows);
+        }
+    }
+
+    // ── CSV ──
+    function doExportCSV(rows) {
+        const header = ['Student','ID','Class','Date','Status','Monthly Rate'];
+        const lines  = [header, ...rows.map(r=>[`"${r.name}"`, r.sid, r.className, r.dateLabel, r.status, r.rate+'%'])];
+        downloadBlob(lines.map(l=>l.join(',')).join('\n'), 'attendance_export.csv', 'text/csv');
+        showToast('CSV exported successfully!','success');
+    }
+
+    // ── Excel (TSV in .xls wrapper — opens in Excel without library) ──
+    function doExportExcel(rows) {
+        const header = ['Student','ID','Class','Date','Status','Monthly Rate'];
+        const lines  = [header, ...rows.map(r=>[r.name, r.sid, r.className, r.dateLabel, r.status, r.rate+'%'])];
+        // Build a simple HTML table that Excel will recognise
+        const tableHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+            xmlns:x="urn:schemas-microsoft-com:office:excel"
+            xmlns="http://www.w3.org/TR/REC-html40">
+            <head><meta charset="UTF-8">
+            <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets>
+            <x:ExcelWorksheet><x:Name>Attendance</x:Name>
+            <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+            </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+            </head><body>
+            <table border="1">${lines.map((row,i)=>`<tr>${row.map(c=>`<t${i===0?'h':'d'} style="font-family:Arial;font-size:11px;">${c}</t${i===0?'h':'d'}>`).join('')}</tr>`).join('')}</table>
+            </body></html>`;
+        downloadBlob(tableHtml, 'attendance_export.xls', 'application/vnd.ms-excel');
+        showToast('Excel file exported successfully!','success');
+    }
+
+    // ── PDF (print-to-PDF via new window) ──
+    function doExportPDF(rows) {
+        const header = ['Student','ID','Class','Date','Status','Monthly Rate'];
+        const tableRows = rows.map(r=>`<tr>
+            <td>${r.name}</td><td>${r.sid}</td><td>${r.className}</td>
+            <td>${r.dateLabel}</td>
+            <td style="color:${r.status==='present'?'#16a34a':r.status==='absent'?'#dc2626':'#a16207'};font-weight:700;">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</td>
+            <td>${r.rate}%</td>
+        </tr>`).join('');
+        const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+            <title>Attendance Report — Bright Future School</title>
+            <style>
+                * { box-sizing:border-box; font-family:Arial,sans-serif; }
+                body { margin:24px; color:#1e293b; font-size:11px; }
+                h1 { font-size:18px; color:#2563eb; margin-bottom:4px; }
+                p  { font-size:11px; color:#64748b; margin-bottom:16px; }
+                table { width:100%; border-collapse:collapse; }
+                th { background:#2563eb; color:#fff; padding:8px 10px; text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.05em; }
+                td { padding:7px 10px; border-bottom:1px solid #e2e8f0; font-size:10.5px; }
+                tr:nth-child(even) td { background:#f8fafc; }
+                .footer { margin-top:20px; font-size:10px; color:#94a3b8; border-top:1px solid #e2e8f0; padding-top:10px; }
+            </style></head><body>
+            <h1>Attendance Report</h1>
+            <p>Bright Future School · Exported on ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</p>
+            <table><thead><tr>${header.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+            <tbody>${tableRows}</tbody></table>
+            <div class="footer">Total records: ${rows.length} · Generated by Bright Future School SMS</div>
+            </body></html>`;
+        const win = window.open('','_blank');
+        win.document.write(html);
+        win.document.close();
+        setTimeout(()=>{ win.focus(); win.print(); }, 400);
+        showToast('PDF print dialog opened!','info');
+    }
+
+    // ── Word (HTML in .doc wrapper — opens in Word) ──
+    function doExportWord(rows) {
+        const header = ['Student','ID','Class','Date','Status','Monthly Rate'];
+        const tableRows = rows.map(r=>`<tr>
+            <td>${r.name}</td><td>${r.sid}</td><td>${r.className}</td>
+            <td>${r.dateLabel}</td>
+            <td style="color:${r.status==='present'?'#16a34a':r.status==='absent'?'#dc2626':'#a16207'};font-weight:bold;">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</td>
+            <td>${r.rate}%</td>
+        </tr>`).join('');
+        const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+            xmlns:w="urn:schemas-microsoft-com:office:word"
+            xmlns="http://www.w3.org/TR/REC-html40">
+            <head><meta charset="UTF-8">
+            <title>Attendance Report</title>
+            <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->
+            <style>
+                body  { font-family:Calibri,Arial,sans-serif; font-size:11pt; color:#1e293b; margin:1in; }
+                h1    { font-size:18pt; color:#2563eb; }
+                p     { font-size:10pt; color:#64748b; }
+                table { width:100%; border-collapse:collapse; margin-top:12pt; }
+                th    { background:#2563eb; color:white; padding:6pt 8pt; font-size:9pt; text-align:left; }
+                td    { padding:5pt 8pt; border-bottom:1pt solid #e2e8f0; font-size:10pt; }
+                .footer { margin-top:16pt; font-size:8pt; color:#94a3b8; border-top:1pt solid #e2e8f0; padding-top:8pt; }
+            </style></head><body>
+            <h1>Attendance Report</h1>
+            <p>Bright Future School &nbsp;·&nbsp; Exported on ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</p>
+            <table><thead><tr>${header.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+            <tbody>${tableRows}</tbody></table>
+            <div class="footer">Total records: ${rows.length} &nbsp;·&nbsp; Generated by Bright Future School SMS</div>
+            </body></html>`;
+        downloadBlob(html, 'attendance_export.doc', 'application/msword');
+        showToast('Word document exported successfully!','success');
+    }
+
+    function downloadBlob(content, filename, mimeType) {
+        const blob = new Blob([content], {type: mimeType + ';charset=utf-8;'});
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = filename; a.click();
+        setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    }
+
+    // Keep old exportCSV as alias
+    function exportCSV() { exportData('csv'); }
+    </script>
+</body>
+</html>
