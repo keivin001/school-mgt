@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Marks - Bright Future School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .att-tab-nav{display:flex;gap:2px;background:var(--bg-secondary,#f8fafc);border:1.5px solid var(--border-color,#e2e8f0);border-radius:14px;padding:4px;}
+        .att-tab-btn{flex:1;border:none;background:transparent;border-radius:10px;padding:9px 12px;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--text-muted,#64748b);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;}
+        .att-tab-btn.active{background:#fff;color:var(--primary,#2563eb);box-shadow:0 2px 10px rgba(0,0,0,.08);}
+        .att-tab-btn:hover:not(.active){background:rgba(37,99,235,.06);color:var(--primary,#2563eb);}
+        .att-tab-panel{display:none;animation:fadeUp .22s ease;}
+        .att-tab-panel.active{display:block;}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .exam-hero{background:linear-gradient(135deg,#1d4ed8 0%,#7c3aed 55%,#0d9488 100%);border-radius:20px;padding:1.8rem 2.2rem;color:#fff;position:relative;overflow:hidden;margin-bottom:1.8rem;}
+        .exam-hero::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none;}
+        .hero-kpi{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 18px;text-align:center;flex:1;min-width:80px;backdrop-filter:blur(10px);}
+        .hero-kpi .v{font-size:1.5rem;font-weight:800;line-height:1;}
+        .hero-kpi .l{font-size:.65rem;opacity:.75;text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}
+        .grade-chip{display:inline-block;border-radius:8px;padding:3px 10px;font-size:.72rem;font-weight:800;}
+        .grade-aplus{background:#dcfce7;color:#15803d;}
+        .grade-a{background:#dbeafe;color:#1e40af;}
+        .grade-bplus{background:#f3e8ff;color:#7e22ce;}
+        .grade-b{background:#ffedd5;color:#c2410c;}
+        .grade-cplus{background:#fef9c3;color:#a16207;}
+        .grade-c{background:#fee2e2;color:#dc2626;}
+        .grade-f{background:#fecaca;color:#7f1d1d;}
+        .marks-input-live{border-radius:8px;transition:border-color .2s,box-shadow .2s;}
+        .marks-pass{border-color:#22c55e!important;box-shadow:0 0 0 2px rgba(34,197,94,.15)!important;}
+        .marks-fail{border-color:#ef4444!important;box-shadow:0 0 0 2px rgba(239,68,68,.15)!important;}
+        .chart-card{background:var(--card-bg,#fff);border:1.5px solid var(--border-color,#e8edf5);border-radius:18px;padding:1.4rem;height:100%;}
+        .chart-card .chart-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted,#94a3b8);margin-bottom:1rem;display:flex;align-items:center;gap:6px;}
+        .top-performer-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;}
+        .top-performer-row:last-child{border-bottom:none;}
+        .toast-exam{position:fixed;bottom:28px;right:28px;z-index:9999;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px 22px;box-shadow:0 8px 32px rgba(0,0,0,.12);display:flex;align-items:center;gap:12px;animation:slideInToast .3s ease;min-width:280px;}
+        @keyframes slideInToast{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+        .analysis-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;}
+        .analysis-row:last-child{border-bottom:none;}
+        body.dark-theme .chart-card{background:#1e293b;border-color:#334155;}
+        body.dark-theme .att-tab-btn.active{background:#1e293b;}
+        body.dark-theme .att-tab-nav{background:#0f172a;border-color:#334155;}
+    </style>
+</head>
+<body>
+<nav id="sidebar">
+    <div>
+        <div class="sidebar-brand text-white">
+            <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+            <h5 class="mb-0 fw-bold">Bright Future</h5>
+            <small class="opacity-50">School SMS</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+            <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+            <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+            <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+            <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+            <div class="nav-item"><a href="examinations.html" class="nav-link active"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+            <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+            <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+            <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+            <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+            <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+        </div>
+    </div>
+    <a href="#" class="sidebar-logout-card"><i class="bi bi-box-arrow-left"></i><span class="fw-medium">Logout</span></a>
+</nav>
+<div id="content">
+    <header class="main-header">
+        <div class="d-flex align-items-center">
+            <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+            <div>
+                <h4 class="mb-0 fw-bold" id="pageTitle">Exam Marks</h4>
+                <small class="text-muted" id="pageSubtitle">Enter and manage marks</small>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-4">
+            <div class="search-bar d-none d-md-flex">
+                <i class="bi bi-search text-muted"></i>
+                <input type="text" placeholder="Search anything...">
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="position-relative">
+                    <i class="bi bi-bell fs-5 cursor-pointer"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border-start ps-3">
+                    <div class="text-end d-none d-sm-block"><div class="fw-bold lh-1">Admin</div><small class="text-muted">Administrator</small></div>
+                    <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                    <i class="bi bi-chevron-down text-muted small"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid p-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="examinations.html" class="text-decoration-none">Examinations</a></li>
+                <li class="breadcrumb-item active" id="bcExam">Exam Marks</li>
+            </ol>
+        </nav>
+        <!-- Hero -->
+        <div class="exam-hero" id="examHero">
+            <div class="row align-items-center g-3">
+                <div class="col-auto">
+                    <div style="width:60px;height:60px;background:rgba(255,255,255,.15);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                </div>
+                <div class="col">
+                    <h3 class="fw-bold mb-0" id="heroExamName">Loading...</h3>
+                    <div style="opacity:.75;font-size:.85rem;" id="heroExamMeta"></div>
+                </div>
+            </div>
+            <div class="d-flex gap-3 flex-wrap mt-4" id="heroKpis"></div>
+        </div>
+        <!-- Tabs -->
+        <div class="att-tab-nav mb-4" id="marksTabNav">
+            <button class="att-tab-btn active" data-tab="enter"><i class="bi bi-pencil-square"></i> Enter Marks</button>
+            <button class="att-tab-btn" data-tab="results"><i class="bi bi-bar-chart-fill"></i> Results Summary</button>
+            <button class="att-tab-btn" data-tab="analysis"><i class="bi bi-graph-up"></i> Analysis</button>
+        </div>
+        <!-- Tab Panels -->
+        <div class="att-tab-panel active" id="tab-enter">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+                <h5 class="fw-bold mb-0">Gradebook</h5>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-success rounded-pill" id="markAllMax">Set All Max</button>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill" id="clearAllMarks">Clear All</button>
+                    <button class="btn btn-success rounded-pill px-4 fw-bold" id="saveMarksBtn"><i class="bi bi-save me-2"></i>Save Marks</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover" id="gradebookTable">
+                    <thead>
+                        <tr>
+                            <th>Rank</th><th>Student</th><th>Roll</th>
+                            <th>Marks</th><th>Grade</th><th>Status</th><th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradebookBody"></tbody>
+                </table>
+            </div>
+            <div class="d-flex align-items-center gap-4 mt-3 p-3 rounded-3" style="background:#f8fafc;border:1.5px solid #e2e8f0;" id="marksSummary"></div>
+        </div>
+        <div class="att-tab-panel" id="tab-results">
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-bar-chart-fill" style="color:#2563eb"></i> Score Distribution</div>
+                        <canvas id="chartDist" height="180"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-pie-chart-fill" style="color:#7c3aed"></i> Pass vs Fail</div>
+                        <canvas id="chartPassFail" height="180"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-trophy-fill" style="color:#f59e0b"></i> Top 5 Performers</div>
+                        <div id="top5List"></div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-people-fill" style="color:#10b981"></i> All Results</div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Grade</th><th>Status</th></tr></thead>
+                                <tbody id="allResultsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="att-tab-panel" id="tab-analysis">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-grid-3x3-gap-fill" style="color:#7c3aed"></i> Grade Breakdown</div>
+                        <div id="gradeBreakdown"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-graph-up" style="color:#10b981"></i> Class vs School Average</div>
+                        <canvas id="chartComparison" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-speedometer2" style="color:#f59e0b"></i> Subject Difficulty Indicator</div>
+                        <div id="difficultyPanel"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="toastContainer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+<script>
+var EXAM_STUDENTS={
+    'cls-10a':[
+        {id:'S10001',name:'Aiden Clarke',  roll:'01',photo:'https://i.pravatar.cc/150?img=8'},
+        {id:'S10002',name:'Priya Sharma',  roll:'02',photo:'https://i.pravatar.cc/150?img=47'},
+        {id:'S10003',name:'Luca Ferrari',  roll:'03',photo:'https://i.pravatar.cc/150?img=15'},
+        {id:'S10004',name:'Sofia Garcia',  roll:'04',photo:'https://i.pravatar.cc/150?img=45'},
+        {id:'S10005',name:'Yuki Tanaka',   roll:'05',photo:'https://i.pravatar.cc/150?img=49'},
+        {id:'S10006',name:'Ethan Moore',   roll:'06',photo:'https://i.pravatar.cc/150?img=18'},
+    ],
+    'cls-10b':[
+        {id:'S10007',name:'Amara Osei',   roll:'01',photo:'https://i.pravatar.cc/150?img=44'},
+        {id:'S10008',name:"Finn O'Brien", roll:'02',photo:'https://i.pravatar.cc/150?img=12'},
+        {id:'S10009',name:'Mei Ling',     roll:'03',photo:'https://i.pravatar.cc/150?img=43'},
+    ],
+    'cls-9a':[
+        {id:'S09001',name:'Carlos Rivera',roll:'01',photo:'https://i.pravatar.cc/150?img=7'},
+        {id:'S09002',name:'Anya Patel',   roll:'02',photo:'https://i.pravatar.cc/150?img=48'},
+        {id:'S09003',name:'Jack Thompson',roll:'03',photo:'https://i.pravatar.cc/150?img=11'},
+        {id:'S09004',name:'Nina Volkov',  roll:'04',photo:'https://i.pravatar.cc/150?img=46'},
+    ],
+    'cls-9b':[
+        {id:'S09005',name:'Omar Hassan',roll:'01',photo:'https://i.pravatar.cc/150?img=6'},
+        {id:'S09006',name:'Elena Cruz',  roll:'02',photo:'https://i.pravatar.cc/150?img=41'},
+        {id:'S09007',name:'Ravi Kumar',  roll:'03',photo:'https://i.pravatar.cc/150?img=14'},
+    ],
+    'cls-5a':[
+        {id:'S05001',name:'Lily Johnson', roll:'01',photo:'https://i.pravatar.cc/150?img=50'},
+        {id:'S05002',name:'Noah Williams',roll:'02',photo:'https://i.pravatar.cc/150?img=3'},
+        {id:'S05003',name:'Zara Ahmed',   roll:'03',photo:'https://i.pravatar.cc/150?img=42'},
+    ],
+    'cls-5b':[
+        {id:'S05004',name:'Leo Nguyen', roll:'01',photo:'https://i.pravatar.cc/150?img=4'},
+        {id:'S05005',name:'Grace Kim',  roll:'02',photo:'https://i.pravatar.cc/150?img=51'},
+        {id:'S05006',name:'Adam Okafor',roll:'03',photo:'https://i.pravatar.cc/150?img=5'},
+    ],
+};
+var DEFAULT_EXAMS=[
+    {id:'EX001',name:'Mid Term Test',  type:'Mid Term', classId:'cls-10a',className:'Class 10 - A',subject:'Mathematics',  date:'2026-05-24',time:'09:00',room:'Room 302',   maxMarks:100,passMarks:40,duration:180,status:'completed',invigilator:'Sarah Jenkins'},
+    {id:'EX002',name:'Annual Exam',    type:'Annual',   classId:'cls-10a',className:'Class 10 - A',subject:'Science',       date:'2026-06-26',time:'10:00',room:'Exam Hall B',maxMarks:100,passMarks:35,duration:180,status:'upcoming', invigilator:'Emily Watson'},
+    {id:'EX003',name:'Unit Test 1',    type:'Unit Test',classId:'cls-9a', className:'Class 9 - A', subject:'English',       date:'2026-06-28',time:'09:00',room:'Room 201',   maxMarks:50, passMarks:20,duration:90, status:'upcoming', invigilator:'David Miller'},
+    {id:'EX004',name:'Pre-Board Exam', type:'Pre-Board',classId:'cls-10b',className:'Class 10 - B',subject:'History',       date:'2026-07-10',time:'10:00',room:'Exam Hall A',maxMarks:100,passMarks:40,duration:180,status:'upcoming', invigilator:'Arjun Mehta'},
+    {id:'EX005',name:'Class Test',     type:'Unit Test',classId:'cls-9b', className:'Class 9 - B', subject:'Geography',     date:'2026-05-15',time:'11:00',room:'Room 203',   maxMarks:50, passMarks:20,duration:60, status:'completed',invigilator:'Maria Rossi'},
+    {id:'EX006',name:'Terminal Exam',  type:'Terminal', classId:'cls-5a', className:'Class 5 - A', subject:'Computer Sci.', date:'2026-06-05',time:'09:30',room:'Room 105',   maxMarks:100,passMarks:40,duration:120,status:'completed',invigilator:'Ananya Mehta'},
+];
+var currentExam=null;
+var currentStudents=[];
+var chartInstances={};
+function calcGrade(marks,maxMarks){
+    var pct=marks/maxMarks*100;
+    if(pct>=95)return 'A+';if(pct>=85)return 'A';if(pct>=75)return 'B+';
+    if(pct>=65)return 'B';if(pct>=55)return 'C+';if(pct>=45)return 'C';
+    return 'F';
+}
+function gradeChip(grade){
+    var map={'A+':'grade-aplus','A':'grade-a','B+':'grade-bplus','B':'grade-b','C+':'grade-cplus','C':'grade-c','F':'grade-f'};
+    return '<span class="grade-chip '+(map[grade]||'grade-f')+'">'+grade+'</span>';
+}
+function genDefaultMarks(exam){
+    var students=EXAM_STUDENTS[exam.classId]||[];
+    var marks={};
+    students.forEach(function(st,i){
+        var base=60+((st.id.charCodeAt(st.id.length-1)*7+i*13)%35);
+        var m=Math.min(base,exam.maxMarks);
+        marks[st.id]={marks:m,grade:calcGrade(m,exam.maxMarks),remarks:'Auto-generated'};
+    });
+    return marks;
+}
+function loadMarks(examId){
+    var raw=localStorage.getItem('exam-marks-'+examId);
+    return raw?JSON.parse(raw):{};
+}
+function showToast(msg,type){
+    var color=type==='success'?'#22c55e':type==='danger'?'#ef4444':'#2563eb';
+    var icon=type==='success'?'check-circle-fill':type==='danger'?'x-circle-fill':'info-circle-fill';
+    var el=document.createElement('div');el.className='toast-exam';
+    el.innerHTML='<i class="bi bi-'+icon+' fs-5" style="color:'+color+'"></i><span class="fw-semibold">'+msg+'</span>';
+    document.getElementById('toastContainer').appendChild(el);
+    setTimeout(function(){el.remove();},3000);
+}
+function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id];}}
+// ===== INIT =====
+function init(){
+    var params=new URLSearchParams(window.location.search);
+    var examId=params.get('exam');
+    if(!examId){document.getElementById('heroExamName').textContent='No exam specified.';return;}
+    var raw=localStorage.getItem('exams-db');
+    var exams=raw?JSON.parse(raw):DEFAULT_EXAMS;
+    var exam=exams.find(function(e){return e.id===examId;});
+    if(!exam){
+        exam=DEFAULT_EXAMS.find(function(e){return e.id===examId;});
+        if(!exam){document.getElementById('heroExamName').textContent='Exam not found.';return;}
+    }
+    currentExam=exam;
+    currentStudents=EXAM_STUDENTS[exam.classId]||[];
+    document.getElementById('pageTitle').textContent=exam.name;
+    document.getElementById('pageSubtitle').textContent=exam.className+' · '+exam.subject;
+    document.getElementById('bcExam').textContent=exam.name;
+    document.getElementById('heroExamName').textContent=exam.name;
+    document.getElementById('heroExamMeta').innerHTML=exam.className+' &middot; '+exam.subject+' &middot; '+exam.date+' '+exam.time+' &middot; '+exam.room+' &middot; Invigilator: '+exam.invigilator+' &middot; '+exam.duration+' min';
+    var saved=loadMarks(examId);
+    if(!Object.keys(saved).length)saved=genDefaultMarks(exam);
+    var total=currentStudents.length,passed=0,sum=0,top=0;
+    currentStudents.forEach(function(st){
+        var m=saved[st.id];if(m&&m.marks!==null){sum+=m.marks;if(m.marks>=exam.passMarks)passed++;if(m.marks>top)top=m.marks;}
+    });
+    var avg=total?Math.round(sum/total):0;
+    var pct=total?Math.round(passed/total*100):0;
+    var kpis=[
+        {v:total,l:'Total Students'},
+        {v:passed,l:'Passed'},
+        {v:total-passed,l:'Failed'},
+        {v:pct+'%',l:'Pass Rate'},
+        {v:avg,l:'Class Avg'},
+        {v:top,l:'Top Score'},
+    ];
+    var kHtml='';
+    kpis.forEach(function(k){kHtml+='<div class="hero-kpi"><div class="v">'+k.v+'</div><div class="l">'+k.l+'</div></div>';});
+    document.getElementById('heroKpis').innerHTML=kHtml;
+    renderGradebook(exam,currentStudents,saved);
+}
+function renderGradebook(exam,students,marks){
+    var tbody=document.getElementById('gradebookBody');
+    var sorted=students.slice().map(function(st,i){
+        var m=marks[st.id]||{marks:null,grade:'—',remarks:''};
+        return {st:st,m:m};
+    }).sort(function(a,b){return (b.m.marks||0)-(a.m.marks||0);});
+    var html='';
+    sorted.forEach(function(row,i){
+        var val=row.m.marks!==null&&row.m.marks!==undefined?row.m.marks:'';
+        var rem=row.m.remarks||'';
+        var grade=val!==''?calcGrade(Number(val),exam.maxMarks):'—';
+        var pass=val!==''?(Number(val)>=exam.passMarks?'Pass':'Fail'):'—';
+        var passColor=pass==='Pass'?'#22c55e':pass==='Fail'?'#ef4444':'#94a3b8';
+        html+='<tr>'
+            +'<td class="fw-bold text-muted">'+(i+1)+'</td>'
+            +'<td><div class="d-flex align-items-center gap-2"><img src="'+row.st.photo+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;"><span class="fw-semibold" style="font-size:.88rem;">'+row.st.name+'</span></div></td>'
+            +'<td>'+row.st.roll+'</td>'
+            +'<td><input type="number" class="form-control form-control-sm marks-input-live" style="width:90px;" min="0" max="'+exam.maxMarks+'" value="'+val+'" data-sid="'+row.st.id+'" data-pass="'+exam.passMarks+'" data-max="'+exam.maxMarks+'"></td>'
+            +'<td><span id="grade-'+row.st.id+'">'+gradeChip(grade)+'</span></td>'
+            +'<td><span id="pf-'+row.st.id+'" style="font-weight:700;color:'+passColor+';">'+pass+'</span></td>'
+            +'<td><input type="text" class="form-control form-control-sm" style="width:140px;" value="'+rem+'" data-rsid="'+row.st.id+'"></td>'
+            +'</tr>';
+    });
+    tbody.innerHTML=html;
+    updateMarksSummaryLive();
+    document.querySelectorAll('.marks-input-live').forEach(function(inp){
+        inp.addEventListener('input',function(){
+            var sid=inp.dataset.sid;
+            var pass=Number(inp.dataset.pass);var max=Number(inp.dataset.max);
+            var v=inp.value.trim()!==''?Number(inp.value):'';
+            if(v!==''&&v>=pass){inp.classList.add('marks-pass');inp.classList.remove('marks-fail');}
+            else if(v!==''){inp.classList.add('marks-fail');inp.classList.remove('marks-pass');}
+            else{inp.classList.remove('marks-pass','marks-fail');}
+            var grade=v!==''?calcGrade(v,max):'—';
+            document.getElementById('grade-'+sid).innerHTML=gradeChip(grade);
+            var pfEl=document.getElementById('pf-'+sid);
+            if(v!==''){pfEl.textContent=v>=pass?'Pass':'Fail';pfEl.style.color=v>=pass?'#22c55e':'#ef4444';}
+            else{pfEl.textContent='—';pfEl.style.color='#94a3b8';}
+            updateMarksSummaryLive();
+        });
+        if(inp.value!=='')inp.dispatchEvent(new Event('input'));
+    });
+}
+function updateMarksSummaryLive(){
+    var passed=0,failed=0,total=0,sum=0,top=0;
+    document.querySelectorAll('.marks-input-live').forEach(function(inp){
+        var v=inp.value;
+        if(v!==''){total++;var n=Number(v);sum+=n;if(n>top)top=n;if(n>=Number(inp.dataset.pass))passed++;else failed++;}
+    });
+    var avg=total?Math.round(sum/total):0;
+    var totalSt=currentStudents.length;
+    var el=document.getElementById('marksSummary');if(!el)return;
+    el.innerHTML='<div style="flex:1;text-align:center;"><div class="fw-bold fs-5">'+totalSt+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Total</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5 text-primary">'+total+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Marked</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5" style="color:#22c55e;">'+passed+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Passed</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5 text-danger">'+failed+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Failed</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5 text-warning">'+avg+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Avg Score</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5" style="color:#8b5cf6;">'+top+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Top Score</div></div>';
+}
+function collectMarks(){
+    var data={};
+    document.querySelectorAll('.marks-input-live').forEach(function(inp){
+        var sid=inp.dataset.sid;var v=inp.value;var max=Number(inp.dataset.max);
+        var rem=document.querySelector('[data-rsid="'+sid+'"]');
+        data[sid]={marks:v!==''?Number(v):null,grade:v!==''?calcGrade(Number(v),max):'F',remarks:rem?rem.value:''};
+    });
+    return data;
+}
+document.getElementById('saveMarksBtn').addEventListener('click',function(){
+    if(!currentExam)return;
+    var data=collectMarks();
+    localStorage.setItem('exam-marks-'+currentExam.id,JSON.stringify(data));
+    showToast('Marks saved successfully!','success');
+});
+document.getElementById('markAllMax').addEventListener('click',function(){
+    document.querySelectorAll('.marks-input-live').forEach(function(i){i.value=i.dataset.max;i.dispatchEvent(new Event('input'));});
+});
+document.getElementById('clearAllMarks').addEventListener('click',function(){
+    document.querySelectorAll('.marks-input-live').forEach(function(i){i.value='';i.dispatchEvent(new Event('input'));});
+});
+// ===== RESULTS SUMMARY TAB =====
+function renderResultsSummary(){
+    if(!currentExam)return;
+    var exam=currentExam;
+    var students=currentStudents;
+    var saved=loadMarks(exam.id);
+    if(!Object.keys(saved).length)saved=genDefaultMarks(exam);
+    // Distribution bands
+    var bands=[0,0,0,0,0];// 0-39, 40-59, 60-74, 75-89, 90-100
+    var passed=0,failed=0;
+    var rows=students.map(function(st){
+        var m=saved[st.id]||{marks:0,grade:'F',remarks:''};
+        return {st:st,marks:m.marks||0,grade:m.grade||calcGrade(m.marks||0,exam.maxMarks),remarks:m.remarks||''};
+    }).sort(function(a,b){return b.marks-a.marks;});
+    rows.forEach(function(r){
+        var pct=r.marks/exam.maxMarks*100;
+        if(pct<40)bands[0]++;
+        else if(pct<60)bands[1]++;
+        else if(pct<75)bands[2]++;
+        else if(pct<90)bands[3]++;
+        else bands[4]++;
+        if(r.marks>=exam.passMarks)passed++;else failed++;
+    });
+    destroyChart('chartDist');
+    chartInstances['chartDist']=new Chart(document.getElementById('chartDist'),{
+        type:'bar',
+        data:{
+            labels:['0-39','40-59','60-74','75-89','90-100'],
+            datasets:[{label:'Students',data:bands,backgroundColor:['#ef4444','#f59e0b','#3b82f6','#8b5cf6','#22c55e'],borderRadius:8}]
+        },
+        options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}
+    });
+    destroyChart('chartPassFail');
+    chartInstances['chartPassFail']=new Chart(document.getElementById('chartPassFail'),{
+        type:'doughnut',
+        data:{labels:['Passed','Failed'],datasets:[{data:[passed,failed],backgroundColor:['#22c55e','#ef4444'],borderWidth:0,hoverOffset:8}]},
+        options:{responsive:true,cutout:'62%',plugins:{legend:{position:'bottom'}}}
+    });
+    // Top 5
+    var top5=rows.slice(0,5);
+    var t5html='';
+    top5.forEach(function(r,i){
+        t5html+='<div class="top-performer-row">'
+            +'<span style="font-size:1.1rem;font-weight:800;color:#f59e0b;width:22px;">'+(i+1)+'</span>'
+            +'<img src="'+r.st.photo+'" style="width:34px;height:34px;border-radius:50%;object-fit:cover;">'
+            +'<div style="flex:1;font-size:.85rem;font-weight:600;">'+r.st.name+'</div>'
+            +'<div class="fw-bold" style="color:#2563eb;">'+r.marks+'/'+exam.maxMarks+'</div>'
+            +'</div>';
+    });
+    document.getElementById('top5List').innerHTML=t5html;
+    // All results table
+    var arHtml='';
+    rows.forEach(function(r,i){
+        var pass=r.marks>=exam.passMarks;
+        arHtml+='<tr style="cursor:pointer;" onclick="window.location.href=\'exam-student-result.html?exam='+exam.id+'&student='+r.st.id+'\'">'
+            +'<td class="fw-bold text-muted">'+(i+1)+'</td>'
+            +'<td><div class="d-flex align-items-center gap-2"><img src="'+r.st.photo+'" style="width:28px;height:28px;border-radius:50%;"><span class="fw-semibold">'+r.st.name+'</span></div></td>'
+            +'<td class="fw-bold">'+r.marks+'/'+exam.maxMarks+'</td>'
+            +'<td>'+gradeChip(r.grade)+'</td>'
+            +'<td><span style="font-weight:700;color:'+(pass?'#22c55e':'#ef4444')+';">'+(pass?'Pass':'Fail')+'</span></td>'
+            +'</tr>';
+    });
+    document.getElementById('allResultsBody').innerHTML=arHtml;
+}
+// ===== ANALYSIS TAB =====
+function renderAnalysis(){
+    if(!currentExam)return;
+    var exam=currentExam;
+    var students=currentStudents;
+    var saved=loadMarks(exam.id);
+    if(!Object.keys(saved).length)saved=genDefaultMarks(exam);
+    var gradeCounts={'A+':0,'A':0,'B+':0,'B':0,'C+':0,'C':0,'F':0};
+    var sum=0,cnt=0;
+    students.forEach(function(st){
+        var m=saved[st.id];
+        if(m&&m.marks!==null){
+            sum+=m.marks;cnt++;
+            var g=calcGrade(m.marks,exam.maxMarks);
+            gradeCounts[g]=(gradeCounts[g]||0)+1;
+        }
+    });
+    var avg=cnt?Math.round(sum/cnt):0;
+    var schoolAvg=avg+5;// simulated
+    // Grade breakdown table
+    var gradeColors={'A+':'#15803d','A':'#1e40af','B+':'#7e22ce','B':'#c2410c','C+':'#a16207','C':'#dc2626','F':'#7f1d1d'};
+    var gbHtml='<div class="table-responsive"><table class="table"><thead><tr><th>Grade</th><th>Count</th><th>Distribution</th></tr></thead><tbody>';
+    Object.keys(gradeCounts).forEach(function(g){
+        var count=gradeCounts[g];
+        var pct=cnt?Math.round(count/cnt*100):0;
+        gbHtml+='<tr><td>'+gradeChip(g)+'</td><td class="fw-bold">'+count+'</td>'
+            +'<td><div style="display:flex;align-items:center;gap:8px;">'
+            +'<div style="flex:1;height:8px;border-radius:999px;background:#e2e8f0;overflow:hidden;">'
+            +'<div style="height:100%;width:'+pct+'%;background:'+gradeColors[g]+';border-radius:999px;"></div></div>'
+            +'<span style="font-size:.75rem;font-weight:700;color:'+gradeColors[g]+';">'+pct+'%</span>'
+            +'</div></td></tr>';
+    });
+    gbHtml+='</tbody></table></div>';
+    document.getElementById('gradeBreakdown').innerHTML=gbHtml;
+    // Class vs school comparison
+    destroyChart('chartComparison');
+    chartInstances['chartComparison']=new Chart(document.getElementById('chartComparison'),{
+        type:'bar',
+        data:{
+            labels:['Class Average','School Average'],
+            datasets:[{data:[avg,schoolAvg],backgroundColor:['#3b82f6','#10b981'],borderRadius:8}]
+        },
+        options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{max:exam.maxMarks,beginAtZero:true}}}
+    });
+    // Difficulty panel
+    var passRate=cnt?Math.round(students.filter(function(st){var m=saved[st.id];return m&&m.marks>=exam.passMarks;}).length/students.length*100):0;
+    var difficulty=passRate>=80?'Easy':passRate>=60?'Moderate':passRate>=40?'Challenging':'Difficult';
+    var dColors={Easy:'#22c55e',Moderate:'#3b82f6',Challenging:'#f59e0b',Difficult:'#ef4444'};
+    var dHtml='<div class="d-flex align-items-center gap-4 flex-wrap">'
+        +'<div style="font-size:1.2rem;font-weight:800;color:'+dColors[difficulty]+';">'+difficulty+'</div>'
+        +'<div><div style="font-size:.78rem;color:#94a3b8;">Pass Rate</div><div class="fw-bold">'+passRate+'%</div></div>'
+        +'<div><div style="font-size:.78rem;color:#94a3b8;">Class Avg</div><div class="fw-bold">'+avg+'/'+exam.maxMarks+'</div></div>'
+        +'<div><div style="font-size:.78rem;color:#94a3b8;">Subject</div><div class="fw-bold">'+exam.subject+'</div></div>'
+        +'<div style="flex:1;min-width:160px;"><div style="height:10px;border-radius:999px;background:#e2e8f0;overflow:hidden;">'
+        +'<div style="height:100%;width:'+passRate+'%;background:'+dColors[difficulty]+';border-radius:999px;"></div></div>'
+        +'<div style="font-size:.72rem;color:#94a3b8;margin-top:4px;">Pass Rate Indicator</div></div></div>';
+    document.getElementById('difficultyPanel').innerHTML=dHtml;
+}
+// ===== TAB SWITCHING =====
+document.getElementById('marksTabNav').addEventListener('click',function(e){
+    var btn=e.target.closest('.att-tab-btn');if(!btn)return;
+    document.querySelectorAll('#marksTabNav .att-tab-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelectorAll('.att-tab-panel').forEach(function(p){p.classList.remove('active');});
+    btn.classList.add('active');
+    var tab=btn.dataset.tab;
+    document.getElementById('tab-'+tab).classList.add('active');
+    if(tab==='results')setTimeout(renderResultsSummary,50);
+    if(tab==='analysis')setTimeout(renderAnalysis,50);
+});
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

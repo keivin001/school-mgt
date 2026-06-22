@@ -59,6 +59,21 @@
         .absentee-card:hover { border-color:rgba(239,68,68,.25); box-shadow:0 4px 16px rgba(239,68,68,.08); }
         .ab-avatar { width:40px; height:40px; border-radius:50%; object-fit:cover; flex-shrink:0; border:2px solid #fee2e2; }
 
+        /* ── Approaching-risk alert card ── */
+        .approach-card { border-radius:12px; border:1.5px solid #fed7aa; background:#fff7ed; padding:10px 14px; display:flex; align-items:center; gap:12px; margin-bottom:8px; transition:all .2s; position:relative; overflow:hidden; }
+        .approach-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:#f59e0b; }
+        .approach-card:hover { box-shadow:0 4px 16px rgba(245,158,11,.15); }
+        .approach-avatar { width:40px; height:40px; border-radius:50%; object-fit:cover; flex-shrink:0; border:2px solid #fed7aa; }
+
+        /* ── Perfect attendance list row ── */
+        .perfect-list-row { display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:12px; border:1.5px solid #86efac; background:linear-gradient(90deg,#f0fdf4,#fff); margin-bottom:8px; transition:all .2s; }
+        .perfect-list-row:hover { box-shadow:0 4px 14px rgba(34,197,94,.12); transform:translateX(3px); }
+
+        /* ── View toggle for perfect attendance ── */
+        .perf-view-toggle { display:flex; border:1.5px solid var(--border-color,#e2e8f0); border-radius:9px; overflow:hidden; background:var(--bg-secondary,#f8fafc); }
+        .perf-view-btn { padding:5px 12px; border:none; background:transparent; cursor:pointer; font-size:.8rem; color:var(--text-muted,#64748b); transition:all .18s; display:flex; align-items:center; gap:4px; }
+        .perf-view-btn.active { background:var(--primary,#2563eb); color:#fff; }
+
         /* ── Toast ── */
         @keyframes slideInToast { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
 
@@ -92,9 +107,9 @@
         /* ── Teacher compliance cards ── */
         .teacher-comp-card {
             border-radius:14px; border:1.5px solid var(--border-color,#e8edf5);
-            background:var(--card-bg,#fff); padding:12px 16px;
-            display:flex; align-items:center; gap:14px;
-            margin-bottom:9px; transition:all .2s;
+            background:var(--card-bg,#fff); padding:14px 16px;
+            display:flex; align-items:flex-start; gap:14px;
+            margin-bottom:10px; transition:all .2s;
             position:relative; overflow:hidden;
         }
         .teacher-comp-card::before {
@@ -106,8 +121,9 @@
         .teacher-comp-card.status-submitted::before { background:#22c55e; }
         .teacher-comp-card:hover { box-shadow:0 4px 18px rgba(0,0,0,.07); transform:translateX(3px); }
         .tc-avatar {
-            width:44px; height:44px; border-radius:50%;
+            width:46px; height:46px; border-radius:50%;
             object-fit:cover; flex-shrink:0;
+            border:2px solid var(--border-color,#e2e8f0);
         }
         .tc-status-badge {
             padding:3px 10px; border-radius:999px;
@@ -536,86 +552,246 @@
 
             <!-- ═══ TAB: TEACHER COMPLIANCE ═══ -->
             <div class="att-tab-panel" id="tab-teachers">
+
+                <!-- KPI Row -->
                 <div class="row g-3 mb-4">
-                    <div class="col-6 col-md-3"><div class="tc-stat"><div class="v" id="tcTotal" style="color:var(--primary,#2563eb);">6</div><div class="l">Total Teachers</div></div></div>
-                    <div class="col-6 col-md-3"><div class="tc-stat"><div class="v" id="tcSubmitted" style="color:#16a34a;">0</div><div class="l">Submitted Today</div></div></div>
-                    <div class="col-6 col-md-3"><div class="tc-stat"><div class="v" id="tcLate" style="color:#ea580c;">0</div><div class="l">Submitted Late</div></div></div>
-                    <div class="col-6 col-md-3"><div class="tc-stat"><div class="v" id="tcMissing" style="color:#dc2626;">0</div><div class="l">Not Submitted</div></div></div>
+                    <div class="col-6 col-md-3">
+                        <div class="tc-stat">
+                            <div class="v" id="tcTotal" style="color:var(--primary,#2563eb);">6</div>
+                            <div class="l">Total Teachers</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="tc-stat">
+                            <div class="v" id="tcSubmitted" style="color:#16a34a;">0</div>
+                            <div class="l">Submitted Today</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="tc-stat">
+                            <div class="v" id="tcLate" style="color:#ea580c;">0</div>
+                            <div class="l">Submitted Late</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="tc-stat">
+                            <div class="v" id="tcMissing" style="color:#dc2626;">0</div>
+                            <div class="l">Not Submitted</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row g-4">
-                    <!-- Left: compliance list -->
+                    <!-- ── LEFT: compliance list ── -->
                     <div class="col-lg-8">
                         <div class="card-custom">
+
+                            <!-- Toolbar -->
                             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                                <h6 class="fw-bold mb-0" style="color:var(--primary,#2563eb);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;">
-                                    <i class="bi bi-person-badge-fill me-2"></i>Teacher Daily Attendance Compliance
-                                </h6>
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="text-muted" style="font-size:.78rem;" id="tcDateLabel">—</span>
+                                <div>
+                                    <h6 class="fw-bold mb-0" style="color:var(--primary,#2563eb);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;">
+                                        <i class="bi bi-person-badge-fill me-2"></i>Teacher Daily Attendance Compliance
+                                    </h6>
+                                    <small class="text-muted" id="tcDateLabel">—</small>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <div class="d-flex gap-1">
                                         <button class="filter-pill active" data-tcf="all"       onclick="filterTeachers('all',this)">All</button>
-                                        <button class="filter-pill"        data-tcf="missing"   onclick="filterTeachers('missing',this)">Missing</button>
-                                        <button class="filter-pill"        data-tcf="late"      onclick="filterTeachers('late',this)">Late</button>
                                         <button class="filter-pill"        data-tcf="submitted" onclick="filterTeachers('submitted',this)">Done</button>
+                                        <button class="filter-pill"        data-tcf="late"      onclick="filterTeachers('late',this)">Late</button>
+                                        <button class="filter-pill"        data-tcf="missing"   onclick="filterTeachers('missing',this)">Missing</button>
+                                    </div>
+                                    <button class="btn btn-sm fw-semibold"
+                                        style="background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:9px;font-size:.75rem;white-space:nowrap;"
+                                        onclick="sendAllReminders()">
+                                        <i class="bi bi-bell-fill me-1"></i>Remind All Missing
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Deadline banner -->
+                            <div class="d-flex align-items-center justify-content-between p-3 rounded-3 mb-3" style="background:#fff7ed;border:1.5px solid #fed7aa;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-clock-fill text-warning fs-5 flex-shrink-0"></i>
+                                    <div>
+                                        <div class="fw-bold" style="font-size:.82rem;color:#ea580c;">
+                                            Daily Deadline: <span id="tcDeadline">9:30 AM</span>
+                                        </div>
+                                        <div class="text-muted" style="font-size:.7rem;">
+                                            Teachers must submit attendance before this time each school day.
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Deadline notice bar -->
-                            <div class="d-flex align-items-center gap-3 p-3 rounded-3 mb-3" style="background:#fff7ed;border:1.5px solid #fed7aa;">
-                                <i class="bi bi-clock-fill text-warning fs-5 flex-shrink-0"></i>
-                                <div>
-                                    <div class="fw-bold" style="font-size:.82rem;color:#ea580c;">Daily Attendance Deadline: <span id="tcDeadline">9:30 AM</span></div>
-                                    <div class="text-muted" style="font-size:.72rem;">Teachers must submit class attendance before this time each school day.</div>
+                                <div id="tcCountdown" class="text-end" style="flex-shrink:0;">
+                                    <div class="fw-bold" style="font-size:.85rem;color:#ea580c;" id="tcCountdownVal">—</div>
+                                    <div style="font-size:.65rem;color:#94a3b8;">Until deadline</div>
                                 </div>
                             </div>
+
+                            <!-- Compliance list -->
                             <div id="teacherComplianceList"></div>
                         </div>
                     </div>
 
-                    <!-- Right: chart + summary -->
+                    <!-- ── RIGHT: charts + info ── -->
                     <div class="col-lg-4">
+
+                        <!-- Doughnut: today compliance -->
                         <div class="chart-card mb-3">
-                            <div class="chart-title"><i class="bi bi-pie-chart-fill" style="color:#7c3aed;"></i>Today's Compliance Rate</div>
-                            <canvas id="chartTeacherComp" height="180"></canvas>
-                            <div id="tcChartLegend" class="d-flex flex-column gap-1 mt-2"></div>
+                            <div class="chart-title">
+                                <i class="bi bi-pie-chart-fill" style="color:#7c3aed;"></i>Today's Compliance Rate
+                            </div>
+                            <div style="position:relative;">
+                                <canvas id="chartTeacherComp" height="180"></canvas>
+                                <!-- Centre label -->
+                                <div id="tcDoughnutCenter" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);text-align:center;pointer-events:none;">
+                                    <div class="fw-bold" id="tcCompPct" style="font-size:1.6rem;color:var(--text-primary,#0f172a);">—</div>
+                                    <div style="font-size:.65rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;">Compliance</div>
+                                </div>
+                            </div>
+                            <div id="tcChartLegend" class="d-flex flex-column gap-1 mt-3"></div>
                         </div>
-                        <div class="chart-card">
-                            <div class="chart-title"><i class="bi bi-bar-chart-fill" style="color:#16a34a;"></i>Weekly Submission Trend</div>
+
+                        <!-- Weekly bar chart -->
+                        <div class="chart-card mb-3">
+                            <div class="chart-title">
+                                <i class="bi bi-bar-chart-fill" style="color:#16a34a;"></i>Weekly Submission Trend
+                            </div>
                             <canvas id="chartTeacherWeek" height="130"></canvas>
+                            <div id="tcWeekSummary"></div>
                         </div>
+
+                        <!-- Compliance rate card -->
+                        <div class="chart-card mb-3">
+                            <div class="chart-title">
+                                <i class="bi bi-speedometer2" style="color:#2563eb;"></i>Weekly Compliance Score
+                            </div>
+                            <div id="tcWeekScore"></div>
+                        </div>
+
+                        <!-- Teacher leaderboard mini -->
+                        <div class="chart-card">
+                            <div class="chart-title">
+                                <i class="bi bi-trophy-fill" style="color:#ea580c;"></i>Submission Leaderboard
+                            </div>
+                            <div id="tcLeaderboard"></div>
+                        </div>
+
                     </div>
                 </div>
             </div>
 
             <!-- ═══ TAB: ALERTS ═══ -->
             <div class="att-tab-panel" id="tab-alerts">
+
+                <!-- Alert summary strip -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="card-custom text-center py-3" style="border-color:#fca5a5;">
+                            <div class="fw-bold" style="font-size:1.7rem;color:#dc2626;" id="alertCountRisk">0</div>
+                            <div class="text-muted" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;">At Risk (&lt;75%)</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card-custom text-center py-3" style="border-color:#fed7aa;">
+                            <div class="fw-bold" style="font-size:1.7rem;color:#ea580c;" id="alertCountApproach">0</div>
+                            <div class="text-muted" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;">Approaching Risk</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card-custom text-center py-3" style="border-color:#fde047;">
+                            <div class="fw-bold" style="font-size:1.7rem;color:#a16207;" id="alertCountConsec">0</div>
+                            <div class="text-muted" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;">Consecutive Absent</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card-custom text-center py-3" style="border-color:#86efac;">
+                            <div class="fw-bold" style="font-size:1.7rem;color:#16a34a;" id="alertCountPerfect">0</div>
+                            <div class="text-muted" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;">Perfect Attendance</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row g-4">
                     <!-- At-risk students -->
                     <div class="col-lg-6">
                         <div class="card-custom">
-                            <div class="chart-title" style="color:#dc2626;">
-                                <i class="bi bi-exclamation-triangle-fill" style="color:#dc2626;"></i>At-Risk Students (Below 75%)
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="chart-title mb-0" style="color:#dc2626;">
+                                    <i class="bi bi-exclamation-triangle-fill" style="color:#dc2626;"></i>At-Risk Students (Below 75%)
+                                </div>
+                                <span class="badge rounded-pill" style="background:#fef2f2;color:#dc2626;font-size:.72rem;" id="badgeAtRisk">0</span>
                             </div>
                             <div id="alertAtRisk"></div>
                         </div>
                     </div>
+
+                    <!-- Approaching risk (within 5% of threshold) -->
+                    <div class="col-lg-6">
+                        <div class="card-custom">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="chart-title mb-0" style="color:#ea580c;">
+                                    <i class="bi bi-bell-fill" style="color:#ea580c;"></i>Approaching Risk (75–80%)
+                                </div>
+                                <span class="badge rounded-pill" style="background:#fff7ed;color:#ea580c;font-size:.72rem;" id="badgeApproach">0</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 p-2 rounded-3 mb-3" style="background:#fff7ed;border:1px solid #fed7aa;">
+                                <i class="bi bi-info-circle-fill" style="color:#ea580c;font-size:.85rem;"></i>
+                                <span style="font-size:.72rem;color:#ea580c;">These students are within 5% of falling below the 75% threshold. Early intervention recommended.</span>
+                            </div>
+                            <div id="alertApproaching"></div>
+                        </div>
+                    </div>
+
                     <!-- Consecutive absent -->
                     <div class="col-lg-6">
                         <div class="card-custom">
-                            <div class="chart-title" style="color:#ea580c;">
-                                <i class="bi bi-calendar-x-fill" style="color:#ea580c;"></i>Consecutive Absences (3+ days)
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="chart-title mb-0" style="color:#a16207;">
+                                    <i class="bi bi-calendar-x-fill" style="color:#a16207;"></i>Consecutive Absences (3+ days)
+                                </div>
+                                <span class="badge rounded-pill" style="background:#fef9c3;color:#a16207;font-size:.72rem;" id="badgeConsec">0</span>
                             </div>
                             <div id="alertConsecutive"></div>
                         </div>
                     </div>
-                    <!-- Perfect attendance -->
+
+                    <!-- Attendance trend mini-alerts -->
+                    <div class="col-lg-6">
+                        <div class="card-custom">
+                            <div class="chart-title mb-3" style="color:#7c3aed;">
+                                <i class="bi bi-graph-down-arrow" style="color:#7c3aed;"></i>Declining Trend (Dropped 10%+ This Month)
+                            </div>
+                            <div id="alertDeclining"></div>
+                        </div>
+                    </div>
+
+                    <!-- Perfect attendance — full section with card/list toggle -->
                     <div class="col-lg-12">
                         <div class="card-custom">
-                            <div class="chart-title" style="color:#16a34a;">
-                                <i class="bi bi-award-fill" style="color:#16a34a;"></i>Perfect Attendance — This Month
+                            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                                <div>
+                                    <div class="chart-title mb-0" style="color:#16a34a;">
+                                        <i class="bi bi-award-fill" style="color:#16a34a;"></i>Perfect Attendance — This Month
+                                    </div>
+                                    <div class="text-muted" style="font-size:.72rem;margin-top:2px;">Students with 96%+ attendance rate this month</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="text-muted" style="font-size:.78rem;" id="perfectCount">—</span>
+                                    <div class="perf-view-toggle">
+                                        <button class="perf-view-btn active" id="btnPerfCard" onclick="setPerfView('card',this)" title="Card View">
+                                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                                        </button>
+                                        <button class="perf-view-btn" id="btnPerfList" onclick="setPerfView('list',this)" title="List View">
+                                            <i class="bi bi-list-ul"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="row g-2" id="alertPerfect"></div>
+                            <!-- Card view -->
+                            <div class="row g-3" id="alertPerfect"></div>
+                            <!-- List view -->
+                            <div id="alertPerfectList" style="display:none;"></div>
                         </div>
                     </div>
                 </div>
@@ -959,6 +1135,8 @@
         const dateVal = document.getElementById('markDate').value;
         const key     = markClassId + '_' + dateVal;
         localStorage.setItem('att-day-' + key, JSON.stringify(markData));
+        // Save submission timestamp so Teacher Compliance can check on-time vs late
+        localStorage.setItem('att-ts-' + key, Date.now().toString());
 
         // Also push to global records list
         const dateLabel = new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
@@ -974,6 +1152,8 @@
 
         showToast(`Attendance saved for <strong>${cls?.name}</strong> — ${dateLabel}!`,'success');
         renderRecords();
+        // Refresh teacher compliance to reflect newly saved data
+        renderTeacherList();
     }
     </script>
     <script>
@@ -986,7 +1166,8 @@
     function setRecordFilter(status, btn) {
         recordFilter = status;
         recordsPage  = 1;
-        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        // Only reset pills inside the records tab, not teacher compliance pills
+        document.querySelectorAll('#tab-records .filter-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderRecords();
     }
@@ -1076,37 +1257,199 @@
     }
 
     // ═══════════════════════════════════════════════════
-    //  ALERTS TAB
+    //  ALERTS TAB — complete
     // ═══════════════════════════════════════════════════
+    let perfView = 'card';
+
+    function setPerfView(view, btn) {
+        perfView = view;
+        document.getElementById('btnPerfCard').classList.toggle('active', view === 'card');
+        document.getElementById('btnPerfList').classList.toggle('active', view === 'list');
+        document.getElementById('alertPerfect').style.display     = view === 'card' ? '' : 'none';
+        document.getElementById('alertPerfectList').style.display = view === 'list' ? '' : 'none';
+    }
+
     function buildAlerts() {
-        const all=CLASSES.flatMap(c=>c.students.map(s=>({...s,className:c.name})));
-        const atRisk=all.filter(s=>s.rate<75);
-        const atRiskEl=document.getElementById('alertAtRisk');
-        atRiskEl.innerHTML=atRisk.length===0
-            ?`<div class="text-center py-4 text-muted"><i class="bi bi-check-circle-fill text-success fs-4 d-block mb-2"></i>No at-risk students — great job!</div>`
-            :atRisk.map(s=>`<div class="absentee-card">
-                <img src="${s.photo}" class="ab-avatar" alt="" onerror="this.src='https://i.pravatar.cc/60?u=${s.id}'">
-                <div style="flex:1;min-width:0;"><div class="fw-bold" style="font-size:.83rem;">${s.name}</div><div class="text-muted" style="font-size:.7rem;">${s.className} · ${s.id}</div></div>
-                <div class="text-end"><div class="fw-bold" style="font-size:1.1rem;color:#dc2626;">${s.rate}%</div><div style="font-size:.62rem;color:#94a3b8;">Att. Rate</div></div>
-                <div style="width:56px;"><div style="height:5px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:4px;"><div style="height:100%;width:${s.rate}%;background:#dc2626;border-radius:99px;"></div></div></div>
-            </div>`).join('');
+        const all = CLASSES.flatMap(c => c.students.map(s => ({...s, className:c.name, classId:c.id})));
 
-        const cons=all.filter((_,i)=>i%4===0).map(s=>({...s,days:3+(s.id.charCodeAt(s.id.length-1)%3)}));
-        document.getElementById('alertConsecutive').innerHTML=cons.map(s=>`<div class="absentee-card">
-            <img src="${s.photo}" class="ab-avatar" alt="" style="border-color:#fed7aa;" onerror="this.src='https://i.pravatar.cc/60?u=${s.id}'">
-            <div style="flex:1;min-width:0;"><div class="fw-bold" style="font-size:.83rem;">${s.name}</div><div class="text-muted" style="font-size:.7rem;">${s.className}</div></div>
-            <span style="background:#fff7ed;color:#ea580c;border-radius:999px;padding:3px 10px;font-size:.75rem;font-weight:700;white-space:nowrap;"><i class="bi bi-calendar-x me-1"></i>${s.days} days</span>
-        </div>`).join('');
+        // ── 1. At-Risk (< 75%) ──
+        const atRisk = all.filter(s => s.rate < 75);
+        const arCount = document.getElementById('alertCountRisk');
+        const arBadge = document.getElementById('badgeAtRisk');
+        if (arCount) arCount.textContent = atRisk.length;
+        if (arBadge) arBadge.textContent = atRisk.length;
+        const atRiskEl = document.getElementById('alertAtRisk');
+        if (atRiskEl) atRiskEl.innerHTML = atRisk.length === 0
+            ? '<div class="text-center py-4 text-muted"><i class="bi bi-check-circle-fill text-success fs-4 d-block mb-2"></i>No at-risk students — great job!</div>'
+            : atRisk.map(s => {
+                const needed = (75 - s.rate).toFixed(1);
+                return '<div class="absentee-card">'
+                    + '<img src="' + s.photo + '" class="ab-avatar" alt="" onerror="this.src=\'https://i.pravatar.cc/60?u=' + s.id + '\'">'
+                    + '<div style="flex:1;min-width:0;">'
+                    +   '<div class="fw-bold" style="font-size:.83rem;">' + s.name + '</div>'
+                    +   '<div class="text-muted" style="font-size:.7rem;">' + s.className + ' · ' + s.id + '</div>'
+                    +   '<div style="font-size:.7rem;color:#dc2626;margin-top:3px;"><i class="bi bi-arrow-up-circle me-1"></i>Needs +' + needed + '% to reach safe zone</div>'
+                    + '</div>'
+                    + '<div class="text-end" style="flex-shrink:0;">'
+                    +   '<div class="fw-bold" style="font-size:1.15rem;color:#dc2626;">' + s.rate + '%</div>'
+                    +   '<div style="font-size:.62rem;color:#94a3b8;margin-bottom:4px;">Current Rate</div>'
+                    +   '<div style="width:60px;"><div style="height:5px;border-radius:99px;background:#e2e8f0;overflow:hidden;"><div style="height:100%;width:' + s.rate + '%;background:#dc2626;border-radius:99px;"></div></div></div>'
+                    + '</div>'
+                    + '</div>';
+            }).join('');
 
-        const perfect=all.filter(s=>s.rate>=96);
-        document.getElementById('alertPerfect').innerHTML=perfect.map(s=>`<div class="col-md-3 col-sm-4 col-6">
-            <div class="text-center p-3 rounded-3" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;">
-                <img src="${s.photo}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2.5px solid #22c55e;margin-bottom:8px;" alt="" onerror="this.src='https://i.pravatar.cc/60?u=${s.id}'">
-                <div class="fw-bold" style="font-size:.8rem;color:#0f172a;">${s.name}</div>
-                <div style="font-size:.72rem;color:#16a34a;font-weight:800;">${s.rate}% 🏆</div>
-                <div style="font-size:.65rem;color:#94a3b8;">${s.className}</div>
-            </div>
-        </div>`).join('');
+        // ── 2. Approaching Risk (75–80%) ──
+        const approaching = all.filter(s => s.rate >= 75 && s.rate <= 80);
+        const apCount = document.getElementById('alertCountApproach');
+        const apBadge = document.getElementById('badgeApproach');
+        if (apCount) apCount.textContent = approaching.length;
+        if (apBadge) apBadge.textContent = approaching.length;
+        const approachEl = document.getElementById('alertApproaching');
+        if (approachEl) approachEl.innerHTML = approaching.length === 0
+            ? '<div class="text-center py-3 text-muted"><i class="bi bi-shield-check text-success fs-5 d-block mb-1"></i>No students approaching risk threshold.</div>'
+            : approaching.map(s => {
+                const buffer = (s.rate - 75).toFixed(1);
+                const urg    = buffer <= 2 ? 'Very High' : buffer <= 4 ? 'High' : 'Medium';
+                const uc     = buffer <= 2 ? '#dc2626'   : buffer <= 4 ? '#ea580c' : '#a16207';
+                const ub     = buffer <= 2 ? '#fef2f2'   : buffer <= 4 ? '#fff7ed' : '#fef9c3';
+                return '<div class="approach-card">'
+                    + '<img src="' + s.photo + '" class="approach-avatar" alt="" onerror="this.src=\'https://i.pravatar.cc/60?u=' + s.id + '\'">'
+                    + '<div style="flex:1;min-width:0;">'
+                    +   '<div class="fw-bold" style="font-size:.83rem;">' + s.name + '</div>'
+                    +   '<div class="text-muted" style="font-size:.7rem;">' + s.className + ' · ' + s.id + '</div>'
+                    +   '<div style="margin-top:5px;">'
+                    +     '<div style="display:flex;justify-content:space-between;margin-bottom:2px;">'
+                    +       '<span style="font-size:.68rem;color:#64748b;">Buffer to threshold</span>'
+                    +       '<span style="font-size:.68rem;font-weight:700;color:' + uc + ';">' + buffer + '% remaining</span>'
+                    +     '</div>'
+                    +     '<div style="height:5px;border-radius:99px;background:#e2e8f0;overflow:hidden;">'
+                    +       '<div style="height:100%;width:' + Math.min(parseFloat(buffer) * 20, 100) + '%;background:' + uc + ';border-radius:99px;"></div>'
+                    +     '</div>'
+                    +   '</div>'
+                    + '</div>'
+                    + '<div class="text-end" style="flex-shrink:0;">'
+                    +   '<div class="fw-bold" style="font-size:1.05rem;color:' + uc + ';">' + s.rate + '%</div>'
+                    +   '<span style="background:' + ub + ';color:' + uc + ';border-radius:999px;padding:2px 8px;font-size:.65rem;font-weight:700;white-space:nowrap;">' + urg + ' Risk</span>'
+                    + '</div>'
+                    + '</div>';
+            }).join('');
+
+        // ── 3. Consecutive Absences ──
+        const cons     = all.filter((_, i) => i % 4 === 0).map(s => ({...s, days: 3 + (s.id.charCodeAt(s.id.length-1) % 3)}));
+        const ccCount  = document.getElementById('alertCountConsec');
+        const ccBadge  = document.getElementById('badgeConsec');
+        if (ccCount) ccCount.textContent = cons.length;
+        if (ccBadge) ccBadge.textContent = cons.length;
+        const consEl = document.getElementById('alertConsecutive');
+        if (consEl) consEl.innerHTML = cons.length === 0
+            ? '<div class="text-center py-3 text-muted"><i class="bi bi-check-circle-fill text-success fs-5 d-block mb-1"></i>No consecutive absences detected.</div>'
+            : cons.map(s =>
+                '<div class="absentee-card" style="border-color:#fde047;">'
+                + '<img src="' + s.photo + '" class="ab-avatar" alt="" style="border-color:#fde047;" onerror="this.src=\'https://i.pravatar.cc/60?u=' + s.id + '\'">'
+                + '<div style="flex:1;min-width:0;">'
+                +   '<div class="fw-bold" style="font-size:.83rem;">' + s.name + '</div>'
+                +   '<div class="text-muted" style="font-size:.7rem;">' + s.className + ' · ' + s.id + '</div>'
+                +   '<div style="font-size:.7rem;color:#a16207;margin-top:3px;"><i class="bi bi-exclamation-circle me-1"></i>Parent contact recommended</div>'
+                + '</div>'
+                + '<div class="text-end" style="flex-shrink:0;">'
+                +   '<div class="fw-bold" style="font-size:1rem;color:#a16207;">' + s.days + ' days</div>'
+                +   '<div style="font-size:.62rem;color:#94a3b8;">Consecutive</div>'
+                +   '<span style="background:#fef9c3;color:#a16207;border-radius:999px;padding:2px 8px;font-size:.65rem;font-weight:700;margin-top:3px;display:inline-block;white-space:nowrap;">'
+                +     '<i class="bi bi-calendar-x me-1"></i>Absent ' + s.days + 'd row'
+                +   '</span>'
+                + '</div>'
+                + '</div>'
+            ).join('');
+
+        // ── 4. Declining Trend ──
+        const declining = all
+            .map(s => ({...s, prevRate: Math.min(100, s.rate + 8 + (s.id.charCodeAt(0) % 5))}))
+            .map(s => ({...s, drop: s.prevRate - s.rate}))
+            .filter(s => s.drop >= 8 && s.rate < 85 && s.rate > 60)
+            .slice(0, 5);
+        const declEl = document.getElementById('alertDeclining');
+        if (declEl) declEl.innerHTML = declining.length === 0
+            ? '<div class="text-center py-3 text-muted"><i class="bi bi-graph-up text-success fs-5 d-block mb-1"></i>No declining trends detected.</div>'
+            : declining.map(s =>
+                '<div class="absentee-card" style="border-color:#ddd6fe;">'
+                + '<img src="' + s.photo + '" class="ab-avatar" alt="" style="border-color:#ddd6fe;" onerror="this.src=\'https://i.pravatar.cc/60?u=' + s.id + '\'">'
+                + '<div style="flex:1;min-width:0;">'
+                +   '<div class="fw-bold" style="font-size:.83rem;">' + s.name + '</div>'
+                +   '<div class="text-muted" style="font-size:.7rem;">' + s.className + ' · ' + s.id + '</div>'
+                +   '<div style="font-size:.7rem;color:#7c3aed;margin-top:3px;"><i class="bi bi-arrow-down-right me-1"></i>Dropped from ' + s.prevRate + '% to ' + s.rate + '% this month</div>'
+                + '</div>'
+                + '<div class="text-end" style="flex-shrink:0;">'
+                +   '<div class="fw-bold" style="font-size:1rem;color:#7c3aed;">-' + s.drop + '%</div>'
+                +   '<div style="font-size:.62rem;color:#94a3b8;">This month</div>'
+                + '</div>'
+                + '</div>'
+            ).join('');
+
+        // ── 5. Perfect Attendance (>=96%) ──
+        const perfect   = all.filter(s => s.rate >= 96);
+        const pfCount   = document.getElementById('alertCountPerfect');
+        const pfCounter = document.getElementById('perfectCount');
+        if (pfCount)   pfCount.textContent = perfect.length;
+        if (pfCounter) pfCounter.textContent = perfect.length + ' student' + (perfect.length !== 1 ? 's' : '') + ' this month';
+
+        // Card view
+        const pfCardEl = document.getElementById('alertPerfect');
+        if (pfCardEl) pfCardEl.innerHTML = perfect.length === 0
+            ? '<div class="col-12 text-center py-4 text-muted"><i class="bi bi-award fs-3 d-block mb-2 opacity-50"></i>No perfect attendance records yet.</div>'
+            : perfect.map((s, i) => {
+                const badge  = s.rate === 100 ? '💯' : s.rate >= 98 ? '⭐' : '🏆';
+                const label  = s.rate === 100 ? 'Flawless' : s.rate >= 98 ? 'Outstanding' : 'Excellent';
+                const days   = Math.round(s.rate / 100 * 22);
+                return '<div class="col-md-3 col-sm-4 col-6">'
+                    + '<div class="text-center p-3 rounded-3" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;position:relative;">'
+                    +   '<div style="position:absolute;top:8px;left:10px;font-size:.65rem;font-weight:800;color:#16a34a;background:#fff;border-radius:999px;padding:1px 7px;border:1px solid #86efac;">#' + (i+1) + '</div>'
+                    +   '<img src="' + s.photo + '" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid #22c55e;margin:10px 0 8px;" alt="" onerror="this.src=\'https://i.pravatar.cc/60?u=' + s.id + '\'">'
+                    +   '<div class="fw-bold" style="font-size:.82rem;color:#0f172a;">' + s.name + '</div>'
+                    +   '<div style="font-size:.68rem;color:#64748b;margin:2px 0;">' + s.className + '</div>'
+                    +   '<div style="font-size:.68rem;color:#94a3b8;margin-bottom:5px;">' + s.id + '</div>'
+                    +   '<div style="font-size:.9rem;color:#16a34a;font-weight:900;">' + s.rate + '% ' + badge + '</div>'
+                    +   '<div style="font-size:.65rem;color:#64748b;margin-top:2px;">' + days + ' / 22 days present</div>'
+                    +   '<div style="height:4px;border-radius:99px;background:#bbf7d0;overflow:hidden;margin-top:7px;">'
+                    +     '<div style="height:100%;width:' + s.rate + '%;background:#16a34a;border-radius:99px;"></div>'
+                    +   '</div>'
+                    +   '<div style="margin-top:6px;background:#f0fdf4;border-radius:8px;padding:3px 0;font-size:.67rem;color:#16a34a;font-weight:700;">' + label + '</div>'
+                    + '</div>'
+                    + '</div>';
+            }).join('');
+
+        // List view
+        const pfListEl = document.getElementById('alertPerfectList');
+        if (pfListEl) pfListEl.innerHTML = perfect.length === 0
+            ? '<div class="text-center py-4 text-muted"><i class="bi bi-award fs-3 d-block mb-2 opacity-50"></i>No perfect attendance records yet.</div>'
+            : '<div class="table-responsive"><table class="table table-custom mb-0"><thead><tr>'
+            + '<th>#</th><th>Student</th><th>Class</th><th class="text-center">Rate</th>'
+            + '<th class="text-center d-none d-md-table-cell">Days Present</th>'
+            + '<th class="text-center d-none d-md-table-cell">Progress</th>'
+            + '<th class="text-center d-none d-md-table-cell">Award</th>'
+            + '</tr></thead><tbody>'
+            + perfect.map((s, i) => {
+                const badge = s.rate === 100 ? '💯 Flawless' : s.rate >= 98 ? '⭐ Outstanding' : '🏆 Excellent';
+                const days  = Math.round(s.rate / 100 * 22);
+                return '<tr>'
+                    + '<td class="align-middle fw-bold text-muted small">' + (i+1) + '</td>'
+                    + '<td class="align-middle"><div class="d-flex align-items-center gap-2">'
+                    +   '<img src="' + s.photo + '" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #22c55e;" alt="" onerror="this.src=\'https://i.pravatar.cc/60?u=' + s.id + '\'">'
+                    +   '<div><div class="fw-bold" style="font-size:.83rem;">' + s.name + '</div><div class="text-muted" style="font-size:.7rem;">' + s.id + '</div></div>'
+                    + '</div></td>'
+                    + '<td class="align-middle" style="font-size:.78rem;">' + s.className + '</td>'
+                    + '<td class="align-middle text-center fw-bold" style="color:#16a34a;font-size:.95rem;">' + s.rate + '%</td>'
+                    + '<td class="align-middle text-center d-none d-md-table-cell"><span class="fw-bold">' + days + '</span><span class="text-muted" style="font-size:.72rem;"> / 22</span></td>'
+                    + '<td class="align-middle d-none d-md-table-cell" style="min-width:110px;">'
+                    +   '<div style="height:6px;border-radius:99px;background:#bbf7d0;overflow:hidden;">'
+                    +     '<div style="height:100%;width:' + s.rate + '%;background:#16a34a;border-radius:99px;"></div>'
+                    +   '</div>'
+                    + '</td>'
+                    + '<td class="align-middle text-center d-none d-md-table-cell">'
+                    +   '<span style="background:#f0fdf4;color:#16a34a;border-radius:8px;padding:3px 9px;font-size:.72rem;font-weight:700;">' + badge + '</span>'
+                    + '</td>'
+                    + '</tr>';
+            }).join('')
+            + '</tbody></table></div>';
     }
 
     // ═══════════════════════════════════════════════════
@@ -1243,12 +1586,12 @@
     //  TEACHER COMPLIANCE DATA
     // ═══════════════════════════════════════════════════
     const TEACHERS = [
-        { id:'T01', name:'Sarah Jenkins',  photo:'https://images.unsplash.com/photo-1544717305-2782549b5136?w=60', class:'Class 10 - A', subject:'Mathematics',  deadline:'09:30 AM' },
-        { id:'T02', name:'David Miller',   photo:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60', class:'Class 10 - B', subject:'English',       deadline:'09:30 AM' },
-        { id:'T03', name:'Emily Watson',   photo:'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60', class:'Class 9 - A',  subject:'Science',       deadline:'09:30 AM' },
-        { id:'T04', name:'Arjun Mehta',    photo:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60', class:'Class 9 - B',  subject:'History',       deadline:'09:30 AM' },
-        { id:'T05', name:'Maria Rossi',    photo:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60', class:'Class 5 - A',  subject:'Geography',     deadline:'09:30 AM' },
-        { id:'T06', name:'Ananya Mehta',   photo:'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=60', class:'Class 5 - B',  subject:'Computer Sci.', deadline:'09:30 AM' },
+        { id:'T01', name:'Sarah Jenkins',  photo:'https://images.unsplash.com/photo-1544717305-2782549b5136?w=60',  cls:'Class 10 - A', subject:'Mathematics',  deadline:'09:30 AM', experience:'8 yrs', phone:'+1 555-8001', email:'sarah.j@brightfuture.edu',  classId:'cls-10a', weekHistory:[1,1,1,1,0] },
+        { id:'T02', name:'David Miller',   photo:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60',  cls:'Class 10 - B', subject:'English',       deadline:'09:30 AM', experience:'5 yrs', phone:'+1 555-8002', email:'david.m@brightfuture.edu',  classId:'cls-10b', weekHistory:[1,1,0,1,1] },
+        { id:'T03', name:'Emily Watson',   photo:'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60', cls:'Class 9 - A',  subject:'Science',       deadline:'09:30 AM', experience:'12 yrs',phone:'+1 555-8003', email:'emily.w@brightfuture.edu',  classId:'cls-9a',  weekHistory:[1,1,1,1,1] },
+        { id:'T04', name:'Arjun Mehta',    photo:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60',  cls:'Class 9 - B',  subject:'History',       deadline:'09:30 AM', experience:'3 yrs', phone:'+1 555-8004', email:'arjun.m@brightfuture.edu',  classId:'cls-9b',  weekHistory:[0,1,1,0,0] },
+        { id:'T05', name:'Maria Rossi',    photo:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60',  cls:'Class 5 - A',  subject:'Geography',     deadline:'09:30 AM', experience:'7 yrs', phone:'+1 555-8005', email:'maria.r@brightfuture.edu',  classId:'cls-5a',  weekHistory:[1,0,1,1,1] },
+        { id:'T06', name:'Ananya Mehta',   photo:'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=60', cls:'Class 5 - B',  subject:'Computer Sci.', deadline:'09:30 AM', experience:'4 yrs', phone:'+1 555-8006', email:'ananya.m@brightfuture.edu', classId:'cls-5b',  weekHistory:[1,1,1,1,0] },
     ];
 
     // Simulate: T01 submitted on time, T03 submitted late, rest missing
@@ -1256,25 +1599,19 @@
     function getTeacherStatuses() {
         const todayKey = new Date().toISOString().slice(0,10);
         return TEACHERS.map(t => {
-            const savedKey = t.id.toLowerCase().replace('t0','cls-') +
-                             (['1','2'].includes(t.id.slice(-1)) ? 'a' : ['3','4'].includes(t.id.slice(-1)) ? 'b' : 'a');
-            // Check if attendance saved for their class today
-            const classMapping = { T01:'cls-10a', T02:'cls-10b', T03:'cls-9a', T04:'cls-9b', T05:'cls-5a', T06:'cls-5b' };
-            const dayData = localStorage.getItem('att-day-' + classMapping[t.id] + '_' + todayKey);
+            const dayData = localStorage.getItem('att-day-' + t.classId + '_' + todayKey);
             if (dayData) {
-                // Check if submitted before or after deadline (simulate with save timestamp)
-                const tsKey = 'att-ts-' + classMapping[t.id] + '_' + todayKey;
-                const ts = localStorage.getItem(tsKey);
-                const deadlineMs = (() => {
-                    const [h,m] = t.deadline.replace(' AM','').replace(' PM','').split(':').map(Number);
-                    const d = new Date(); d.setHours(h,m,0,0);
-                    return d.getTime();
-                })();
+                const tsKey    = 'att-ts-' + t.classId + '_' + todayKey;
+                const ts       = localStorage.getItem(tsKey);
+                const [h, m]   = t.deadline.replace(' AM','').replace(' PM','').split(':').map(Number);
+                const deadlineMs = (() => { const d = new Date(); d.setHours(h, m, 0, 0); return d.getTime(); })();
                 const submitMs = ts ? parseInt(ts) : Date.now();
-                return { ...t, status: submitMs <= deadlineMs ? 'submitted' : 'late',
-                    submittedAt: ts ? new Date(parseInt(ts)).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : 'Unknown' };
+                const submittedAt = ts
+                    ? new Date(parseInt(ts)).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'})
+                    : new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                return { ...t, status: submitMs <= deadlineMs ? 'submitted' : 'late', submittedAt };
             }
-            return { ...t, status:'missing', submittedAt: null };
+            return { ...t, status: 'missing', submittedAt: null };
         });
     }
 
@@ -1283,6 +1620,7 @@
 
     function filterTeachers(f, btn) {
         tcFilter = f;
+        // Only reset pills that have data-tcf (teacher compliance pills)
         document.querySelectorAll('[data-tcf]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderTeacherList();
@@ -1293,24 +1631,24 @@
         const filtered = tcFilter === 'all' ? statuses : statuses.filter(t => t.status === tcFilter);
 
         // Update KPI counts
-        const sub  = statuses.filter(t=>t.status==='submitted').length;
-        const late = statuses.filter(t=>t.status==='late').length;
-        const miss = statuses.filter(t=>t.status==='missing').length;
+        const sub  = statuses.filter(t => t.status === 'submitted').length;
+        const late = statuses.filter(t => t.status === 'late').length;
+        const miss = statuses.filter(t => t.status === 'missing').length;
         document.getElementById('tcTotal').textContent     = statuses.length;
         document.getElementById('tcSubmitted').textContent = sub;
         document.getElementById('tcLate').textContent      = late;
         document.getElementById('tcMissing').textContent   = miss;
 
-        const now = new Date();
-        const [dh,dm] = '09:30 AM'.replace(' AM','').split(':').map(Number);
-        const deadlineToday = new Date(); deadlineToday.setHours(dh,dm,0,0);
+        const now            = new Date();
+        const [dh, dm]       = '09:30 AM'.replace(' AM','').split(':').map(Number);
+        const deadlineToday  = new Date(); deadlineToday.setHours(dh, dm, 0, 0);
         const isPastDeadline = now > deadlineToday;
 
         const list = document.getElementById('teacherComplianceList');
         if (!list) return;
 
         if (filtered.length === 0) {
-            list.innerHTML = `<div class="text-center py-4 text-muted"><i class="bi bi-check-circle-fill text-success fs-4 d-block mb-2"></i>No teachers in this category.</div>`;
+            list.innerHTML = '<div class="text-center py-4 text-muted"><i class="bi bi-check-circle-fill text-success fs-4 d-block mb-2"></i>No teachers in this category.</div>';
             return;
         }
 
@@ -1320,108 +1658,351 @@
             const isMissing   = t.status === 'missing';
 
             const badgeClass = isSubmitted ? 'badge-submitted' : isLate ? 'badge-late' : 'badge-missing';
-            const badgeText  = isSubmitted ? '✓ Submitted' : isLate ? '⚠ Late Submission' : '✗ Not Submitted';
+            const badgeText  = isSubmitted ? '✓ Submitted' : isLate ? '⚠ Late' : '✗ Missing';
             const cardClass  = isSubmitted ? 'status-submitted' : isLate ? 'status-late' : 'status-missing';
 
-            const timeInfo = isSubmitted || isLate
-                ? `<span class="deadline-clock${isLate?' overdue':''}"><i class="bi bi-clock me-1"></i>Submitted at ${t.submittedAt}</span>`
+            const timeInfo = (isSubmitted || isLate)
+                ? '<span class="deadline-clock' + (isLate ? ' overdue' : '') + '"><i class="bi bi-clock me-1"></i>Submitted at ' + t.submittedAt + '</span>'
                 : isPastDeadline
-                    ? `<span class="deadline-clock overdue"><i class="bi bi-alarm me-1"></i>Deadline passed — ${t.deadline}</span>`
-                    : `<span class="deadline-clock"><i class="bi bi-clock me-1"></i>Due by ${t.deadline}</span>`;
+                    ? '<span class="deadline-clock overdue"><i class="bi bi-alarm me-1"></i>Deadline passed — ' + t.deadline + '</span>'
+                    : '<span class="deadline-clock"><i class="bi bi-clock me-1"></i>Due by ' + t.deadline + '</span>';
+
+            // Week history dots
+            const dayLabels = ['M','T','W','T','F'];
+            const weekDots  = (t.weekHistory || [0,0,0,0,0]).map((v, i) =>
+                '<span title="' + (['Mon','Tue','Wed','Thu','Fri'][i]) + '" style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:' + (v ? '#dcfce7' : '#fee2e2') + ';color:' + (v ? '#16a34a' : '#dc2626') + ';font-size:.55rem;font-weight:800;margin-right:2px;">' + dayLabels[i] + '</span>'
+            ).join('');
 
             const actionBtn = isMissing
-                ? `<button class="btn btn-sm fw-semibold" style="background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:8px;font-size:.72rem;white-space:nowrap;" onclick="sendReminder('${t.id}','${t.name}')">
-                        <i class="bi bi-bell-fill me-1"></i>Remind
-                   </button>`
+                ? '<button class="btn btn-sm fw-semibold" style="background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:8px;font-size:.72rem;white-space:nowrap;" onclick="sendReminder(\'' + t.id + '\',\'' + t.name + '\')">'
+                    + '<i class="bi bi-bell-fill me-1"></i>Remind</button>'
                 : isLate
-                    ? `<button class="btn btn-sm fw-semibold" style="background:#fff7ed;color:#ea580c;border:1.5px solid #fed7aa;border-radius:8px;font-size:.72rem;white-space:nowrap;" onclick="sendReminder('${t.id}','${t.name}')">
-                            <i class="bi bi-exclamation-circle me-1"></i>Notify
-                       </button>`
-                    : `<span style="color:#16a34a;font-size:.75rem;font-weight:700;"><i class="bi bi-check2-circle me-1"></i>On Time</span>`;
+                    ? '<button class="btn btn-sm fw-semibold" style="background:#fff7ed;color:#ea580c;border:1.5px solid #fed7aa;border-radius:8px;font-size:.72rem;white-space:nowrap;" onclick="sendReminder(\'' + t.id + '\',\'' + t.name + '\')">'
+                        + '<i class="bi bi-exclamation-circle me-1"></i>Notify</button>'
+                    : '<span style="color:#16a34a;font-size:.75rem;font-weight:700;"><i class="bi bi-check2-circle me-1"></i>On Time</span>';
 
-            return `<div class="teacher-comp-card ${cardClass}">
-                <img src="${t.photo}" class="tc-avatar" alt="${t.name}" onerror="this.src='https://i.pravatar.cc/60?u=${t.id}'">
-                <div style="flex:1;min-width:0;">
-                    <div class="fw-bold" style="font-size:.86rem;color:var(--text-primary,#0f172a);">${t.name}</div>
-                    <div class="text-muted" style="font-size:.72rem;">${t.class} · ${t.subject}</div>
-                    <div class="mt-1">${timeInfo}</div>
-                </div>
-                <div class="d-flex flex-column align-items-end gap-2">
-                    <span class="tc-status-badge ${badgeClass}">${badgeText}</span>
-                    ${actionBtn}
-                </div>
-            </div>`;
+            return '<div class="teacher-comp-card ' + cardClass + '">'
+                + '<img src="' + t.photo + '" class="tc-avatar" alt="' + t.name + '" onerror="this.src=\'https://i.pravatar.cc/60?u=' + t.id + '\'">'
+                + '<div style="flex:1;min-width:0;">'
+                +   '<div class="fw-bold" style="font-size:.88rem;color:var(--text-primary,#0f172a);">' + t.name + '</div>'
+                +   '<div class="text-muted" style="font-size:.72rem;margin-top:1px;">'
+                +     '<i class="bi bi-door-open me-1"></i>' + t.cls + ' &nbsp;·&nbsp; '
+                +     '<i class="bi bi-book me-1"></i>' + t.subject + ' &nbsp;·&nbsp; '
+                +     '<i class="bi bi-person-workspace me-1"></i>' + t.experience
+                +   '</div>'
+                +   '<div class="text-muted" style="font-size:.7rem;margin-top:1px;">'
+                +     '<i class="bi bi-envelope me-1"></i>' + t.email
+                +   '</div>'
+                +   '<div style="margin-top:5px;display:flex;align-items:center;gap:6px;">'
+                +     timeInfo
+                +   '</div>'
+                +   '<div style="margin-top:6px;display:flex;align-items:center;gap:4px;">'
+                +     '<span style="font-size:.65rem;color:#94a3b8;margin-right:3px;">This week:</span>'
+                +     weekDots
+                +   '</div>'
+                + '</div>'
+                + '<div class="d-flex flex-column align-items-end gap-2 flex-shrink-0">'
+                +   '<span class="tc-status-badge ' + badgeClass + '">' + badgeText + '</span>'
+                +   actionBtn
+                + '</div>'
+                + '</div>';
         }).join('');
     }
 
     function sendReminder(teacherId, name) {
-        showToast(`Reminder sent to <strong>${name}</strong> to submit attendance.`, 'warning');
+        showToast('Reminder sent to <strong>' + name + '</strong> to submit attendance.', 'warning');
+    }
+
+    function sendAllReminders() {
+        const statuses = getTeacherStatuses();
+        const missing  = statuses.filter(t => t.status === 'missing');
+        if (missing.length === 0) {
+            showToast('All teachers have already submitted today.', 'info');
+            return;
+        }
+        missing.forEach(t => { /* In real app: send notification */ });
+        showToast('Reminders sent to <strong>' + missing.length + ' teacher' + (missing.length > 1 ? 's' : '') + '</strong> who haven\'t submitted yet.', 'warning');
+    }
+
+    // ── countdown timer ──
+    function startTcCountdown() {
+        function update() {
+            const el = document.getElementById('tcCountdownVal');
+            if (!el) return;
+            const now = new Date();
+            const deadline = new Date();
+            deadline.setHours(9, 30, 0, 0);
+            const diff = deadline - now;
+            if (diff <= 0) {
+                el.textContent = 'Deadline passed';
+                el.style.color = '#dc2626';
+            } else {
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                el.textContent = (h > 0 ? h + 'h ' : '') + m + 'm ' + s + 's';
+                el.style.color = diff < 1800000 ? '#dc2626' : '#ea580c';
+            }
+        }
+        update();
+        setInterval(update, 1000);
     }
 
     function buildTeacherComplianceCharts() {
-        const statuses = getTeacherStatuses();
-        const sub  = statuses.filter(t=>t.status==='submitted').length;
-        const late = statuses.filter(t=>t.status==='late').length;
-        const miss = statuses.filter(t=>t.status==='missing').length;
+        var statuses = getTeacherStatuses();
+        var sub   = statuses.filter(function(t){ return t.status === 'submitted'; }).length;
+        var late  = statuses.filter(function(t){ return t.status === 'late'; }).length;
+        var miss  = statuses.filter(function(t){ return t.status === 'missing'; }).length;
+        var total = statuses.length;
+        var pct   = total ? Math.round(((sub + late) / total) * 100) : 0;
 
-        // Doughnut
-        const ctx1 = document.getElementById('chartTeacherComp');
+        // Centre label
+        var cpEl = document.getElementById('tcCompPct');
+        if (cpEl) { cpEl.textContent = pct + '%'; cpEl.style.color = pct>=80?'#16a34a':pct>=50?'#ea580c':'#dc2626'; }
+
+        // 1. TODAY Doughnut with readable tooltips + data labels drawn on segments
+        var ctx1 = document.getElementById('chartTeacherComp');
         if (ctx1) {
-            new Chart(ctx1, {
-                type:'doughnut',
-                data:{
-                    labels:['Submitted','Late','Missing'],
-                    datasets:[{ data:[sub,late,miss], backgroundColor:['#22c55e','#f59e0b','#ef4444'], borderWidth:0, hoverOffset:6 }]
+            if (ctx1._chartInstance) ctx1._chartInstance.destroy();
+            // Inline plugin: draws value + % on each non-zero doughnut segment
+            var doughnutLabelPlugin = {
+                id: 'tcDoughnutLabels',
+                afterDatasetsDraw: function(chart) {
+                    var ctx = chart.ctx;
+                    ctx.save();
+                    chart.data.datasets.forEach(function(dataset, di) {
+                        var meta = chart.getDatasetMeta(di);
+                        meta.data.forEach(function(arc, i) {
+                            var val = dataset.data[i];
+                            if (!val || val === 0) return;
+                            var pctVal = total ? Math.round((val / total) * 100) : 0;
+                            var midAngle = arc.startAngle + (arc.endAngle - arc.startAngle) / 2;
+                            var outerR   = arc.outerRadius;
+                            var innerR   = arc.innerRadius;
+                            var r        = innerR + (outerR - innerR) * 0.55;
+                            var x = arc.x + r * Math.cos(midAngle);
+                            var y = arc.y + r * Math.sin(midAngle);
+                            ctx.fillStyle    = '#fff';
+                            ctx.font         = 'bold 11px Inter,sans-serif';
+                            ctx.textAlign    = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(val, x, y - 6);
+                            ctx.font      = '9px Inter,sans-serif';
+                            ctx.fillStyle = 'rgba(255,255,255,.85)';
+                            ctx.fillText(pctVal + '%', x, y + 6);
+                        });
+                    });
+                    ctx.restore();
+                }
+            };
+            ctx1._chartInstance = new Chart(ctx1, {
+                type: 'doughnut',
+                data: { labels:['On Time','Late','Missing'],
+                    datasets:[{ data:[sub,late,miss], backgroundColor:['#22c55e','#f59e0b','#ef4444'], borderWidth:3, borderColor:'#fff', hoverOffset:8 }] },
+                options: { responsive:true, maintainAspectRatio:true, cutout:'68%',
+                    plugins: { legend:{display:false},
+                        tooltip:{ callbacks:{
+                            label:function(c){ var v=c.parsed, p=total?Math.round((v/total)*100):0; return ' '+c.label+': '+v+' teacher'+(v!==1?'s':'')+' ('+p+'%)'; },
+                            afterLabel:function(c){ var m={'On Time':'Submitted before 9:30 AM deadline','Late':'Submitted after 9:30 AM deadline','Missing':'No submission recorded today'}; return m[c.label]||''; }
+                        }}
+                    }
                 },
-                options:{responsive:true,maintainAspectRatio:true,cutout:'68%',
-                    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': '+c.parsed+' teacher(s)'}}}}
+                plugins: [doughnutLabelPlugin]
             });
         }
 
-        // Legend
-        const leg = document.getElementById('tcChartLegend');
+        // Legend with counts + % + description
+        var leg = document.getElementById('tcChartLegend');
         if (leg) {
-            leg.innerHTML = [
-                {color:'#22c55e',label:`Submitted on time`,val:sub},
-                {color:'#f59e0b',label:`Submitted late`,    val:late},
-                {color:'#ef4444',label:`Not submitted`,      val:miss},
-            ].map(l=>`<div style="display:flex;align-items:center;justify-content:space-between;font-size:.75rem;">
-                <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${l.color};margin-right:5px;"></span>${l.label}</span>
-                <span class="fw-bold" style="color:${l.color};">${l.val}</span>
-            </div>`).join('');
+            var items = [
+                {color:'#22c55e',label:'Submitted on time',val:sub, desc:'Before 9:30 AM deadline'},
+                {color:'#f59e0b',label:'Submitted late',   val:late,desc:'After 9:30 AM deadline'},
+                {color:'#ef4444',label:'Not submitted',    val:miss,desc:'No attendance record yet'}
+            ];
+            leg.innerHTML = items.map(function(l){
+                var p = total ? Math.round((l.val/total)*100) : 0;
+                return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border-color,#f1f5f9);">'
+                    +'<span style="width:10px;height:10px;border-radius:50%;background:'+l.color+';flex-shrink:0;display:inline-block;"></span>'
+                    +'<div style="flex:1;min-width:0;"><div style="font-size:.78rem;font-weight:700;color:var(--text-primary,#0f172a);">'+l.label+'</div>'
+                    +'<div style="font-size:.68rem;color:#94a3b8;">'+l.desc+'</div></div>'
+                    +'<div style="text-align:right;flex-shrink:0;">'
+                    +'<span style="font-size:.9rem;font-weight:800;color:'+l.color+';">'+l.val+'</span>'
+                    +'<span style="font-size:.7rem;color:#94a3b8;"> / '+total+'</span>'
+                    +'<div style="font-size:.68rem;font-weight:700;color:'+l.color+';">'+p+'%</div>'
+                    +'</div></div>';
+            }).join('');
         }
 
-        // Weekly bar
-        const ctx2 = document.getElementById('chartTeacherWeek');
+        // 2. Weekly bar chart with readable Y axis labels
+        var onTimeArr = [0,1,2,3,4].map(function(di){ return TEACHERS.filter(function(t){ return (t.weekHistory||[])[di]===1; }).length; });
+        var lateArr   = [0,1,2,3,4].map(function(di){ return di%2===0?1:0; });
+        var missArr   = onTimeArr.map(function(v,i){ return Math.max(0,total-v-lateArr[i]); });
+        var ctx2 = document.getElementById('chartTeacherWeek');
         if (ctx2) {
-            const days = ['Mon','Tue','Wed','Thu','Fri'];
-            new Chart(ctx2, {
+            if (ctx2._chartInstance) ctx2._chartInstance.destroy();
+            // Inline plugin: draws value on top of each bar segment
+            var barLabelPlugin = {
+                id: 'tcBarLabels',
+                afterDatasetsDraw: function(chart) {
+                    var ctx = chart.ctx;
+                    ctx.save();
+                    // Only label the top-most visible bar in each column (the stacked total)
+                    var totals = chart.data.labels.map(function(_, li) {
+                        return chart.data.datasets.reduce(function(sum, ds) { return sum + (ds.data[li] || 0); }, 0);
+                    });
+                    // Draw total above each column using the last dataset meta
+                    var lastMeta = chart.getDatasetMeta(chart.data.datasets.length - 1);
+                    lastMeta.data.forEach(function(bar, i) {
+                        var total_val = totals[i];
+                        if (!total_val) return;
+                        var pctVal = total ? Math.round((total_val / total) * 100) : 0;
+                        var x = bar.x;
+                        var y = bar.y - 6;
+                        ctx.fillStyle    = isDark() ? '#f8fafc' : '#0f172a';
+                        ctx.font         = 'bold 10px Inter,sans-serif';
+                        ctx.textAlign    = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.fillText(total_val + '/' + total, x, y);
+                    });
+                    // Draw individual segment values inside each bar if tall enough
+                    chart.data.datasets.forEach(function(dataset, di) {
+                        var meta = chart.getDatasetMeta(di);
+                        var bgColor = ['#fff','#fff','#fff'][di];
+                        meta.data.forEach(function(bar, i) {
+                            var val = dataset.data[i];
+                            if (!val || val === 0) return;
+                            var barH = bar.base - bar.y;
+                            if (barH < 14) return; // too thin to label
+                            var x = bar.x;
+                            var y = bar.y + barH / 2;
+                            ctx.fillStyle    = 'rgba(255,255,255,.9)';
+                            ctx.font         = 'bold 10px Inter,sans-serif';
+                            ctx.textAlign    = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(val, x, y);
+                        });
+                    });
+                    ctx.restore();
+                }
+            };
+            ctx2._chartInstance = new Chart(ctx2, {
                 type:'bar',
-                data:{
-                    labels:days,
+                data:{ labels:['Mon','Tue','Wed','Thu','Fri'],
                     datasets:[
-                        {label:'On Time',data:[5,6,4,5,sub], backgroundColor:'#22c55ecc', borderRadius:5},
-                        {label:'Late',   data:[1,0,2,1,late], backgroundColor:'#f59e0bcc', borderRadius:5},
-                        {label:'Missing',data:[0,0,0,0,miss], backgroundColor:'#ef4444cc', borderRadius:5},
+                        {label:'On Time',data:onTimeArr,backgroundColor:'#22c55ecc',borderRadius:5},
+                        {label:'Late',   data:lateArr,  backgroundColor:'#f59e0bcc',borderRadius:5},
+                        {label:'Missing',data:missArr,  backgroundColor:'#ef4444cc',borderRadius:5}
                     ]
                 },
-                options:{responsive:true,maintainAspectRatio:true,
-                    plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10},color:textColor()}}},
+                options:{ responsive:true, maintainAspectRatio:true,
+                    layout: { padding: { top: 18 } },
+                    plugins:{ legend:{position:'bottom',labels:{boxWidth:10,font:{size:10},color:textColor()}},
+                        tooltip:{callbacks:{
+                            title:function(i){ return 'Week — '+i[0].label; },
+                            label:function(c){ var v=c.parsed.y, p=total?Math.round((v/total)*100):0; return ' '+c.dataset.label+': '+v+' teacher'+(v!==1?'s':'')+' ('+p+'%)'; }
+                        }}
+                    },
                     scales:{
                         x:{stacked:true,grid:{display:false},ticks:{color:textColor(),font:{size:10}}},
-                        y:{stacked:true,max:7,grid:{color:gridColor()},ticks:{color:textColor(),font:{size:10},stepSize:1}}
+                        y:{stacked:true,max:total+1,grid:{color:gridColor()},
+                            ticks:{color:textColor(),font:{size:10},stepSize:1,callback:function(v){ return v+'/'+total; }}}
                     }
-                }
+                },
+                plugins: [barLabelPlugin]
             });
+        }
+
+        // Summary pills below weekly chart
+        var wkSumEl = document.getElementById('tcWeekSummary');
+        if (wkSumEl) {
+            var bestIdx  = onTimeArr.indexOf(Math.max.apply(null,onTimeArr));
+            var worstIdx = missArr.indexOf(Math.max.apply(null,missArr));
+            var fullDays = onTimeArr.filter(function(v,i){ return v+lateArr[i]>=total; }).length;
+            var dn = ['Mon','Tue','Wed','Thu','Fri'];
+            wkSumEl.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">'
+                +_kpiPill('Best Day',dn[bestIdx],'#16a34a','#f0fdf4')
+                +_kpiPill('Most Missed',dn[worstIdx],'#dc2626','#fef2f2')
+                +_kpiPill('Full Days',fullDays+' / 5','#2563eb','#eff6ff')
+                +'</div>';
+        }
+
+        // 3. Weekly Compliance Score — per-day bars with numbers
+        var wsEl = document.getElementById('tcWeekScore');
+        if (wsEl) {
+            var weekPcts   = [0,1,2,3,4].map(function(di){ var on=TEACHERS.filter(function(t){ return (t.weekHistory||[])[di]===1; }).length; return total?Math.round((on/total)*100):0; });
+            var weekCounts = [0,1,2,3,4].map(function(di){ return TEACHERS.filter(function(t){ return (t.weekHistory||[])[di]===1; }).length; });
+            var avgWeek    = Math.round(weekPcts.reduce(function(a,b){ return a+b; },0)/weekPcts.length);
+            var sc         = avgWeek>=80?'#16a34a':avgWeek>=60?'#ea580c':'#dc2626';
+            var grade      = avgWeek>=90?'Excellent':avgWeek>=75?'Good':avgWeek>=60?'Average':'Poor';
+            var dn2        = ['Mon','Tue','Wed','Thu','Fri'];
+            wsEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+                +'<div><div style="font-size:.82rem;font-weight:700;color:var(--text-primary,#0f172a);">Weekly Average</div>'
+                +'<div style="font-size:.68rem;color:#94a3b8;">'+total+' teachers × 5 days</div></div>'
+                +'<div style="text-align:right;">'
+                +'<div style="font-size:1.5rem;font-weight:900;color:'+sc+';line-height:1;">'+avgWeek+'%</div>'
+                +'<span style="background:'+sc+'18;color:'+sc+';border-radius:999px;padding:2px 8px;font-size:.65rem;font-weight:700;">'+grade+'</span>'
+                +'</div></div>'
+                +'<div style="height:8px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-bottom:14px;">'
+                +'<div style="height:100%;width:'+avgWeek+'%;background:'+sc+';border-radius:99px;transition:width .6s;"></div></div>'
+                +dn2.map(function(day,i){
+                    var p=weekPcts[i],cnt=weekCounts[i],cl=p>=80?'#16a34a':p>=60?'#ea580c':'#dc2626';
+                    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+                        +'<span style="min-width:30px;font-size:.76rem;font-weight:600;color:#94a3b8;">'+day+'</span>'
+                        +'<div style="flex:1;height:7px;border-radius:99px;background:#e2e8f0;overflow:hidden;">'
+                        +'<div style="height:100%;width:'+p+'%;background:'+cl+';border-radius:99px;transition:width .6s;"></div></div>'
+                        +'<span style="min-width:32px;font-size:.75rem;font-weight:800;color:'+cl+';text-align:right;">'+p+'%</span>'
+                        +'<span style="min-width:36px;font-size:.68rem;color:#94a3b8;text-align:right;">'+cnt+'/'+total+'</span>'
+                        +'</div>';
+                }).join('')
+                +'<div style="margin-top:10px;padding:9px 11px;background:var(--bg-secondary,#f8fafc);border-radius:10px;font-size:.72rem;color:var(--text-muted,#64748b);">'
+                +'<i class="bi bi-lightbulb-fill me-1" style="color:#f59e0b;"></i>'
+                +(avgWeek>=80?'Great week! Most teachers are consistently submitting on time.':avgWeek>=60?'A few teachers are missing submissions. Consider sending reminders.':'Compliance is low this week. Immediate action recommended.')
+                +'</div>';
+        }
+
+        // Leaderboard with mini progress bars
+        var lbEl = document.getElementById('tcLeaderboard');
+        if (lbEl) {
+            var statuses2 = getTeacherStatuses();
+            var maxPts    = 3 + 5*2;
+            var scored    = TEACHERS.map(function(t){
+                var st=statuses2.find(function(x){ return x.id===t.id; });
+                var td=st?(st.status==='submitted'?3:st.status==='late'?1:0):0;
+                var wk=(t.weekHistory||[]).reduce(function(a,v){ return a+(v?2:0); },0);
+                return Object.assign({},t,{score:td+wk,todayStatus:st?st.status:'missing'});
+            }).sort(function(a,b){ return b.score-a.score; });
+            lbEl.innerHTML = scored.map(function(t,i){
+                var medal   = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
+                var stColor = t.todayStatus==='submitted'?'#16a34a':t.todayStatus==='late'?'#ea580c':'#dc2626';
+                var stText  = t.todayStatus==='submitted'?'✓ Today':t.todayStatus==='late'?'⚠ Late':'✗ Missing';
+                var barPct  = Math.round((t.score/maxPts)*100);
+                return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color,#f1f5f9);">'
+                    +'<span style="min-width:22px;font-size:.85rem;">'+medal+'</span>'
+                    +'<img src="'+t.photo+'" style="width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0;" alt="" onerror="this.src=\'https://i.pravatar.cc/60?u='+t.id+'\'">'
+                    +'<div style="flex:1;min-width:0;">'
+                    +'<div style="font-size:.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-primary,#0f172a);">'+t.name+'</div>'
+                    +'<div style="height:4px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:3px;">'
+                    +'<div style="height:100%;width:'+barPct+'%;background:'+stColor+';border-radius:99px;"></div></div>'
+                    +'</div>'
+                    +'<div style="text-align:right;flex-shrink:0;">'
+                    +'<span style="font-size:.72rem;font-weight:700;color:'+stColor+';">'+stText+'</span>'
+                    +'<div style="font-size:.65rem;color:#94a3b8;">'+t.score+' pts</div>'
+                    +'</div></div>';
+            }).join('');
         }
     }
 
-    function buildTeacherCompliance() {
-        const today = new Date();
-        const el = document.getElementById('tcDateLabel');
-        if (el) el.textContent = today.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-        renderTeacherList();
-        buildTeacherComplianceCharts();
+    function _kpiPill(label, val, color, bg) {
+        return '<div style="background:'+bg+';border-radius:10px;padding:6px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;min-width:72px;">'
+            +'<span style="font-size:.92rem;font-weight:800;color:'+color+';">'+val+'</span>'
+            +'<span style="font-size:.62rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">'+label+'</span>'
+            +'</div>';
+    }
+    function _kpiPill(label, val, color, bg) {
+        return '<div style="background:' + bg + ';border-radius:10px;padding:6px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;min-width:72px;">'
+            + '<span style="font-size:.92rem;font-weight:800;color:' + color + ';">' + val + '</span>'
+            + '<span style="font-size:.62rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">' + label + '</span>'
+            + '</div>';
     }
 
     // ═══════════════════════════════════════════════════

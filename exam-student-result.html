@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Result - Bright Future School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .att-tab-nav{display:flex;gap:2px;background:var(--bg-secondary,#f8fafc);border:1.5px solid var(--border-color,#e2e8f0);border-radius:14px;padding:4px;}
+        .att-tab-btn{flex:1;border:none;background:transparent;border-radius:10px;padding:9px 12px;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--text-muted,#64748b);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;}
+        .att-tab-btn.active{background:#fff;color:var(--primary,#2563eb);box-shadow:0 2px 10px rgba(0,0,0,.08);}
+        .att-tab-btn:hover:not(.active){background:rgba(37,99,235,.06);color:var(--primary,#2563eb);}
+        .att-tab-panel{display:none;animation:fadeUp .22s ease;}
+        .att-tab-panel.active{display:block;}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .student-hero{background:linear-gradient(135deg,#1d4ed8 0%,#7c3aed 55%,#0d9488 100%);border-radius:20px;padding:2rem 2.5rem;color:#fff;position:relative;overflow:hidden;margin-bottom:1.8rem;}
+        .student-hero::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none;}
+        .student-hero::after{content:'';position:absolute;bottom:-80px;right:80px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;}
+        .grade-big{display:inline-flex;align-items:center;justify-content:center;width:70px;height:70px;border-radius:18px;font-size:2rem;font-weight:900;border:3px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);}
+        .result-card{background:#fff;border:1.5px solid #e8edf5;border-radius:18px;padding:2rem;}
+        .result-detail-row{display:flex;padding:10px 0;border-bottom:1px solid #f1f5f9;}
+        .result-detail-row:last-child{border-bottom:none;}
+        .result-detail-label{min-width:180px;font-size:.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;}
+        .result-detail-val{font-size:.9rem;font-weight:600;color:#1e293b;}
+        .chart-card{background:var(--card-bg,#fff);border:1.5px solid var(--border-color,#e8edf5);border-radius:18px;padding:1.4rem;height:100%;}
+        .chart-card .chart-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted,#94a3b8);margin-bottom:1rem;display:flex;align-items:center;gap:6px;}
+        .grade-visual{border-radius:20px;padding:2.5rem;text-align:center;background:linear-gradient(135deg,#f8fafc,#eff6ff);border:1.5px solid #e2e8f0;}
+        .grade-display{font-size:5rem;font-weight:900;line-height:1;}
+        .rec-card{border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:flex-start;gap:14px;}
+        .rec-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+        .action-bar{position:sticky;bottom:0;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-top:1.5px solid #e2e8f0;padding:1rem 2rem;display:flex;justify-content:flex-end;gap:12px;margin-top:2rem;border-radius:0 0 18px 18px;}
+        .pass-status-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:12px;font-weight:800;font-size:1.1rem;}
+        .pass-badge{background:#dcfce7;color:#15803d;border:2px solid #86efac;}
+        .fail-badge{background:#fee2e2;color:#b91c1c;border:2px solid #fca5a5;}
+        @media print{
+            #sidebar,#content .main-header,.action-bar,.att-tab-nav{display:none!important;}
+            #content{margin-left:0!important;width:100%!important;}
+            .att-tab-panel{display:block!important;}
+        }
+        body.dark-theme .result-card{background:#1e293b;border-color:#334155;}
+        body.dark-theme .chart-card{background:#1e293b;border-color:#334155;}
+        body.dark-theme .grade-visual{background:linear-gradient(135deg,#0f172a,#1e293b);border-color:#334155;}
+        body.dark-theme .att-tab-btn.active{background:#1e293b;}
+        body.dark-theme .att-tab-nav{background:#0f172a;border-color:#334155;}
+    </style>
+</head>
+<body>
+<nav id="sidebar">
+    <div>
+        <div class="sidebar-brand text-white">
+            <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+            <h5 class="mb-0 fw-bold">Bright Future</h5>
+            <small class="opacity-50">School SMS</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+            <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+            <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+            <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+            <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+            <div class="nav-item"><a href="examinations.html" class="nav-link active"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+            <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+            <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+            <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+            <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+            <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+        </div>
+    </div>
+    <a href="#" class="sidebar-logout-card"><i class="bi bi-box-arrow-left"></i><span class="fw-medium">Logout</span></a>
+</nav>
+<div id="content">
+    <header class="main-header">
+        <div class="d-flex align-items-center">
+            <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+            <div>
+                <h4 class="mb-0 fw-bold" id="pageTitle">Student Result</h4>
+                <small class="text-muted" id="pageSubtitle">Detailed result profile</small>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-4">
+            <div class="search-bar d-none d-md-flex">
+                <i class="bi bi-search text-muted"></i>
+                <input type="text" placeholder="Search anything...">
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="position-relative">
+                    <i class="bi bi-bell fs-5 cursor-pointer"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border-start ps-3">
+                    <div class="text-end d-none d-sm-block"><div class="fw-bold lh-1">Admin</div><small class="text-muted">Administrator</small></div>
+                    <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                    <i class="bi bi-chevron-down text-muted small"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid p-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="examinations.html" class="text-decoration-none">Examinations</a></li>
+                <li class="breadcrumb-item"><a href="#" id="bcExam" class="text-decoration-none">Exam</a></li>
+                <li class="breadcrumb-item">Results</li>
+                <li class="breadcrumb-item active" id="bcStudent">Student</li>
+            </ol>
+        </nav>
+        <!-- Hero Banner -->
+        <div class="student-hero">
+            <div class="row align-items-center g-4">
+                <div class="col-auto">
+                    <img id="heroPhoto" src="https://i.pravatar.cc/150?img=1" style="width:90px;height:90px;border-radius:50%;border:4px solid rgba(255,255,255,.4);object-fit:cover;">
+                </div>
+                <div class="col">
+                    <h2 class="fw-bold mb-1" id="heroName">Student Name</h2>
+                    <div style="opacity:.75;font-size:.9rem;" id="heroMeta">Class · Exam Name · Subject · Date</div>
+                    <div class="mt-2" id="heroPassStatus"></div>
+                </div>
+                <div class="col-auto text-center">
+                    <div class="grade-big mb-2" id="heroGrade">—</div>
+                    <div style="font-size:.7rem;opacity:.7;text-transform:uppercase;letter-spacing:.06em;">Grade</div>
+                </div>
+                <div class="col-auto text-center">
+                    <div style="font-size:2.2rem;font-weight:900;line-height:1;" id="heroScore">—</div>
+                    <div style="font-size:.7rem;opacity:.7;text-transform:uppercase;letter-spacing:.06em;">Score</div>
+                </div>
+                <div class="col-auto text-center">
+                    <div style="font-size:2.2rem;font-weight:900;line-height:1;" id="heroRank">—</div>
+                    <div style="font-size:.7rem;opacity:.7;text-transform:uppercase;letter-spacing:.06em;">Rank</div>
+                </div>
+            </div>
+        </div>
+        <!-- Tabs -->
+        <div class="att-tab-nav mb-4" id="resultTabNav">
+            <button class="att-tab-btn active" data-tab="card"><i class="bi bi-card-text"></i> Result Card</button>
+            <button class="att-tab-btn" data-tab="perf"><i class="bi bi-bar-chart-fill"></i> Performance Analysis</button>
+            <button class="att-tab-btn" data-tab="grade"><i class="bi bi-award-fill"></i> Grade Breakdown</button>
+            <button class="att-tab-btn" data-tab="rec"><i class="bi bi-lightbulb-fill"></i> Recommendations</button>
+        </div>
+        <!-- Tab: Result Card -->
+        <div class="att-tab-panel active" id="tab-card">
+            <div class="result-card" id="printableCard">
+                <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://img.icons8.com/color/96/graduation-cap.png" style="width:48px;">
+                        <div>
+                            <div class="fw-bold fs-5">Bright Future School</div>
+                            <div style="font-size:.78rem;color:#94a3b8;">Official Examination Result</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary rounded-pill" onclick="window.print()">
+                        <i class="bi bi-printer me-2"></i>Print Report Card
+                    </button>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:.75rem;">Student Information</div>
+                        <div id="studentDetailsTable"></div>
+                        <div style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin:1.25rem 0 .75rem;">Exam Information</div>
+                        <div id="examDetailsTable"></div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center p-3 rounded-3" style="background:#f8fafc;border:1.5px solid #e2e8f0;">
+                            <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:1rem;">Final Result</div>
+                            <div id="cardGradeDisplay" style="font-size:4rem;font-weight:900;line-height:1;margin-bottom:.5rem;">—</div>
+                            <div id="cardPassStatus" class="mb-3"></div>
+                            <div class="row g-2 w-100">
+                                <div class="col-6">
+                                    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;">
+                                        <div class="fw-bold fs-5" id="cardScore">—</div>
+                                        <div style="font-size:.7rem;color:#94a3b8;">Marks Obtained</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;">
+                                        <div class="fw-bold fs-5" id="cardPct">—</div>
+                                        <div style="font-size:.7rem;color:#94a3b8;">Percentage</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;">
+                                        <div class="fw-bold fs-5" id="cardRank">—</div>
+                                        <div style="font-size:.7rem;color:#94a3b8;">Class Rank</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;">
+                                        <div class="fw-bold fs-5" id="cardPass">—</div>
+                                        <div style="font-size:.7rem;color:#94a3b8;">Pass Marks</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Tab: Performance Analysis -->
+        <div class="att-tab-panel" id="tab-perf">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-bar-chart-fill" style="color:#2563eb"></i> Score vs Class Average</div>
+                        <canvas id="chartAvgComp" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-graph-up" style="color:#10b981"></i> Performance Trend (Simulated)</div>
+                        <canvas id="chartTrend" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-people-fill" style="color:#f59e0b"></i> Class Rank Distribution</div>
+                        <div id="rankDistPanel"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Tab: Grade Breakdown -->
+        <div class="att-tab-panel" id="tab-grade">
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-6">
+                    <div class="grade-visual">
+                        <div class="grade-display mb-3" id="gradeDisplay">—</div>
+                        <div id="gradeLabel" class="fw-bold fs-5 mb-2">Grade Label</div>
+                        <div id="gradeMeaning" style="color:#64748b;font-size:.9rem;margin-bottom:1.5rem;"></div>
+                        <div id="nextGradeHint" style="font-size:.85rem;font-weight:600;"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-grid-fill" style="color:#7c3aed"></i> Grade Scale</div>
+                        <div id="gradeScaleTable"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Tab: Recommendations -->
+        <div class="att-tab-panel" id="tab-rec">
+            <div id="recPanel" class="row g-4"></div>
+        </div>
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <button class="btn btn-light rounded-pill px-4" id="backResultsBtn"><i class="bi bi-arrow-left me-2"></i>Back to Results</button>
+            <button class="btn btn-outline-primary rounded-pill px-4" id="editMarksBtn"><i class="bi bi-pencil me-2"></i>Edit Marks</button>
+            <button class="btn btn-primary rounded-pill px-4" onclick="window.print()"><i class="bi bi-printer me-2"></i>Print Report Card</button>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+<script>
+var EXAM_STUDENTS={
+    'cls-10a':[
+        {id:'S10001',name:'Aiden Clarke',  roll:'01',photo:'https://i.pravatar.cc/150?img=8'},
+        {id:'S10002',name:'Priya Sharma',  roll:'02',photo:'https://i.pravatar.cc/150?img=47'},
+        {id:'S10003',name:'Luca Ferrari',  roll:'03',photo:'https://i.pravatar.cc/150?img=15'},
+        {id:'S10004',name:'Sofia Garcia',  roll:'04',photo:'https://i.pravatar.cc/150?img=45'},
+        {id:'S10005',name:'Yuki Tanaka',   roll:'05',photo:'https://i.pravatar.cc/150?img=49'},
+        {id:'S10006',name:'Ethan Moore',   roll:'06',photo:'https://i.pravatar.cc/150?img=18'},
+    ],
+    'cls-10b':[
+        {id:'S10007',name:'Amara Osei',   roll:'01',photo:'https://i.pravatar.cc/150?img=44'},
+        {id:'S10008',name:"Finn O'Brien", roll:'02',photo:'https://i.pravatar.cc/150?img=12'},
+        {id:'S10009',name:'Mei Ling',     roll:'03',photo:'https://i.pravatar.cc/150?img=43'},
+    ],
+    'cls-9a':[
+        {id:'S09001',name:'Carlos Rivera',roll:'01',photo:'https://i.pravatar.cc/150?img=7'},
+        {id:'S09002',name:'Anya Patel',   roll:'02',photo:'https://i.pravatar.cc/150?img=48'},
+        {id:'S09003',name:'Jack Thompson',roll:'03',photo:'https://i.pravatar.cc/150?img=11'},
+        {id:'S09004',name:'Nina Volkov',  roll:'04',photo:'https://i.pravatar.cc/150?img=46'},
+    ],
+    'cls-9b':[
+        {id:'S09005',name:'Omar Hassan',roll:'01',photo:'https://i.pravatar.cc/150?img=6'},
+        {id:'S09006',name:'Elena Cruz',  roll:'02',photo:'https://i.pravatar.cc/150?img=41'},
+        {id:'S09007',name:'Ravi Kumar',  roll:'03',photo:'https://i.pravatar.cc/150?img=14'},
+    ],
+    'cls-5a':[
+        {id:'S05001',name:'Lily Johnson', roll:'01',photo:'https://i.pravatar.cc/150?img=50'},
+        {id:'S05002',name:'Noah Williams',roll:'02',photo:'https://i.pravatar.cc/150?img=3'},
+        {id:'S05003',name:'Zara Ahmed',   roll:'03',photo:'https://i.pravatar.cc/150?img=42'},
+    ],
+    'cls-5b':[
+        {id:'S05004',name:'Leo Nguyen', roll:'01',photo:'https://i.pravatar.cc/150?img=4'},
+        {id:'S05005',name:'Grace Kim',  roll:'02',photo:'https://i.pravatar.cc/150?img=51'},
+        {id:'S05006',name:'Adam Okafor',roll:'03',photo:'https://i.pravatar.cc/150?img=5'},
+    ],
+};
+var DEFAULT_EXAMS=[
+    {id:'EX001',name:'Mid Term Test',  type:'Mid Term', classId:'cls-10a',className:'Class 10 - A',subject:'Mathematics',  date:'2026-05-24',time:'09:00',room:'Room 302',   maxMarks:100,passMarks:40,duration:180,status:'completed',invigilator:'Sarah Jenkins'},
+    {id:'EX002',name:'Annual Exam',    type:'Annual',   classId:'cls-10a',className:'Class 10 - A',subject:'Science',       date:'2026-06-26',time:'10:00',room:'Exam Hall B',maxMarks:100,passMarks:35,duration:180,status:'upcoming', invigilator:'Emily Watson'},
+    {id:'EX003',name:'Unit Test 1',    type:'Unit Test',classId:'cls-9a', className:'Class 9 - A', subject:'English',       date:'2026-06-28',time:'09:00',room:'Room 201',   maxMarks:50, passMarks:20,duration:90, status:'upcoming', invigilator:'David Miller'},
+    {id:'EX004',name:'Pre-Board Exam', type:'Pre-Board',classId:'cls-10b',className:'Class 10 - B',subject:'History',       date:'2026-07-10',time:'10:00',room:'Exam Hall A',maxMarks:100,passMarks:40,duration:180,status:'upcoming', invigilator:'Arjun Mehta'},
+    {id:'EX005',name:'Class Test',     type:'Unit Test',classId:'cls-9b', className:'Class 9 - B', subject:'Geography',     date:'2026-05-15',time:'11:00',room:'Room 203',   maxMarks:50, passMarks:20,duration:60, status:'completed',invigilator:'Maria Rossi'},
+    {id:'EX006',name:'Terminal Exam',  type:'Terminal', classId:'cls-5a', className:'Class 5 - A', subject:'Computer Sci.', date:'2026-06-05',time:'09:30',room:'Room 105',   maxMarks:100,passMarks:40,duration:120,status:'completed',invigilator:'Ananya Mehta'},
+];
+var chartInstances={};
+var pageData={};
+function calcGrade(marks,maxMarks){
+    var pct=marks/maxMarks*100;
+    if(pct>=95)return 'A+';if(pct>=85)return 'A';if(pct>=75)return 'B+';
+    if(pct>=65)return 'B';if(pct>=55)return 'C+';if(pct>=45)return 'C';
+    return 'F';
+}
+function gradeColor(grade){
+    var map={'A+':'#15803d','A':'#1e40af','B+':'#7e22ce','B':'#c2410c','C+':'#a16207','C':'#dc2626','F':'#7f1d1d'};
+    return map[grade]||'#1e293b';
+}
+function gradeBg(grade){
+    var map={'A+':'#dcfce7','A':'#dbeafe','B+':'#f3e8ff','B':'#ffedd5','C+':'#fef9c3','C':'#fee2e2','F':'#fecaca'};
+    return map[grade]||'#f1f5f9';
+}
+function genDefaultMarks(exam){
+    var students=EXAM_STUDENTS[exam.classId]||[];
+    var marks={};
+    students.forEach(function(st,i){
+        var base=60+((st.id.charCodeAt(st.id.length-1)*7+i*13)%35);
+        var m=Math.min(base,exam.maxMarks);
+        marks[st.id]={marks:m,grade:calcGrade(m,exam.maxMarks),remarks:'Auto-generated'};
+    });
+    return marks;
+}
+function makeDetailRow(label,val){
+    return '<div class="result-detail-row"><div class="result-detail-label">'+label+'</div><div class="result-detail-val">'+val+'</div></div>';
+}
+function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id];}}
+function init(){
+    var params=new URLSearchParams(window.location.search);
+    var examId=params.get('exam');
+    var studentId=params.get('student');
+    if(!examId||!studentId){document.getElementById('heroName').textContent='Missing parameters.';return;}
+    var raw=localStorage.getItem('exams-db');
+    var exams=raw?JSON.parse(raw):DEFAULT_EXAMS;
+    var exam=exams.find(function(e){return e.id===examId;})||DEFAULT_EXAMS.find(function(e){return e.id===examId;});
+    if(!exam){document.getElementById('heroName').textContent='Exam not found.';return;}
+    var allStudents=EXAM_STUDENTS[exam.classId]||[];
+    var student=null;
+    allStudents.forEach(function(s){if(s.id===studentId)student=s;});
+    if(!student){document.getElementById('heroName').textContent='Student not found.';return;}
+    var saved=JSON.parse(localStorage.getItem('exam-marks-'+examId)||'null')||genDefaultMarks(exam);
+    var studentMarks=saved[studentId]||{marks:0,grade:'F',remarks:''};
+    var marks=studentMarks.marks!==null&&studentMarks.marks!==undefined?studentMarks.marks:0;
+    var grade=calcGrade(marks,exam.maxMarks);
+    var pct=Math.round(marks/exam.maxMarks*100);
+    var pass=marks>=exam.passMarks;
+    // Calculate rank
+    var ranked=allStudents.map(function(st){return {id:st.id,marks:(saved[st.id]&&saved[st.id].marks!==null)?saved[st.id].marks:0};})
+        .sort(function(a,b){return b.marks-a.marks;});
+    var rank=ranked.findIndex(function(r){return r.id===studentId;})+1;
+    var classAvg=Math.round(ranked.reduce(function(s,r){return s+r.marks;},0)/ranked.length);
+    pageData={exam:exam,student:student,marks:marks,grade:grade,pct:pct,pass:pass,rank:rank,classAvg:classAvg,totalStudents:allStudents.length,saved:saved,allStudents:allStudents};
+    // Breadcrumb
+    document.getElementById('bcExam').textContent=exam.name;
+    document.getElementById('bcExam').href='exam-marks.html?exam='+examId;
+    document.getElementById('bcStudent').textContent=student.name;
+    // Page title
+    document.getElementById('pageTitle').textContent=student.name+' — '+exam.name;
+    document.getElementById('pageSubtitle').textContent=exam.className+' · '+exam.subject+' · '+exam.date;
+    // Hero
+    document.getElementById('heroPhoto').src=student.photo;
+    document.getElementById('heroName').textContent=student.name;
+    document.getElementById('heroMeta').innerHTML=exam.className+' &middot; '+exam.name+' &middot; '+exam.subject+' &middot; '+exam.date;
+    document.getElementById('heroGrade').textContent=grade;
+    document.getElementById('heroScore').textContent=marks+'/'+exam.maxMarks;
+    document.getElementById('heroRank').textContent='#'+rank;
+    var psBadge=pass?'pass-badge':'fail-badge';
+    document.getElementById('heroPassStatus').innerHTML='<span class="pass-status-badge '+psBadge+'">'+(pass?'<i class="bi bi-check-circle-fill me-2"></i>PASSED':'<i class="bi bi-x-circle-fill me-2"></i>FAILED')+'</span>';
+    // Action buttons
+    document.getElementById('backResultsBtn').onclick=function(){window.location.href='exam-marks.html?exam='+examId;};
+    document.getElementById('editMarksBtn').onclick=function(){window.location.href='exam-marks.html?exam='+examId;};
+    // Result Card tab
+    renderResultCard();
+}
+function renderResultCard(){
+    var d=pageData;
+    var stHtml=makeDetailRow('Student Name',d.student.name)
+        +makeDetailRow('Student ID',d.student.id)
+        +makeDetailRow('Roll Number',d.student.roll)
+        +makeDetailRow('Class',d.exam.className);
+    document.getElementById('studentDetailsTable').innerHTML=stHtml;
+    var exHtml=makeDetailRow('Exam Name',d.exam.name)
+        +makeDetailRow('Exam Type',d.exam.type)
+        +makeDetailRow('Subject',d.exam.subject)
+        +makeDetailRow('Date',d.exam.date+' '+d.exam.time)
+        +makeDetailRow('Venue',d.exam.room)
+        +makeDetailRow('Invigilator',d.exam.invigilator)
+        +makeDetailRow('Duration',d.exam.duration+' minutes');
+    document.getElementById('examDetailsTable').innerHTML=exHtml;
+    document.getElementById('cardGradeDisplay').textContent=d.grade;
+    document.getElementById('cardGradeDisplay').style.color=gradeColor(d.grade);
+    var passClass=d.pass?'pass-badge':'fail-badge';
+    document.getElementById('cardPassStatus').innerHTML='<span class="pass-status-badge '+passClass+'">'+(d.pass?'PASSED':'FAILED')+'</span>';
+    document.getElementById('cardScore').textContent=d.marks+'/'+d.exam.maxMarks;
+    document.getElementById('cardPct').textContent=d.pct+'%';
+    document.getElementById('cardRank').textContent='#'+d.rank+' of '+d.totalStudents;
+    document.getElementById('cardPass').textContent=d.exam.passMarks+'/'+d.exam.maxMarks;
+}
+function renderPerformanceAnalysis(){
+    var d=pageData;
+    if(!d.exam)return;
+    destroyChart('chartAvgComp');
+    chartInstances['chartAvgComp']=new Chart(document.getElementById('chartAvgComp'),{
+        type:'bar',
+        data:{
+            labels:[d.student.name.split(' ')[0],'Class Avg','School Avg'],
+            datasets:[{data:[d.marks,d.classAvg,d.classAvg+5],backgroundColor:['#3b82f6','#94a3b8','#d1d5db'],borderRadius:10}]
+        },
+        options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{max:d.exam.maxMarks,beginAtZero:true}}}
+    });
+    // Trend (simulated)
+    var prev=d.marks;
+    var trendData=[Math.max(0,prev-18),Math.max(0,prev-10),Math.max(0,prev-4),prev];
+    destroyChart('chartTrend');
+    chartInstances['chartTrend']=new Chart(document.getElementById('chartTrend'),{
+        type:'line',
+        data:{
+            labels:['Test 1','Test 2','Test 3','Current'],
+            datasets:[{label:'Score',data:trendData,fill:true,backgroundColor:'rgba(37,99,235,.1)',borderColor:'#2563eb',borderWidth:2.5,tension:.4,pointRadius:5,pointBackgroundColor:'#2563eb'}]
+        },
+        options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{max:d.exam.maxMarks,beginAtZero:true}}}
+    });
+    // Rank distribution
+    var above=d.rank-1;var below=d.totalStudents-d.rank;
+    var html='<div class="d-flex align-items-center gap-4 flex-wrap">'
+        +'<div class="text-center"><div class="fw-bold fs-3" style="color:#f59e0b;">#'+d.rank+'</div><div style="font-size:.75rem;color:#94a3b8;">Class Rank</div></div>'
+        +'<div class="text-center"><div class="fw-bold fs-5 text-success">'+below+'</div><div style="font-size:.75rem;color:#94a3b8;">Students Below</div></div>'
+        +'<div class="text-center"><div class="fw-bold fs-5 text-muted">'+above+'</div><div style="font-size:.75rem;color:#94a3b8;">Students Above</div></div>'
+        +'<div style="flex:1;min-width:200px;">'
+        +'<div class="d-flex justify-content-between mb-1" style="font-size:.78rem;"><span>Your percentile</span><span class="fw-bold">'+Math.round((below/d.totalStudents)*100)+'th</span></div>'
+        +'<div style="height:8px;border-radius:999px;background:#e2e8f0;overflow:hidden;">'
+        +'<div style="height:100%;width:'+Math.round((below/d.totalStudents)*100)+'%;background:#3b82f6;border-radius:999px;"></div></div></div>'
+        +'</div>';
+    document.getElementById('rankDistPanel').innerHTML=html;
+}
+function renderGradeBreakdown(){
+    var d=pageData;if(!d.exam)return;
+    var grade=d.grade;
+    var labels={
+        'A+':'Outstanding','A':'Excellent','B+':'Very Good','B':'Good','C+':'Above Average','C':'Average','F':'Needs Improvement'
+    };
+    var meanings={
+        'A+':'Exceptional performance. Top of the class!',
+        'A':'Excellent understanding and strong performance.',
+        'B+':'Very good grasp of the subject with minor gaps.',
+        'B':'Good performance with room for improvement.',
+        'C+':'Above average but needs more focus in key areas.',
+        'C':'Average performance. Consistent study needed.',
+        'F':'Did not meet the minimum passing criteria.'
+    };
+    document.getElementById('gradeDisplay').textContent=grade;
+    document.getElementById('gradeDisplay').style.color=gradeColor(grade);
+    document.getElementById('gradeLabel').textContent=labels[grade]||grade;
+    document.getElementById('gradeLabel').style.color=gradeColor(grade);
+    document.getElementById('gradeMeaning').textContent=meanings[grade]||'';
+    // Next grade hint
+    var nextMap={'F':'C (45%)','C':'C+ (55%)','C+':'B (65%)','B':'B+ (75%)','B+':'A (85%)','A':'A+ (95%)','A+':'You\'ve reached the top grade!'};
+    var nextGrade=nextMap[grade];
+    var gradeThresholds={'F':45,'C':55,'C+':65,'B':75,'B+':85,'A':95,'A+':null};
+    var nextPct=gradeThresholds[grade];
+    if(nextPct!==null){
+        var marksNeeded=Math.ceil(nextPct/100*d.exam.maxMarks)-d.marks;
+        document.getElementById('nextGradeHint').innerHTML='<span style="color:#2563eb;"><i class="bi bi-arrow-up-circle-fill me-2"></i>Next Grade: '+nextGrade+' — Need <b>'+marksNeeded+' more mark(s)</b> to reach next grade.</span>';
+    }else{
+        document.getElementById('nextGradeHint').innerHTML='<span style="color:#22c55e;"><i class="bi bi-check-circle-fill me-2"></i>Maximum grade achieved!</span>';
+    }
+    // Grade scale table
+    var gradeRows=[
+        {g:'A+',range:'95-100%',desc:'Outstanding'},
+        {g:'A',range:'85-94%',desc:'Excellent'},
+        {g:'B+',range:'75-84%',desc:'Very Good'},
+        {g:'B',range:'65-74%',desc:'Good'},
+        {g:'C+',range:'55-64%',desc:'Above Average'},
+        {g:'C',range:'45-54%',desc:'Average'},
+        {g:'F',range:'Below Pass',desc:'Fail'},
+    ];
+    var tHtml='<table class="table table-sm"><thead><tr><th>Grade</th><th>Range</th><th>Description</th></tr></thead><tbody>';
+    gradeRows.forEach(function(r){
+        var isCurrent=r.g===grade;
+        tHtml+='<tr style="'+(isCurrent?'background:'+gradeBg(grade)+';font-weight:700;':'')+'">'
+            +'<td><span style="background:'+gradeBg(r.g)+';color:'+gradeColor(r.g)+';border-radius:8px;padding:2px 10px;font-weight:800;font-size:.78rem;">'+r.g+'</span></td>'
+            +'<td style="font-size:.82rem;">'+r.range+'</td>'
+            +'<td style="font-size:.82rem;">'+r.desc+(isCurrent?' <i class="bi bi-check-circle-fill text-success ms-1"></i>':'')+'</td></tr>';
+    });
+    tHtml+='</tbody></table>';
+    document.getElementById('gradeScaleTable').innerHTML=tHtml;
+}
+function renderRecommendations(){
+    var d=pageData;if(!d.exam)return;
+    var recs=[];
+    if(d.grade==='F'){
+        recs=[
+            {icon:'bi-exclamation-triangle-fill',color:'#ef4444',bg:'#fee2e2',title:'Remedial Classes Needed',body:'The student has not met the minimum passing criteria. Enrollment in remedial support sessions is strongly recommended.'},
+            {icon:'bi-journal-bookmark-fill',color:'#f59e0b',bg:'#fffbeb',title:'Focus on Core Concepts',body:'Review the fundamental concepts of '+d.exam.subject+'. Start with textbook chapters and use practice worksheets.'},
+            {icon:'bi-chat-dots-fill',color:'#3b82f6',bg:'#dbeafe',title:'Parent-Teacher Meeting',body:'A meeting with parents is advised to discuss improvement strategies and set achievable targets.'},
+        ];
+    }else if(d.grade==='C'||d.grade==='C+'){
+        recs=[
+            {icon:'bi-book-fill',color:'#f59e0b',bg:'#fffbeb',title:'Consistent Study Routine',body:'Build a regular study schedule for '+d.exam.subject+'. Daily revision of 30–45 minutes can significantly boost performance.'},
+            {icon:'bi-lightbulb-fill',color:'#3b82f6',bg:'#dbeafe',title:'Practice Past Papers',body:'Solving past exam papers helps improve speed, accuracy, and confidence in the subject.'},
+            {icon:'bi-people-fill',color:'#8b5cf6',bg:'#f3e8ff',title:'Join Study Groups',body:'Collaborative learning with peers can make challenging topics easier to understand.'},
+        ];
+    }else if(d.grade==='B'||d.grade==='B+'){
+        recs=[
+            {icon:'bi-graph-up-arrow',color:'#10b981',bg:'#dcfce7',title:'Push Towards Excellence',body:'Good performance! Focus on weak areas and aim to convert B-range marks into A-range scores.'},
+            {icon:'bi-pencil-square',color:'#3b82f6',bg:'#dbeafe',title:'Improve Writing & Presentation',body:'In '+d.exam.subject+', presentation and structured answers can earn extra marks. Practice formal writing.'},
+            {icon:'bi-star-fill',color:'#f59e0b',bg:'#fffbeb',title:'Target Higher Grades',body:'With a focused effort on top-scoring questions and formula mastery, an A grade is within reach.'},
+        ];
+    }else{
+        recs=[
+            {icon:'bi-trophy-fill',color:'#f59e0b',bg:'#fffbeb',title:'Outstanding Performance!',body:'Excellent work! Maintain this level of preparation and consistency throughout the academic year.'},
+            {icon:'bi-rocket-takeoff-fill',color:'#8b5cf6',bg:'#f3e8ff',title:'Enrichment Activities',body:'Consider exploring advanced topics in '+d.exam.subject+', participating in olympiads or competitions to challenge yourself further.'},
+            {icon:'bi-award-fill',color:'#22c55e',bg:'#dcfce7',title:'Mentor Peers',body:'Sharing knowledge with classmates is a great way to reinforce your own understanding and build leadership skills.'},
+        ];
+    }
+    var html='';
+    recs.forEach(function(r){
+        html+='<div class="col-md-6 col-lg-4"><div class="rec-card" style="background:'+r.bg+';border:1.5px solid '+r.color+'22;">'
+            +'<div class="rec-icon" style="background:'+r.color+'22;color:'+r.color+';"><i class="bi '+r.icon+'"></i></div>'
+            +'<div><div class="fw-bold mb-1" style="color:'+r.color+';">'+r.title+'</div>'
+            +'<div style="font-size:.82rem;color:#475569;">'+r.body+'</div></div></div></div>';
+    });
+    document.getElementById('recPanel').innerHTML=html;
+}
+// ===== TAB SWITCHING =====
+document.getElementById('resultTabNav').addEventListener('click',function(e){
+    var btn=e.target.closest('.att-tab-btn');if(!btn)return;
+    document.querySelectorAll('#resultTabNav .att-tab-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelectorAll('.att-tab-panel').forEach(function(p){p.classList.remove('active');});
+    btn.classList.add('active');
+    var tab=btn.dataset.tab;
+    document.getElementById('tab-'+tab).classList.add('active');
+    if(tab==='perf')setTimeout(renderPerformanceAnalysis,50);
+    if(tab==='grade')renderGradeBreakdown();
+    if(tab==='rec')renderRecommendations();
+});
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

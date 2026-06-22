@@ -3,353 +3,1000 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bright Future School - Examinations</title>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5 CSS -->
+    <title>Examinations - Bright Future School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <!-- Custom Style CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .att-tab-nav{display:flex;gap:2px;background:var(--bg-secondary,#f8fafc);border:1.5px solid var(--border-color,#e2e8f0);border-radius:14px;padding:4px;}
+        .att-tab-btn{flex:1;border:none;background:transparent;border-radius:10px;padding:9px 12px;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--text-muted,#64748b);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;}
+        .att-tab-btn.active{background:#fff;color:var(--primary,#2563eb);box-shadow:0 2px 10px rgba(0,0,0,.08);}
+        .att-tab-btn:hover:not(.active){background:rgba(37,99,235,.06);color:var(--primary,#2563eb);}
+        .att-tab-panel{display:none;animation:fadeUp .22s ease;}
+        .att-tab-panel.active{display:block;}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .exam-hero{background:linear-gradient(135deg,#1d4ed8 0%,#7c3aed 55%,#0d9488 100%);border-radius:20px;padding:1.8rem 2.2rem;color:#fff;position:relative;overflow:hidden;margin-bottom:1.8rem;}
+        .exam-hero::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none;}
+        .exam-hero::after{content:'';position:absolute;bottom:-80px;right:80px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;}
+        .hero-kpi{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 18px;text-align:center;flex:1;min-width:80px;backdrop-filter:blur(10px);}
+        .hero-kpi .v{font-size:1.5rem;font-weight:800;line-height:1;}
+        .hero-kpi .l{font-size:.65rem;opacity:.75;text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}
+        .chart-card{background:var(--card-bg,#fff);border:1.5px solid var(--border-color,#e8edf5);border-radius:18px;padding:1.4rem;height:100%;}
+        .chart-card .chart-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted,#94a3b8);margin-bottom:1rem;display:flex;align-items:center;gap:6px;}
+        .badge-upcoming{background:#dbeafe;color:#1d4ed8;font-weight:700;border-radius:20px;padding:4px 12px;font-size:.72rem;}
+        .badge-active{background:#dcfce7;color:#16a34a;font-weight:700;border-radius:20px;padding:4px 12px;font-size:.72rem;}
+        .badge-completed{background:#f1f5f9;color:#64748b;font-weight:700;border-radius:20px;padding:4px 12px;font-size:.72rem;}
+        .badge-cancelled{background:#fee2e2;color:#dc2626;font-weight:700;border-radius:20px;padding:4px 12px;font-size:.72rem;}
+        .grade-chip{display:inline-block;border-radius:8px;padding:3px 10px;font-size:.72rem;font-weight:800;}
+        .grade-aplus{background:#dcfce7;color:#15803d;}
+        .grade-a{background:#dbeafe;color:#1e40af;}
+        .grade-bplus{background:#f3e8ff;color:#7e22ce;}
+        .grade-b{background:#ffedd5;color:#c2410c;}
+        .grade-cplus{background:#fef9c3;color:#a16207;}
+        .grade-c{background:#fee2e2;color:#dc2626;}
+        .grade-f{background:#fecaca;color:#7f1d1d;}
+        .exam-card-result{background:#fff;border:1.5px solid #e8edf5;border-radius:16px;padding:1.2rem;cursor:pointer;transition:all .2s;margin-bottom:1rem;}
+        .exam-card-result:hover{border-color:#2563eb;box-shadow:0 6px 24px rgba(37,99,235,.12);transform:translateY(-2px);}
+        .filter-pill{padding:.32rem 1rem;border-radius:999px;border:1.5px solid var(--border-color,#e2e8f0);background:transparent;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .18s;color:var(--text-muted,#64748b);}
+        .filter-pill.active,.filter-pill:hover{background:var(--primary,#2563eb);color:#fff;border-color:var(--primary,#2563eb);}
+
+        /* ── Improved Schedule Rows ── */
+        .exam-row-card{
+            background:var(--card-bg,#fff);
+            border:1.5px solid var(--border-color,#e8edf5);
+            border-radius:16px; padding:16px 20px;
+            margin-bottom:10px; transition:all .22s ease;
+            display:flex; align-items:center; gap:16px;
+            position:relative; overflow:hidden; cursor:default;
+        }
+        .exam-row-card::before{
+            content:''; position:absolute; left:0; top:0; bottom:0;
+            width:4px; border-radius:0 3px 3px 0;
+        }
+        .exam-row-card.status-upcoming::before  { background:#3b82f6; }
+        .exam-row-card.status-active::before    { background:#22c55e; }
+        .exam-row-card.status-completed::before { background:#94a3b8; }
+        .exam-row-card.status-cancelled::before { background:#ef4444; }
+        .exam-row-card:hover{
+            border-color:rgba(37,99,235,.2);
+            box-shadow:0 6px 24px rgba(37,99,235,.08);
+            transform:translateX(3px);
+        }
+        .exam-row-icon{
+            width:46px; height:46px; border-radius:13px; flex-shrink:0;
+            display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+        }
+        .exam-row-meta-chip{
+            display:inline-flex; align-items:center; gap:5px;
+            padding:3px 10px; border-radius:8px;
+            background:var(--bg-secondary,#f8fafc);
+            font-size:.7rem; font-weight:600;
+            color:var(--text-muted,#64748b);
+        }
+        .exam-row-action-btn{
+            width:32px; height:32px; border-radius:8px;
+            border:1.5px solid var(--border-color,#e2e8f0);
+            background:transparent; display:flex; align-items:center;
+            justify-content:center; cursor:pointer; transition:all .18s;
+            font-size:.82rem; position:relative;
+        }
+        .exam-row-action-btn[data-tip]::after{
+            content:attr(data-tip);
+            position:absolute; bottom:calc(100% + 5px); left:50%;
+            transform:translateX(-50%);
+            background:#0f172a; color:#fff; font-size:.65rem; font-weight:600;
+            padding:3px 7px; border-radius:6px; white-space:nowrap;
+            opacity:0; pointer-events:none; transition:opacity .15s; z-index:10;
+        }
+        .exam-row-action-btn[data-tip]:hover::after{opacity:1;}
+        .exam-row-action-btn.btn-view   { color:#16a34a; }
+        .exam-row-action-btn.btn-view:hover  { background:#f0fdf4; border-color:#86efac; }
+        .exam-row-action-btn.btn-edit   { color:#2563eb; }
+        .exam-row-action-btn.btn-edit:hover  { background:#eff6ff; border-color:#93c5fd; }
+        .exam-row-action-btn.btn-delete { color:#ef4444; }
+        .exam-row-action-btn.btn-delete:hover{ background:#fef2f2; border-color:#fca5a5; }
+
+        /* ── Results view toggle ── */
+        .res-view-toggle{
+            display:flex; border:1.5px solid var(--border-color,#e2e8f0);
+            border-radius:9px; overflow:hidden; background:var(--bg-secondary,#f8fafc);
+        }
+        .res-view-btn{
+            padding:5px 12px; border:none; background:transparent;
+            cursor:pointer; font-size:.8rem; color:var(--text-muted,#64748b);
+            transition:all .18s; display:flex; align-items:center; gap:4px;
+        }
+        .res-view-btn.active{ background:var(--primary,#2563eb); color:#fff; }
+
+        /* ── Results list row ── */
+        .result-list-row{
+            display:flex; align-items:center; gap:14px;
+            padding:12px 16px; border-radius:13px;
+            border:1.5px solid var(--border-color,#e8edf5);
+            background:var(--card-bg,#fff); margin-bottom:8px;
+            transition:all .2s; cursor:pointer;
+            position:relative; overflow:hidden;
+        }
+        .result-list-row::before{
+            content:''; position:absolute; left:0; top:0; bottom:0;
+            width:4px; border-radius:0 3px 3px 0;
+        }
+        .result-list-row.pr-green::before { background:#22c55e; }
+        .result-list-row.pr-blue::before  { background:#3b82f6; }
+        .result-list-row.pr-orange::before{ background:#f59e0b; }
+        .result-list-row.pr-red::before   { background:#ef4444; }
+        .result-list-row:hover{
+            border-color:rgba(37,99,235,.2);
+            box-shadow:0 4px 16px rgba(37,99,235,.08);
+            transform:translateX(3px);
+        }
+
+        body.dark-theme .exam-row-card{ background:var(--card-bg); border-color:var(--border-color); }
+        body.dark-theme .exam-row-meta-chip{ background:rgba(255,255,255,.07); }
+        body.dark-theme .result-list-row{ background:var(--card-bg); border-color:var(--border-color); }
+        body.dark-theme .res-view-toggle{ background:rgba(255,255,255,.05); border-color:var(--border-color); }
+        .marks-input-live{border-radius:8px;transition:border-color .2s,box-shadow .2s;}
+        .marks-pass{border-color:#22c55e!important;box-shadow:0 0 0 2px rgba(34,197,94,.15)!important;}
+        .marks-fail{border-color:#ef4444!important;box-shadow:0 0 0 2px rgba(239,68,68,.15)!important;}
+        .alert-card-risk{border-radius:14px;border:1.5px solid #fee2e2;background:#fff5f5;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+        .alert-card-warning{border-radius:14px;border:1.5px solid #fed7aa;background:#fffbeb;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+        .alert-card-info{border-radius:14px;border:1.5px solid #bae6fd;background:#f0f9ff;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+        .toast-exam{position:fixed;bottom:28px;right:28px;z-index:9999;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px 22px;box-shadow:0 8px 32px rgba(0,0,0,.12);display:flex;align-items:center;gap:12px;animation:slideInToast .3s ease;min-width:280px;}
+        @keyframes slideInToast{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+        body.dark-theme .chart-card{background:#1e293b;border-color:#334155;}
+        body.dark-theme .exam-card-result{background:#1e293b;border-color:#334155;}
+        body.dark-theme .badge-completed{background:#334155;color:#94a3b8;}
+        body.dark-theme .att-tab-btn.active{background:#1e293b;}
+        body.dark-theme .att-tab-nav{background:#0f172a;border-color:#334155;}
+        .activity-feed-item{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid #f1f5f9;}
+        .activity-feed-item:last-child{border-bottom:none;}
+        .activity-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem;}
+    </style>
 </head>
 <body>
-
-    <!-- Sidebar -->
-    <nav id="sidebar">
-        <div>
-            <div class="sidebar-brand text-white">
-                <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
-                <h5 class="mb-0 fw-bold">Bright Future</h5>
-                <small class="opacity-50">School SMS</small>
-            </div>
-            <div class="sidebar-nav">
-                <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
-                <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
-                <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
-                <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
-                <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
-                <div class="nav-item"><a href="examinations.html" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
-                <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
-                <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
-                <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
-                <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
-                <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
-                <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
-                <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+<nav id="sidebar">
+    <div>
+        <div class="sidebar-brand text-white">
+            <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+            <h5 class="mb-0 fw-bold">Bright Future</h5>
+            <small class="opacity-50">School SMS</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+            <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+            <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+            <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+            <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+            <div class="nav-item"><a href="examinations.html" class="nav-link active"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+            <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+            <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+            <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+            <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+            <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+        </div>
+    </div>
+    <a href="#" class="sidebar-logout-card"><i class="bi bi-box-arrow-left"></i><span class="fw-medium">Logout</span></a>
+</nav>
+<div id="content">
+    <header class="main-header">
+        <div class="d-flex align-items-center">
+            <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+            <div>
+                <h4 class="mb-0 fw-bold">Examinations</h4>
+                <small class="text-muted">Manage exams, marks and student results</small>
             </div>
         </div>
-        <a href="#" class="sidebar-logout-card">
-            <i class="bi bi-box-arrow-left"></i>
-            <span class="fw-medium">Logout</span>
-        </a>
-    </nav>
-
-    <!-- Main Content -->
-    <div id="content">
-        <!-- Header -->
-        <header class="main-header">
-            <div class="d-flex align-items-center">
-                <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+        <div class="d-flex align-items-center gap-4">
+            <div class="search-bar d-none d-md-flex">
+                <i class="bi bi-search text-muted"></i>
+                <input type="text" placeholder="Search anything...">
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="position-relative">
+                    <i class="bi bi-bell fs-5 cursor-pointer"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border-start ps-3">
+                    <div class="text-end d-none d-sm-block"><div class="fw-bold lh-1">Admin</div><small class="text-muted">Administrator</small></div>
+                    <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                    <i class="bi bi-chevron-down text-muted small"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid p-4">
+        <!-- Hero Banner -->
+        <div class="exam-hero">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="d-flex align-items-center justify-content-center rounded-3" style="width:52px;height:52px;background:rgba(255,255,255,.15);font-size:1.4rem;">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                </div>
                 <div>
-                    <h4 class="mb-0 fw-bold">Examinations</h4>
-                    <small class="text-muted">Manage exam rosters, dates and student marks</small>
+                    <h3 class="fw-bold mb-0">Examinations Hub</h3>
+                    <div style="opacity:.75;font-size:.85rem;">Academic Year 2025–2026</div>
+                </div>
+                <div class="ms-auto">
+                    <button class="btn btn-light fw-bold rounded-pill px-4" onclick="window.location.href='schedule-exam.html'">
+                        <i class="bi bi-plus-lg me-2"></i>Schedule New Exam
+                    </button>
                 </div>
             </div>
-            
-            <div class="d-flex align-items-center gap-4">
-                <div class="search-bar d-none d-md-flex">
-                    <i class="bi bi-search text-muted"></i>
-                    <input type="text" placeholder="Search anything...">
-                </div>
-                
-                <div class="d-flex align-items-center gap-3">
-                    <div class="position-relative">
-                        <i class="bi bi-bell fs-5 cursor-pointer"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">5</span>
-                    </div>
-                    <div class="position-relative">
-                        <i class="bi bi-chat-dots fs-5 cursor-pointer"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">3</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-2 border-start ps-3">
-                        <div class="text-end d-none d-sm-block">
-                            <div class="fw-bold lh-1">Admin</div>
-                            <small class="text-muted">Administrator</small>
-                        </div>
-                        <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
-                        <i class="bi bi-chevron-down text-muted small"></i>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Body -->
-        <div class="container-fluid p-4">
-            <!-- Stat Cards Row -->
+            <div class="d-flex gap-3 flex-wrap" id="heroKpis"></div>
+        </div>
+        <!-- Tab Navigation -->
+        <div class="att-tab-nav mb-4" id="examTabNav">
+            <button class="att-tab-btn active" data-tab="overview"><i class="bi bi-bar-chart-line-fill"></i> Overview & Analytics</button>
+            <button class="att-tab-btn" data-tab="schedule"><i class="bi bi-calendar3"></i> Exam Schedule</button>
+            <button class="att-tab-btn" data-tab="marks"><i class="bi bi-pencil-square"></i> Enter Marks</button>
+            <button class="att-tab-btn" data-tab="results"><i class="bi bi-award-fill"></i> Results & Analytics</button>
+            <button class="att-tab-btn" data-tab="alerts"><i class="bi bi-bell-fill"></i> Alerts</button>
+        </div>
+        <!-- TAB PANELS -->
+        <!-- 1: Overview & Analytics -->
+        <div class="att-tab-panel active" id="tab-overview">
             <div class="row g-4 mb-4">
-                <div class="col-md-6 col-lg-3">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-blue"><i class="bi bi-calendar-event"></i></div>
-                        <div class="next-card">
-                            <h3 class="fw-bold mb-1">4</h3>
-                            <p class="text-muted small mb-0">Upcoming Exams</p>
-                        </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-bar-chart-fill" style="color:#2563eb"></i> Avg Score by Subject</div>
+                        <canvas id="chartSubjectAvg" height="160"></canvas>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-green"><i class="bi bi-play-fill"></i></div>
-                        <div class="next-card">
-                            <h3 class="fw-bold mb-1">1</h3>
-                            <p class="text-muted small mb-0">Active Exams</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-purple"><i class="bi bi-award-fill"></i></div>
-                        <div class="next-card">
-                            <h3 class="fw-bold mb-1">12</h3>
-                            <p class="text-muted small mb-0">Results Declared</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-orange"><i class="bi bi-percent"></i></div>
-                        <div class="next-card">
-                            <h3 class="fw-bold mb-1">94.2%</h3>
-                            <p class="text-muted small mb-0">Passing Rate</p>
-                        </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-pie-chart-fill" style="color:#7c3aed"></i> Exam Type Distribution</div>
+                        <canvas id="chartTypeDist" height="160"></canvas>
                     </div>
                 </div>
             </div>
-
-            <!-- Tab Navigation Card -->
-            <div class="card-custom">
-                <ul class="nav nav-pills mb-4" id="examTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active rounded-pill me-2 px-4" id="schedule-tab" data-bs-toggle="tab" data-bs-target="#schedule-pane" type="button" role="tab">Exam Schedule</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-pill px-4" id="marks-tab" data-bs-toggle="tab" data-bs-target="#marks-pane" type="button" role="tab">Enter Marks</button>
-                    </li>
-                </ul>
-
-                <div class="tab-content" id="examTabsContent">
-                    <!-- Tab 1: Schedule -->
-                    <div class="tab-pane fade show active" id="schedule-pane" role="tabpanel">
-                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                            <h5 class="fw-bold mb-0">Exam Schedules</h5>
-                            <button class="btn btn-primary rounded-pill btn-sm d-flex align-items-center gap-2 px-3" data-bs-toggle="modal" data-bs-target="#scheduleExamModal">
-                                <i class="bi bi-plus-lg"></i> Schedule Exam
-                            </button>
-                        </div>
-
-                        <div class="table-responsive">
-                            <table class="table table-hover table-custom">
-                                <thead>
-                                    <tr>
-                                        <th>Exam Name</th>
-                                        <th>Class</th>
-                                        <th>Subject</th>
-                                        <th>Date & Time</th>
-                                        <th>Exam Room</th>
-                                        <th>Passing Marks</th>
-                                        <th>Status</th>
-                                        <th class="text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="fw-bold">Mid Term Test</td>
-                                        <td>Class 10</td>
-                                        <td>Mathematics</td>
-                                        <td>24 May 2026, 09:00 AM</td>
-                                        <td>Room 302</td>
-                                        <td>40 / 100</td>
-                                        <td><span class="badge bg-secondary-subtle text-secondary rounded-pill">Completed</span></td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-light text-primary" onclick="alert('Viewing marks entry...')"><i class="bi bi-eye"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">Annual Examination</td>
-                                        <td>Class 10</td>
-                                        <td>Science</td>
-                                        <td>26 June 2026, 10:00 AM</td>
-                                        <td>Exam Hall B</td>
-                                        <td>35 / 100</td>
-                                        <td><span class="badge badge-active">Upcoming</span></td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-light text-warning" onclick="alert('Edit exam details...')"><i class="bi bi-pencil"></i></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            <div class="row g-4 mb-4">
+                <div class="col-lg-7">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-graph-up" style="color:#0d9488"></i> Pass Rate Trends</div>
+                        <canvas id="chartPassTrend" height="160"></canvas>
                     </div>
-
-                    <!-- Tab 2: Enter Marks -->
-                    <div class="tab-pane fade" id="marks-pane" role="tabpanel">
-                        <h5 class="fw-bold mb-3">Gradebook Entry</h5>
-                        <form id="marksSelectForm" class="row g-3 mb-4">
-                            <div class="col-md-3">
-                                <select class="form-select" id="marksClass" required>
-                                    <option value="" disabled selected>Select Class</option>
-                                    <option>Class 10</option>
-                                    <option>Class 9</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-select" id="marksSubject" required>
-                                    <option value="" disabled selected>Select Subject</option>
-                                    <option>Mathematics</option>
-                                    <option>Science</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-select" id="marksExam" required>
-                                    <option value="" disabled selected>Select Exam Type</option>
-                                    <option>Mid Term Test</option>
-                                    <option>Annual Examination</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="btn btn-primary rounded-pill w-100">Load Students List</button>
-                            </div>
-                        </form>
-
-                        <div id="gradebookSheet" style="display: none;">
-                            <hr class="my-4">
-                            <h6 class="fw-bold mb-3" id="gradebookHeader">Gradebook for Class 10 - Mathematics (Mid Term Test)</h6>
-                            <form id="gradebookSaveForm">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-custom">
-                                        <thead>
-                                            <tr>
-                                                <th>Roll No</th>
-                                                <th>Student Name</th>
-                                                <th>Max Marks</th>
-                                                <th style="width: 200px;">Marks Obtained</th>
-                                                <th>Remarks</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>01</td>
-                                                <td>Ananya Sharma</td>
-                                                <td>100</td>
-                                                <td><input type="number" class="form-control form-control-sm" value="95" required min="0" max="100"></td>
-                                                <td><input type="text" class="form-control form-control-sm" value="Excellent"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>02</td>
-                                                <td>Rohan Verma</td>
-                                                <td>100</td>
-                                                <td><input type="number" class="form-control form-control-sm" value="93" required min="0" max="100"></td>
-                                                <td><input type="text" class="form-control form-control-sm" value="Good performance"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>03</td>
-                                                <td>Ishita Singh</td>
-                                                <td>100</td>
-                                                <td><input type="number" class="form-control form-control-sm" value="92" required min="0" max="100"></td>
-                                                <td><input type="text" class="form-control form-control-sm" value="Good performance"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <button type="submit" class="btn btn-success rounded-pill px-4 mt-3 float-end">Save Marks</button>
-                            </form>
-                        </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-people-fill" style="color:#f59e0b"></i> Class-wise Performance</div>
+                        <canvas id="chartClassPerf" height="160"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-trophy-fill" style="color:#f59e0b"></i> Top Performers</div>
+                        <div id="topPerformersTable"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-activity" style="color:#2563eb"></i> Recent Exam Activity</div>
+                        <div id="activityFeed"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 2: Exam Schedule -->
+        <div class="att-tab-panel" id="tab-schedule">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                <div class="d-flex gap-2 flex-wrap" id="schedulePillFilters">
+                    <button class="filter-pill active" data-filter="all">All</button>
+                    <button class="filter-pill" data-filter="upcoming">Upcoming</button>
+                    <button class="filter-pill" data-filter="active">Active</button>
+                    <button class="filter-pill" data-filter="completed">Completed</button>
+                </div>
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="search-bar d-flex" style="width:220px;">
+                        <i class="bi bi-search text-muted"></i>
+                        <input type="text" id="scheduleSearch" placeholder="Search exams...">
+                    </div>
+                    <button class="btn btn-primary rounded-pill px-4 fw-bold" onclick="window.location.href='schedule-exam.html'">
+                        <i class="bi bi-plus-lg me-2"></i>Schedule Exam
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover" id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th style="cursor:pointer" data-sort="name">Exam Name <i class="bi bi-arrow-down-up text-muted small"></i></th>
+                            <th>Type</th>
+                            <th data-sort="className" style="cursor:pointer">Class <i class="bi bi-arrow-down-up text-muted small"></i></th>
+                            <th>Subject</th>
+                            <th data-sort="date" style="cursor:pointer">Date / Time <i class="bi bi-arrow-down-up text-muted small"></i></th>
+                            <th>Room</th>
+                            <th>Duration</th>
+                            <th>Marks (Pass/Max)</th>
+                            <th>Invigilator</th>
+                            <th>Status</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 3: Enter Marks -->
+        <div class="att-tab-panel" id="tab-marks">
+            <div class="row g-3 mb-4 align-items-end" id="marksSelectors">
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Class</label>
+                    <select class="form-select" id="mClass">
+                        <option value="">Select Class</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Subject</label>
+                    <select class="form-select" id="mSubject">
+                        <option value="">Select Subject</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Exam</label>
+                    <select class="form-select" id="mExam">
+                        <option value="">Select Exam</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary rounded-pill w-100 fw-bold" id="loadStudentsBtn">
+                        <i class="bi bi-people-fill me-2"></i>Load Students
+                    </button>
+                </div>
+            </div>
+            <div id="gradebookArea" style="display:none"></div>
+        </div>
+        <!-- 4: Results & Analytics -->
+        <div class="att-tab-panel" id="tab-results">
+            <div id="resultsGrid" class="row g-4"></div>
+            <div id="resultsDetail" style="display:none;"></div>
+        </div>
+        <!-- 5: Alerts -->
+        <div class="att-tab-panel" id="tab-alerts">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-exclamation-triangle-fill text-danger"></i> At-Risk Students (Failed 2+ Exams)</div>
+                        <div id="atRiskList"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-graph-down text-warning"></i> Declining Score Alerts</div>
+                        <div id="decliningList"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-calendar-event-fill text-primary"></i> Upcoming Exam Reminders (3 days)</div>
+                        <div id="reminderList"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title"><i class="bi bi-person-x-fill text-secondary"></i> Students Not Appeared</div>
+                        <div id="notAppearedList"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Schedule Exam Modal -->
-    <div class="modal fade" id="scheduleExamModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-light border-0">
-                    <h5 class="fw-bold mb-0">Schedule New Exam</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="scheduleExamForm">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label small fw-semibold text-muted">Exam Name</label>
-                                <input type="text" class="form-control" placeholder="e.g. Unit Test 1" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-muted">Class</label>
-                                <select class="form-select" required>
-                                    <option value="" disabled selected>Select Class</option>
-                                    <option>Class 10</option>
-                                    <option>Class 9</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-muted">Subject</label>
-                                <select class="form-select" required>
-                                    <option value="" disabled selected>Select Subject</option>
-                                    <option>Mathematics</option>
-                                    <option>Science</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label small fw-semibold text-muted">Exam Date & Time</label>
-                                <input type="datetime-local" class="form-control" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-muted">Passing Marks</label>
-                                <input type="number" class="form-control" placeholder="40" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-muted">Exam Room / Hall</label>
-                                <input type="text" class="form-control" placeholder="Room 302" required>
-                            </div>
-                        </div>
-                        <div class="mt-4 d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary rounded-pill px-4">Schedule</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/main.js"></script>
-    <script>
-        document.getElementById("scheduleExamForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            alert("Examination scheduled successfully!");
-            bootstrap.Modal.getInstance(document.getElementById('scheduleExamModal')).hide();
+</div>
+<div id="toastContainer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+<script>
+// ===== DATA SEED =====
+var EXAM_CLASSES=[
+    {id:'cls-10a',name:'Class 10 - A',teacher:'Sarah Jenkins'},
+    {id:'cls-10b',name:'Class 10 - B',teacher:'David Miller'},
+    {id:'cls-9a', name:'Class 9 - A', teacher:'Emily Watson'},
+    {id:'cls-9b', name:'Class 9 - B', teacher:'Arjun Mehta'},
+    {id:'cls-5a', name:'Class 5 - A', teacher:'Maria Rossi'},
+    {id:'cls-5b', name:'Class 5 - B', teacher:'Ananya Mehta'},
+];
+var SUBJECTS=['Mathematics','English','Science','History','Geography','Computer Science'];
+var EXAM_STUDENTS={
+    'cls-10a':[
+        {id:'S10001',name:'Aiden Clarke',  roll:'01',photo:'https://i.pravatar.cc/150?img=8'},
+        {id:'S10002',name:'Priya Sharma',  roll:'02',photo:'https://i.pravatar.cc/150?img=47'},
+        {id:'S10003',name:'Luca Ferrari',  roll:'03',photo:'https://i.pravatar.cc/150?img=15'},
+        {id:'S10004',name:'Sofia Garcia',  roll:'04',photo:'https://i.pravatar.cc/150?img=45'},
+        {id:'S10005',name:'Yuki Tanaka',   roll:'05',photo:'https://i.pravatar.cc/150?img=49'},
+        {id:'S10006',name:'Ethan Moore',   roll:'06',photo:'https://i.pravatar.cc/150?img=18'},
+    ],
+    'cls-10b':[
+        {id:'S10007',name:'Amara Osei',   roll:'01',photo:'https://i.pravatar.cc/150?img=44'},
+        {id:'S10008',name:"Finn O'Brien", roll:'02',photo:'https://i.pravatar.cc/150?img=12'},
+        {id:'S10009',name:'Mei Ling',     roll:'03',photo:'https://i.pravatar.cc/150?img=43'},
+    ],
+    'cls-9a':[
+        {id:'S09001',name:'Carlos Rivera',roll:'01',photo:'https://i.pravatar.cc/150?img=7'},
+        {id:'S09002',name:'Anya Patel',   roll:'02',photo:'https://i.pravatar.cc/150?img=48'},
+        {id:'S09003',name:'Jack Thompson',roll:'03',photo:'https://i.pravatar.cc/150?img=11'},
+        {id:'S09004',name:'Nina Volkov',  roll:'04',photo:'https://i.pravatar.cc/150?img=46'},
+    ],
+    'cls-9b':[
+        {id:'S09005',name:'Omar Hassan',roll:'01',photo:'https://i.pravatar.cc/150?img=6'},
+        {id:'S09006',name:'Elena Cruz',  roll:'02',photo:'https://i.pravatar.cc/150?img=41'},
+        {id:'S09007',name:'Ravi Kumar',  roll:'03',photo:'https://i.pravatar.cc/150?img=14'},
+    ],
+    'cls-5a':[
+        {id:'S05001',name:'Lily Johnson', roll:'01',photo:'https://i.pravatar.cc/150?img=50'},
+        {id:'S05002',name:'Noah Williams',roll:'02',photo:'https://i.pravatar.cc/150?img=3'},
+        {id:'S05003',name:'Zara Ahmed',   roll:'03',photo:'https://i.pravatar.cc/150?img=42'},
+    ],
+    'cls-5b':[
+        {id:'S05004',name:'Leo Nguyen', roll:'01',photo:'https://i.pravatar.cc/150?img=4'},
+        {id:'S05005',name:'Grace Kim',  roll:'02',photo:'https://i.pravatar.cc/150?img=51'},
+        {id:'S05006',name:'Adam Okafor',roll:'03',photo:'https://i.pravatar.cc/150?img=5'},
+    ],
+};
+var DEFAULT_EXAMS=[
+    {id:'EX001',name:'Mid Term Test',  type:'Mid Term', classId:'cls-10a',className:'Class 10 - A',subject:'Mathematics',  date:'2026-05-24',time:'09:00',room:'Room 302',   maxMarks:100,passMarks:40,duration:180,status:'completed',invigilator:'Sarah Jenkins'},
+    {id:'EX002',name:'Annual Exam',    type:'Annual',   classId:'cls-10a',className:'Class 10 - A',subject:'Science',       date:'2026-06-26',time:'10:00',room:'Exam Hall B',maxMarks:100,passMarks:35,duration:180,status:'upcoming', invigilator:'Emily Watson'},
+    {id:'EX003',name:'Unit Test 1',    type:'Unit Test',classId:'cls-9a', className:'Class 9 - A', subject:'English',       date:'2026-06-28',time:'09:00',room:'Room 201',   maxMarks:50, passMarks:20,duration:90, status:'upcoming', invigilator:'David Miller'},
+    {id:'EX004',name:'Pre-Board Exam', type:'Pre-Board',classId:'cls-10b',className:'Class 10 - B',subject:'History',       date:'2026-07-10',time:'10:00',room:'Exam Hall A',maxMarks:100,passMarks:40,duration:180,status:'upcoming', invigilator:'Arjun Mehta'},
+    {id:'EX005',name:'Class Test',     type:'Unit Test',classId:'cls-9b', className:'Class 9 - B', subject:'Geography',     date:'2026-05-15',time:'11:00',room:'Room 203',   maxMarks:50, passMarks:20,duration:60, status:'completed',invigilator:'Maria Rossi'},
+    {id:'EX006',name:'Terminal Exam',  type:'Terminal', classId:'cls-5a', className:'Class 5 - A', subject:'Computer Sci.', date:'2026-06-05',time:'09:30',room:'Room 105',   maxMarks:100,passMarks:40,duration:120,status:'completed',invigilator:'Ananya Mehta'},
+];
+function loadExams(){
+    var raw=localStorage.getItem('exams-db');
+    if(!raw){localStorage.setItem('exams-db',JSON.stringify(DEFAULT_EXAMS));return DEFAULT_EXAMS;}
+    return JSON.parse(raw);
+}
+function saveExams(arr){localStorage.setItem('exams-db',JSON.stringify(arr));}
+function loadMarks(examId){
+    var raw=localStorage.getItem('exam-marks-'+examId);
+    return raw?JSON.parse(raw):{};
+}
+function calcGrade(marks,maxMarks){
+    var pct=marks/maxMarks*100;
+    if(pct>=95)return 'A+';
+    if(pct>=85)return 'A';
+    if(pct>=75)return 'B+';
+    if(pct>=65)return 'B';
+    if(pct>=55)return 'C+';
+    if(pct>=45)return 'C';
+    return 'F';
+}
+function gradeChip(grade){
+    var map={'A+':'grade-aplus','A':'grade-a','B+':'grade-bplus','B':'grade-b','C+':'grade-cplus','C':'grade-c','F':'grade-f'};
+    return '<span class="grade-chip '+(map[grade]||'grade-f')+'">'+grade+'</span>';
+}
+function statusBadge(s){
+    if(s==='upcoming')return '<span class="badge-upcoming">Upcoming</span>';
+    if(s==='active')return '<span class="badge-active">Active</span>';
+    if(s==='completed')return '<span class="badge-completed">Completed</span>';
+    return '<span class="badge-cancelled">Cancelled</span>';
+}
+function showToast(msg,type){
+    var color=type==='success'?'#22c55e':type==='danger'?'#ef4444':'#2563eb';
+    var icon=type==='success'?'check-circle-fill':type==='danger'?'x-circle-fill':'info-circle-fill';
+    var el=document.createElement('div');
+    el.className='toast-exam';
+    el.innerHTML='<i class="bi bi-'+icon+' fs-5" style="color:'+color+'"></i><span class="fw-semibold">'+msg+'</span>';
+    document.getElementById('toastContainer').appendChild(el);
+    setTimeout(function(){el.remove();},3000);
+}
+// ===== DETERMINISTIC DEFAULT MARKS =====
+function genDefaultMarks(exam){
+    var students=EXAM_STUDENTS[exam.classId]||[];
+    var marks={};
+    students.forEach(function(st,i){
+        var base=60+((st.id.charCodeAt(st.id.length-1)*7+i*13)%35);
+        var m=Math.min(base,exam.maxMarks);
+        marks[st.id]={marks:m,grade:calcGrade(m,exam.maxMarks),remarks:'Auto-generated'};
+    });
+    return marks;
+}
+// ===== HERO KPIS =====
+function renderHeroKpis(){
+    var exams=loadExams();
+    var upcoming=exams.filter(function(e){return e.status==='upcoming';}).length;
+    var completed=exams.filter(function(e){return e.status==='completed';}).length;
+    var totalStudents=0;
+    var totalPassed=0;
+    exams.forEach(function(ex){
+        var students=EXAM_STUDENTS[ex.classId]||[];
+        totalStudents+=students.length;
+        var marks=loadMarks(ex.id);
+        students.forEach(function(st){
+            var m=marks[st.id];
+            if(m&&m.marks>=ex.passMarks)totalPassed++;
         });
-
-        document.getElementById("marksSelectForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            const cls = document.getElementById("marksClass").value;
-            const sub = document.getElementById("marksSubject").value;
-            const exam = document.getElementById("marksExam").value;
-
-            document.getElementById("gradebookHeader").textContent = `Gradebook for ${cls} - ${sub} (${exam})`;
-            document.getElementById("gradebookSheet").style.display = "block";
+    });
+    var passRate=totalStudents>0?Math.round(totalPassed/totalStudents*100):0;
+    var examined=0;
+    exams.filter(function(e){return e.status==='completed';}).forEach(function(ex){
+        var marks=loadMarks(ex.id);
+        examined+=Object.keys(marks).length;
+    });
+    var kpis=[
+        {v:exams.length,l:'Total Exams'},
+        {v:upcoming,l:'Upcoming'},
+        {v:completed,l:'Completed'},
+        {v:passRate+'%',l:'Pass Rate'},
+        {v:examined||'—',l:'Students Examined'},
+    ];
+    var html='';
+    kpis.forEach(function(k){
+        html+='<div class="hero-kpi"><div class="v">'+k.v+'</div><div class="l">'+k.l+'</div></div>';
+    });
+    document.getElementById('heroKpis').innerHTML=html;
+}
+// ===== OVERVIEW CHARTS =====
+var chartInstances={};
+function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id];}}
+function renderOverviewCharts(){
+    var exams=loadExams();
+    // Subject avg
+    var subjectData={};
+    SUBJECTS.forEach(function(s){subjectData[s]={sum:0,count:0};});
+    exams.forEach(function(ex){
+        var marks=loadMarks(ex.id);
+        var students=EXAM_STUDENTS[ex.classId]||[];
+        var subKey=ex.subject;
+        if(!subjectData[subKey])subjectData[subKey]={sum:0,count:0};
+        students.forEach(function(st){
+            var m=marks[st.id];
+            if(m){subjectData[subKey].sum+=m.marks/ex.maxMarks*100;subjectData[subKey].count++;}
         });
-
-        document.getElementById("gradebookSaveForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            alert("Marks updated successfully!");
+    });
+    var subLabels=Object.keys(subjectData);
+    var subAvgs=subLabels.map(function(k){return subjectData[k].count?Math.round(subjectData[k].sum/subjectData[k].count):72;});
+    destroyChart('chartSubjectAvg');
+    chartInstances['chartSubjectAvg']=new Chart(document.getElementById('chartSubjectAvg'),{
+        type:'bar',data:{labels:subLabels,datasets:[{label:'Avg Score (%)',data:subAvgs,backgroundColor:['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444','#06b6d4'],borderRadius:8}]},
+        options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{max:100,ticks:{callback:function(v){return v+'%';}}}}}
+    });
+    // Type distribution
+    var typeCounts={};
+    exams.forEach(function(ex){typeCounts[ex.type]=(typeCounts[ex.type]||0)+1;});
+    var typeLabels=Object.keys(typeCounts);
+    var typeVals=typeLabels.map(function(k){return typeCounts[k];});
+    destroyChart('chartTypeDist');
+    chartInstances['chartTypeDist']=new Chart(document.getElementById('chartTypeDist'),{
+        type:'doughnut',data:{labels:typeLabels,datasets:[{data:typeVals,backgroundColor:['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444','#06b6d4'],borderWidth:0,hoverOffset:8}]},
+        options:{responsive:true,cutout:'62%',plugins:{legend:{position:'right'}}}
+    });
+    // Pass rate trend (simulated months)
+    var months=['Jan','Feb','Mar','Apr','May','Jun'];
+    var trendVals=[78,81,76,83,88,84];
+    destroyChart('chartPassTrend');
+    chartInstances['chartPassTrend']=new Chart(document.getElementById('chartPassTrend'),{
+        type:'line',data:{labels:months,datasets:[{label:'Pass Rate %',data:trendVals,fill:true,backgroundColor:'rgba(16,185,129,.12)',borderColor:'#10b981',borderWidth:2.5,tension:.4,pointRadius:5,pointBackgroundColor:'#10b981'}]},
+        options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{min:50,max:100,ticks:{callback:function(v){return v+'%';}}}}}
+    });
+    // Class-wise performance
+    var clsLabels=EXAM_CLASSES.map(function(c){return c.name;});
+    var clsAvgs=EXAM_CLASSES.map(function(cls){
+        var total=0,cnt=0;
+        exams.forEach(function(ex){
+            if(ex.classId!==cls.id)return;
+            var marks=loadMarks(ex.id);
+            var students=EXAM_STUDENTS[cls.id]||[];
+            students.forEach(function(st){
+                var m=marks[st.id];
+                if(m){total+=m.marks/ex.maxMarks*100;cnt++;}
+            });
         });
-    </script>
+        return cnt?Math.round(total/cnt):70;
+    });
+    destroyChart('chartClassPerf');
+    chartInstances['chartClassPerf']=new Chart(document.getElementById('chartClassPerf'),{
+        type:'bar',data:{labels:clsLabels,datasets:[{label:'Avg %',data:clsAvgs,backgroundColor:'#8b5cf6',borderRadius:8}]},
+        options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{max:100,ticks:{callback:function(v){return v+'%';}}}}}
+    });
+    // Top performers
+    renderTopPerformers(exams);
+    renderActivityFeed(exams);
+}
+function renderTopPerformers(exams){
+    var performers=[];
+    exams.forEach(function(ex){
+        var marks=loadMarks(ex.id);
+        var students=EXAM_STUDENTS[ex.classId]||[];
+        students.forEach(function(st){
+            var m=marks[st.id];
+            if(m){performers.push({name:st.name,photo:st.photo,score:Math.round(m.marks/ex.maxMarks*100),subject:ex.subject,examName:ex.name});}
+        });
+    });
+    performers.sort(function(a,b){return b.score-a.score;});
+    var top=performers.slice(0,5);
+    var html='';
+    if(!top.length){html='<div class="text-muted text-center py-3">No marks entered yet.</div>';}
+    else{
+        top.forEach(function(p,i){
+            html+='<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;">'
+                +'<span style="font-size:1.1rem;font-weight:800;color:#f59e0b;width:22px;">'+(i+1)+'</span>'
+                +'<img src="'+p.photo+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">'
+                +'<div style="flex:1;"><div class="fw-semibold" style="font-size:.85rem;">'+p.name+'</div>'
+                +'<div style="font-size:.72rem;color:#94a3b8;">'+p.examName+' · '+p.subject+'</div></div>'
+                +'<div class="fw-bold" style="color:#2563eb;font-size:.9rem;">'+p.score+'%</div>'
+                +'</div>';
+        });
+    }
+    document.getElementById('topPerformersTable').innerHTML=html;
+}
+function renderActivityFeed(exams){
+    var feed=exams.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);}).slice(0,6);
+    var html='';
+    feed.forEach(function(ex){
+        var icon='bi-calendar-check';
+        var bg='#dbeafe';var fg='#2563eb';
+        if(ex.status==='completed'){icon='bi-check-circle-fill';bg='#dcfce7';fg='#16a34a';}
+        if(ex.status==='upcoming'){icon='bi-clock-fill';bg='#fef9c3';fg='#a16207';}
+        html+='<div class="activity-feed-item">'
+            +'<div class="activity-dot" style="background:'+bg+';color:'+fg+'"><i class="bi '+icon+'"></i></div>'
+            +'<div style="flex:1;">'
+            +'<div class="fw-semibold" style="font-size:.85rem;">'+ex.name+'</div>'
+            +'<div style="font-size:.75rem;color:#94a3b8;">'+ex.className+' · '+ex.subject+' · '+ex.date+'</div>'
+            +'</div>'
+            +statusBadge(ex.status)
+            +'</div>';
+    });
+    document.getElementById('activityFeed').innerHTML=html||'<div class="text-muted text-center py-3">No exams yet.</div>';
+}
+// ===== SCHEDULE TABLE =====
+var scheduleFilter='all';
+var scheduleSort={col:'date',dir:1};
+function renderScheduleTable(){
+    var exams=loadExams();
+    var search=(document.getElementById('scheduleSearch').value||'').toLowerCase();
+    var filtered=exams.filter(function(ex){
+        if(scheduleFilter!=='all'&&ex.status!==scheduleFilter)return false;
+        if(search&&!(ex.name.toLowerCase().includes(search)||ex.className.toLowerCase().includes(search)||ex.subject.toLowerCase().includes(search)))return false;
+        return true;
+    });
+    filtered.sort(function(a,b){
+        var av=a[scheduleSort.col]||'';var bv=b[scheduleSort.col]||'';
+        return scheduleSort.dir*(av>bv?1:av<bv?-1:0);
+    });
+    var tbody=document.getElementById('scheduleTableBody');
+    if(!filtered.length){tbody.innerHTML='<tr><td colspan="11" class="text-center text-muted py-4">No exams found.</td></tr>';return;}
+    var html='';
+    filtered.forEach(function(ex){
+        html+='<tr>'
+            +'<td class="fw-semibold">'+ex.name+'</td>'
+            +'<td><span class="badge bg-light text-dark border">'+ex.type+'</span></td>'
+            +'<td>'+ex.className+'</td>'
+            +'<td>'+ex.subject+'</td>'
+            +'<td>'+ex.date+' '+ex.time+'</td>'
+            +'<td>'+ex.room+'</td>'
+            +'<td>'+ex.duration+' min</td>'
+            +'<td>'+ex.passMarks+' / '+ex.maxMarks+'</td>'
+            +'<td>'+ex.invigilator+'</td>'
+            +'<td>'+statusBadge(ex.status)+'</td>'
+            +'<td class="text-center">'
+            +'<button class="btn btn-sm btn-light text-success me-1" title="View Results" onclick="window.location.href=\'exam-marks.html?exam='+ex.id+'\'"><i class="bi bi-eye-fill"></i></button>'
+            +'<button class="btn btn-sm btn-light text-primary me-1" title="Edit" onclick="window.location.href=\'schedule-exam.html?edit='+ex.id+'\'"><i class="bi bi-pencil-fill"></i></button>'
+            +'<button class="btn btn-sm btn-light text-danger" title="Delete" onclick="deleteExam(\''+ex.id+'\')"><i class="bi bi-trash-fill"></i></button>'
+            +'</td></tr>';
+    });
+    tbody.innerHTML=html;
+}
+function deleteExam(id){
+    if(!confirm('Delete this exam?'))return;
+    var exams=loadExams().filter(function(e){return e.id!==id;});
+    saveExams(exams);localStorage.removeItem('exam-marks-'+id);
+    renderScheduleTable();renderHeroKpis();showToast('Exam deleted.','danger');
+}
+document.getElementById('scheduleSearch').addEventListener('input',renderScheduleTable);
+document.getElementById('schedulePillFilters').addEventListener('click',function(e){
+    var btn=e.target.closest('.filter-pill');if(!btn)return;
+    document.querySelectorAll('#schedulePillFilters .filter-pill').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');scheduleFilter=btn.dataset.filter;renderScheduleTable();
+});
+document.getElementById('scheduleTable').querySelector('thead').addEventListener('click',function(e){
+    var th=e.target.closest('[data-sort]');if(!th)return;
+    var col=th.dataset.sort;
+    if(scheduleSort.col===col)scheduleSort.dir*=-1;else{scheduleSort.col=col;scheduleSort.dir=1;}
+    renderScheduleTable();
+});
+// ===== MARKS TAB =====
+function populateMarksSelectors(){
+    var clsSel=document.getElementById('mClass');
+    EXAM_CLASSES.forEach(function(c){
+        var o=document.createElement('option');o.value=c.id;o.textContent=c.name;clsSel.appendChild(o);
+    });
+    var subSel=document.getElementById('mSubject');
+    SUBJECTS.forEach(function(s){
+        var o=document.createElement('option');o.value=s;o.textContent=s;subSel.appendChild(o);
+    });
+}
+function populateMarksExams(){
+    var cId=document.getElementById('mClass').value;
+    var sub=document.getElementById('mSubject').value;
+    var sel=document.getElementById('mExam');
+    sel.innerHTML='<option value="">Select Exam</option>';
+    var exams=loadExams();
+    exams.forEach(function(ex){
+        if((!cId||ex.classId===cId)&&(!sub||ex.subject===sub)){
+            var o=document.createElement('option');o.value=ex.id;o.textContent=ex.name+' ('+ex.date+')';sel.appendChild(o);
+        }
+    });
+}
+document.getElementById('mClass').addEventListener('change',populateMarksExams);
+document.getElementById('mSubject').addEventListener('change',populateMarksExams);
+document.getElementById('loadStudentsBtn').addEventListener('click',function(){
+    var examId=document.getElementById('mExam').value;
+    if(!examId){showToast('Please select an exam.','danger');return;}
+    var exams=loadExams();
+    var exam=exams.find(function(e){return e.id===examId;});
+    if(!exam)return;
+    var students=EXAM_STUDENTS[exam.classId]||[];
+    var saved=loadMarks(examId);
+    var html='<div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">'
+        +'<h6 class="fw-bold mb-0">Gradebook: '+exam.name+' &mdash; '+exam.className+' &mdash; '+exam.subject+'</h6>'
+        +'<div class="d-flex gap-2">'
+        +'<button class="btn btn-sm btn-outline-success rounded-pill" id="markAllMax">Set All Max</button>'
+        +'<button class="btn btn-sm btn-outline-secondary rounded-pill" id="clearAllMarks">Clear All</button>'
+        +'</div></div>'
+        +'<div class="table-responsive">'
+        +'<table class="table table-hover" id="gradebookTable">'
+        +'<thead><tr><th>#</th><th>Student</th><th>Roll</th>'
+        +'<th>Marks (0-'+exam.maxMarks+')</th>'
+        +'<th>Grade</th><th>Status</th><th>Remarks</th></tr></thead>'
+        +'<tbody>';
+    students.forEach(function(st,i){
+        var m=saved[st.id];
+        var val=m?m.marks:'';
+        var rem=m?m.remarks:'';
+        var grade=val!==''?calcGrade(Number(val),exam.maxMarks):'—';
+        var pass=val!==''?(Number(val)>=exam.passMarks?'Pass':'Fail'):'—';
+        var passColor=pass==='Pass'?'#22c55e':pass==='Fail'?'#ef4444':'#94a3b8';
+        html+='<tr>'
+            +'<td class="fw-bold text-muted">'+(i+1)+'</td>'
+            +'<td><div class="d-flex align-items-center gap-2"><img src="'+st.photo+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;"><span class="fw-semibold">'+st.name+'</span></div></td>'
+            +'<td>'+st.roll+'</td>'
+            +'<td><input type="number" class="form-control form-control-sm marks-input-live" style="width:90px;" min="0" max="'+exam.maxMarks+'" value="'+val+'" data-sid="'+st.id+'" data-pass="'+exam.passMarks+'" data-max="'+exam.maxMarks+'"></td>'
+            +'<td><span id="grade-'+st.id+'">'+gradeChip(grade)+'</span></td>'
+            +'<td><span id="pf-'+st.id+'" style="font-weight:700;color:'+passColor+';">'+pass+'</span></td>'
+            +'<td><input type="text" class="form-control form-control-sm" style="width:140px;" value="'+rem+'" data-rsid="'+st.id+'"></td>'
+            +'</tr>';
+    });
+    html+='</tbody></table></div>'
+        +'<div class="d-flex align-items-center gap-4 mt-3 p-3 rounded-3" style="background:#f8fafc;border:1.5px solid #e2e8f0;" id="marksSummary"></div>'
+        +'<div class="d-flex justify-content-end mt-3">'
+        +'<button class="btn btn-success rounded-pill px-5 fw-bold" id="saveMarksBtn">Save Marks</button></div>';
+    var area=document.getElementById('gradebookArea');
+    area.innerHTML=html;area.style.display='block';
+    updateMarksSummary(exam,students,saved);
+    // Live input events
+    area.querySelectorAll('.marks-input-live').forEach(function(inp){
+        inp.addEventListener('input',function(){
+            var sid=inp.dataset.sid;
+            var pass=Number(inp.dataset.pass);
+            var max=Number(inp.dataset.max);
+            var v=inp.value.trim()!==''?Number(inp.value):'';
+            if(v!==''&&v>=pass){inp.classList.add('marks-pass');inp.classList.remove('marks-fail');}
+            else if(v!==''){inp.classList.add('marks-fail');inp.classList.remove('marks-pass');}
+            else{inp.classList.remove('marks-pass','marks-fail');}
+            var grade=v!==''?calcGrade(v,max):'—';
+            document.getElementById('grade-'+sid).innerHTML=gradeChip(grade);
+            var pfEl=document.getElementById('pf-'+sid);
+            if(v!==''){pfEl.textContent=v>=pass?'Pass':'Fail';pfEl.style.color=v>=pass?'#22c55e':'#ef4444';}
+            else{pfEl.textContent='—';pfEl.style.color='#94a3b8';}
+            updateMarksSummaryLive(exam,students);
+        });
+        if(inp.value!==''){inp.dispatchEvent(new Event('input'));}
+    });
+    document.getElementById('markAllMax').addEventListener('click',function(){
+        area.querySelectorAll('.marks-input-live').forEach(function(i){i.value=exam.maxMarks;i.dispatchEvent(new Event('input'));});
+    });
+    document.getElementById('clearAllMarks').addEventListener('click',function(){
+        area.querySelectorAll('.marks-input-live').forEach(function(i){i.value='';i.dispatchEvent(new Event('input'));});
+    });
+    document.getElementById('saveMarksBtn').addEventListener('click',function(){
+        var data={};
+        area.querySelectorAll('.marks-input-live').forEach(function(inp){
+            var sid=inp.dataset.sid;var v=inp.value;
+            var rem=area.querySelector('[data-rsid="'+sid+'"]');
+            data[sid]={marks:v!==''?Number(v):null,grade:v!==''?calcGrade(Number(v),exam.maxMarks):'—',remarks:rem?rem.value:''};
+        });
+        localStorage.setItem('exam-marks-'+examId,JSON.stringify(data));
+        showToast('Marks saved successfully!','success');renderHeroKpis();
+    });
+});
+function updateMarksSummary(exam,students,marks){
+    var passed=0,failed=0,total=0,sum=0;
+    students.forEach(function(st){
+        var m=marks[st.id];
+        if(m&&m.marks!==null){total++;sum+=m.marks;if(m.marks>=exam.passMarks)passed++;else failed++;}
+    });
+    var avg=total?Math.round(sum/total):0;
+    var top=total?Math.max.apply(null,students.filter(function(st){var m=marks[st.id];return m&&m.marks!==null;}).map(function(st){return marks[st.id].marks;})):0;
+    renderSummaryBar(students.length,total,passed,failed,avg,top);
+}
+function updateMarksSummaryLive(exam,students){
+    var area=document.getElementById('gradebookArea');
+    var passed=0,failed=0,total=0,sum=0,top=0;
+    area.querySelectorAll('.marks-input-live').forEach(function(inp){
+        var v=inp.value;
+        if(v!==''){total++;var n=Number(v);sum+=n;if(n>top)top=n;if(n>=Number(inp.dataset.pass))passed++;else failed++;}
+    });
+    var avg=total?Math.round(sum/total):0;
+    renderSummaryBar(students.length,total,passed,failed,avg,top);
+}
+function renderSummaryBar(totalSt,marked,passed,failed,avg,top){
+    var el=document.getElementById('marksSummary');if(!el)return;
+    el.innerHTML='<div style="flex:1;text-align:center;"><div class="fw-bold fs-5">'+totalSt+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Total</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5 text-primary">'+marked+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Marked</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5" style="color:#22c55e;">'+passed+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Passed</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5 text-danger">'+failed+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Failed</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5 text-warning">'+avg+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Avg Score</div></div>'
+        +'<div style="flex:1;text-align:center;"><div class="fw-bold fs-5" style="color:#8b5cf6;">'+top+'</div><div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;">Top Score</div></div>';
+}
+// ===== RESULTS & ANALYTICS TAB =====
+function renderResultsGrid(){
+    var exams=loadExams();
+    var container=document.getElementById('resultsGrid');
+    var html='';
+    var hasAny=false;
+    exams.forEach(function(ex){
+        var marks=loadMarks(ex.id);
+        var students=EXAM_STUDENTS[ex.classId]||[];
+        if(!students.length)return;
+        var total=students.length,passed=0,sum=0,topName='',topScore=0,topPhoto='';
+        students.forEach(function(st){
+            var m=marks[st.id]||genDefaultMarks(ex)[st.id];
+            if(!marks[st.id])marks[st.id]=m;
+            if(m&&m.marks!==null){sum+=m.marks;if(m.marks>=ex.passMarks)passed++;if(m.marks>topScore){topScore=m.marks;topName=st.name;topPhoto=st.photo;}}
+        });
+        var passRate=total?Math.round(passed/total*100):0;
+        var avg=total?Math.round(sum/total):0;
+        hasAny=true;
+        html+='<div class="col-md-6 col-lg-4"><div class="exam-card-result" onclick="showResultDetail(\''+ex.id+'\')">'
+            +'<div class="d-flex align-items-center justify-content-between mb-3">'
+            +'<div><div class="fw-bold" style="font-size:.92rem;">'+ex.name+'</div>'
+            +'<div style="font-size:.75rem;color:#94a3b8;">'+ex.className+' &middot; '+ex.subject+'</div></div>'
+            +statusBadge(ex.status)+'</div>'
+            +'<div class="mb-2" style="font-size:.78rem;color:#64748b;">Pass Rate</div>'
+            +'<div class="d-flex align-items-center gap-2 mb-3">'
+            +'<div style="flex:1;height:8px;border-radius:999px;background:#e2e8f0;overflow:hidden;">'
+            +'<div style="height:100%;width:'+passRate+'%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:999px;"></div></div>'
+            +'<span class="fw-bold" style="font-size:.82rem;color:#16a34a;">'+passRate+'%</span></div>'
+            +'<div class="d-flex gap-3">'
+            +'<div style="font-size:.8rem;"><span class="text-muted">Avg: </span><span class="fw-bold">'+avg+'/'+ex.maxMarks+'</span></div>'
+            +'<div style="font-size:.8rem;"><span class="text-muted">Top: </span><span class="fw-bold">'+topScore+'</span></div>'
+            +'</div>'
+            +(topName?'<div class="d-flex align-items-center gap-2 mt-3 p-2 rounded-2" style="background:#f8fafc;">'
+            +'<img src="'+topPhoto+'" style="width:26px;height:26px;border-radius:50%;"><span style="font-size:.78rem;"><i class="bi bi-trophy-fill text-warning me-1"></i>'+topName+'</span></div>':'')
+            +'</div></div>';
+    });
+    if(!hasAny)html='<div class="col-12 text-center text-muted py-5"><i class="bi bi-inbox fs-2 d-block mb-2"></i>No exams available.</div>';
+    container.innerHTML=html;
+}
+function showResultDetail(examId){
+    var exams=loadExams();
+    var exam=exams.find(function(e){return e.id===examId;});
+    if(!exam)return;
+    var students=EXAM_STUDENTS[exam.classId]||[];
+    var marks=loadMarks(examId);
+    if(!Object.keys(marks).length)marks=genDefaultMarks(exam);
+    var html='<div class="d-flex align-items-center gap-3 mb-4">'
+        +'<button class="btn btn-light rounded-pill" onclick="backToResultsGrid()"><i class="bi bi-arrow-left me-2"></i>Back</button>'
+        +'<h5 class="fw-bold mb-0">'+exam.name+' Results — '+exam.className+'</h5></div>'
+        +'<div class="table-responsive"><table class="table table-hover">'
+        +'<thead><tr><th>Rank</th><th>Student</th><th>Roll</th><th>Marks</th><th>%</th><th>Grade</th><th>Status</th><th>Remarks</th><th></th></tr></thead>'
+        +'<tbody>';
+    var rows=students.map(function(st){
+        var m=marks[st.id]||{marks:0,grade:'F',remarks:''};
+        return {st:st,marks:m.marks||0,grade:m.grade||'F',remarks:m.remarks||''};
+    }).sort(function(a,b){return b.marks-a.marks;});
+    rows.forEach(function(row,i){
+        var pct=Math.round(row.marks/exam.maxMarks*100);
+        var pass=row.marks>=exam.passMarks;
+        html+='<tr style="cursor:pointer;" onclick="window.location.href=\'exam-student-result.html?exam='+examId+'&student='+row.st.id+'\'">'
+            +'<td class="fw-bold text-muted">'+(i+1)+'</td>'
+            +'<td><div class="d-flex align-items-center gap-2"><img src="'+row.st.photo+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;"><span class="fw-semibold">'+row.st.name+'</span></div></td>'
+            +'<td>'+row.st.roll+'</td>'
+            +'<td class="fw-bold">'+row.marks+'/'+exam.maxMarks+'</td>'
+            +'<td>'+pct+'%</td>'
+            +'<td>'+gradeChip(row.grade)+'</td>'
+            +'<td><span style="font-weight:700;color:'+(pass?'#22c55e':'#ef4444')+';">'+(pass?'Pass':'Fail')+'</span></td>'
+            +'<td style="font-size:.8rem;color:#94a3b8;">'+row.remarks+'</td>'
+            +'<td><i class="bi bi-chevron-right text-muted"></i></td>'
+            +'</tr>';
+    });
+    html+='</tbody></table></div>';
+    document.getElementById('resultsGrid').style.display='none';
+    var det=document.getElementById('resultsDetail');det.innerHTML=html;det.style.display='block';
+}
+function backToResultsGrid(){
+    document.getElementById('resultsDetail').style.display='none';
+    document.getElementById('resultsGrid').style.display='';
+}
+// ===== ALERTS TAB =====
+function renderAlerts(){
+    var exams=loadExams();
+    var today=new Date();
+    // At-risk
+    var failMap={};
+    exams.forEach(function(ex){
+        var marks=loadMarks(ex.id);
+        var students=EXAM_STUDENTS[ex.classId]||[];
+        students.forEach(function(st){
+            var m=marks[st.id];
+            if(m&&m.marks!==null&&m.marks<ex.passMarks){
+                if(!failMap[st.id])failMap[st.id]={st:st,count:0};
+                failMap[st.id].count++;
+            }
+        });
+    });
+    var atRisk=Object.values(failMap).filter(function(v){return v.count>=2;});
+    var atHtml='';
+    atRisk.forEach(function(v){
+        atHtml+='<div class="alert-card-risk"><img src="'+v.st.photo+'" style="width:40px;height:40px;border-radius:50%;border:2px solid #fca5a5;">'
+            +'<div><div class="fw-semibold">'+v.st.name+'</div><div style="font-size:.75rem;color:#dc2626;"><i class="bi bi-exclamation-circle me-1"></i>Failed '+v.count+' exam(s)</div></div>'
+            +'<div class="ms-auto"><span class="badge-cancelled">At Risk</span></div></div>';
+    });
+    document.getElementById('atRiskList').innerHTML=atHtml||'<div class="text-muted text-center py-3"><i class="bi bi-check-circle-fill text-success d-block fs-3 mb-1"></i>No at-risk students.</div>';
+    // Declining (simulated)
+    var decHtml='';
+    var declSample=[
+        {name:'Ethan Moore',photo:'https://i.pravatar.cc/150?img=18',delta:'-12 pts vs last exam'},
+        {name:'Ravi Kumar',photo:'https://i.pravatar.cc/150?img=14',delta:'-8 pts vs last exam'},
+    ];
+    declSample.forEach(function(d){
+        decHtml+='<div class="alert-card-warning"><img src="'+d.photo+'" style="width:40px;height:40px;border-radius:50%;border:2px solid #fed7aa;">'
+            +'<div><div class="fw-semibold">'+d.name+'</div><div style="font-size:.75rem;color:#c2410c;"><i class="bi bi-graph-down me-1"></i>'+d.delta+'</div></div>'
+            +'<div class="ms-auto"><span style="background:#fff7ed;color:#c2410c;border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:700;">Declining</span></div></div>';
+    });
+    document.getElementById('decliningList').innerHTML=decHtml;
+    // Reminders
+    var remHtml='';
+    var soon=exams.filter(function(ex){
+        if(ex.status!=='upcoming')return false;
+        var diff=(new Date(ex.date)-today)/(1000*60*60*24);
+        return diff>=0&&diff<=7;
+    });
+    soon.forEach(function(ex){
+        var diff=Math.ceil((new Date(ex.date)-today)/(1000*60*60*24));
+        remHtml+='<div class="alert-card-info"><div class="activity-dot" style="background:#dbeafe;color:#2563eb;"><i class="bi bi-calendar-event-fill"></i></div>'
+            +'<div><div class="fw-semibold">'+ex.name+'</div><div style="font-size:.75rem;color:#1d4ed8;">'+ex.className+' · '+ex.subject+' · '+ex.date+'</div></div>'
+            +'<div class="ms-auto"><span class="badge-upcoming">'+diff+' day(s)</span></div></div>';
+    });
+    document.getElementById('reminderList').innerHTML=remHtml||'<div class="text-muted text-center py-3"><i class="bi bi-calendar-check text-primary d-block fs-3 mb-1"></i>No upcoming exams in 7 days.</div>';
+    // Not appeared
+    var naHtml='';
+    exams.filter(function(e){return e.status==='completed';}).forEach(function(ex){
+        var marks=loadMarks(ex.id);
+        var students=EXAM_STUDENTS[ex.classId]||[];
+        students.forEach(function(st){
+            if(!marks[st.id]||marks[st.id].marks===null){
+                naHtml+='<div class="alert-card-risk" style="border-color:#e2e8f0;background:#f8fafc;">'
+                    +'<img src="'+st.photo+'" style="width:40px;height:40px;border-radius:50%;border:2px solid #e2e8f0;">'
+                    +'<div><div class="fw-semibold">'+st.name+'</div><div style="font-size:.75rem;color:#64748b;">'+ex.name+' · '+ex.className+'</div></div>'
+                    +'<div class="ms-auto"><span class="badge-completed">Not Marked</span></div></div>';
+            }
+        });
+    });
+    document.getElementById('notAppearedList').innerHTML=naHtml||'<div class="text-muted text-center py-3"><i class="bi bi-person-check-fill text-success d-block fs-3 mb-1"></i>All students have been marked.</div>';
+}
+// ===== TAB SWITCHING =====
+document.getElementById('examTabNav').addEventListener('click',function(e){
+    var btn=e.target.closest('.att-tab-btn');if(!btn)return;
+    document.querySelectorAll('.att-tab-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelectorAll('.att-tab-panel').forEach(function(p){p.classList.remove('active');});
+    btn.classList.add('active');
+    var tab=btn.dataset.tab;
+    document.getElementById('tab-'+tab).classList.add('active');
+    if(tab==='overview'){setTimeout(renderOverviewCharts,50);}
+    if(tab==='schedule')renderScheduleTable();
+    if(tab==='results'){renderResultsGrid();document.getElementById('resultsDetail').style.display='none';document.getElementById('resultsGrid').style.display='';}
+    if(tab==='alerts')renderAlerts();
+});
+// ===== INIT =====
+renderHeroKpis();
+populateMarksSelectors();
+populateMarksExams();
+setTimeout(renderOverviewCharts,100);
+</script>
 </body>
 </html>

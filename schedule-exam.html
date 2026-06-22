@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Exam - Bright Future School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .wizard-sidebar{background:#fff;border:1.5px solid #e2e8f0;border-radius:18px;padding:1.5rem;position:sticky;top:90px;}
+        .wizard-step{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;margin-bottom:6px;cursor:pointer;transition:all .2s;}
+        .wizard-step.active{background:linear-gradient(135deg,#eff6ff,#f5f3ff);border:1.5px solid #bfdbfe;}
+        .wizard-step.done{background:#f0fdf4;border:1.5px solid #86efac;}
+        .wizard-step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0;}
+        .wizard-step.active .wizard-step-num{background:#2563eb;color:#fff;}
+        .wizard-step.done .wizard-step-num{background:#22c55e;color:#fff;}
+        .wizard-step:not(.active):not(.done) .wizard-step-num{background:#f1f5f9;color:#94a3b8;}
+        .wizard-step-title{font-weight:700;font-size:.85rem;}
+        .wizard-step-sub{font-size:.72rem;color:#94a3b8;margin-top:2px;}
+        .wizard-progress{height:6px;background:#e2e8f0;border-radius:999px;margin:1rem 0;overflow:hidden;}
+        .wizard-progress-bar{height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:999px;transition:width .4s ease;}
+        .form-pane{display:none;}
+        .form-pane.active{display:block;animation:fadeUp .2s ease;}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .review-row{display:flex;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f1f5f9;}
+        .review-row:last-child{border-bottom:none;}
+        .review-label{min-width:160px;font-size:.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;}
+        .review-val{font-size:.88rem;font-weight:600;color:#1e293b;}
+        .toast-exam{position:fixed;bottom:28px;right:28px;z-index:9999;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px 22px;box-shadow:0 8px 32px rgba(0,0,0,.12);display:flex;align-items:center;gap:12px;animation:slideInToast .3s ease;min-width:280px;}
+        @keyframes slideInToast{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+        .pass-pct-hint{font-size:.75rem;color:#94a3b8;margin-top:4px;}
+        body.dark-theme .wizard-sidebar{background:#1e293b;border-color:#334155;}
+        body.dark-theme .wizard-step.active{background:#1e3a5f;border-color:#3b82f6;}
+        body.dark-theme .wizard-step.done{background:#14532d;border-color:#22c55e;}
+    </style>
+</head>
+<body>
+<nav id="sidebar">
+    <div>
+        <div class="sidebar-brand text-white">
+            <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+            <h5 class="mb-0 fw-bold">Bright Future</h5>
+            <small class="opacity-50">School SMS</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-fill"></i> Dashboard</a></div>
+            <div class="nav-item"><a href="students.html" class="nav-link"><i class="bi bi-people-fill"></i> Students</a></div>
+            <div class="nav-item"><a href="teachers.html" class="nav-link"><i class="bi bi-person-badge-fill"></i> Teachers</a></div>
+            <div class="nav-item"><a href="classes.html" class="nav-link"><i class="bi bi-door-open-fill"></i> Classes</a></div>
+            <div class="nav-item"><a href="attendance.html" class="nav-link"><i class="bi bi-calendar-check-fill"></i> Attendance</a></div>
+            <div class="nav-item"><a href="examinations.html" class="nav-link active"><i class="bi bi-file-earmark-text-fill"></i> Examinations</a></div>
+            <div class="nav-item"><a href="assignments.html" class="nav-link"><i class="bi bi-journal-text"></i> Assignments</a></div>
+            <div class="nav-item"><a href="fees.html" class="nav-link"><i class="bi bi-wallet2"></i> Fees</a></div>
+            <div class="nav-item"><a href="library.html" class="nav-link"><i class="bi bi-book-fill"></i> Library</a></div>
+            <div class="nav-item"><a href="transport.html" class="nav-link"><i class="bi bi-bus-front-fill"></i> Transport</a></div>
+            <div class="nav-item"><a href="notice-board.html" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notice Board</a></div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a></div>
+        </div>
+    </div>
+    <a href="#" class="sidebar-logout-card"><i class="bi bi-box-arrow-left"></i><span class="fw-medium">Logout</span></a>
+</nav>
+<div id="content">
+    <header class="main-header">
+        <div class="d-flex align-items-center">
+            <button id="toggleSidebar" class="btn btn-light d-lg-none me-3"><i class="bi bi-list"></i></button>
+            <div>
+                <h4 class="mb-0 fw-bold" id="pageTitle">Schedule New Exam</h4>
+                <small class="text-muted">Fill in the details to schedule an examination</small>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-4">
+            <div class="search-bar d-none d-md-flex">
+                <i class="bi bi-search text-muted"></i>
+                <input type="text" placeholder="Search anything...">
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="position-relative">
+                    <i class="bi bi-bell fs-5 cursor-pointer"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">5</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border-start ps-3">
+                    <div class="text-end d-none d-sm-block"><div class="fw-bold lh-1">Admin</div><small class="text-muted">Administrator</small></div>
+                    <img src="https://i.pravatar.cc/150?u=admin" class="avatar m-0" alt="Admin">
+                    <i class="bi bi-chevron-down text-muted small"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid p-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="examinations.html" class="text-decoration-none">Examinations</a></li>
+                <li class="breadcrumb-item active" id="breadcrumbLabel">Schedule Exam</li>
+            </ol>
+        </nav>
+        <div class="row g-4">
+            <!-- Left: Wizard Sidebar -->
+            <div class="col-lg-3">
+                <div class="wizard-sidebar">
+                    <div class="fw-bold mb-1" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;">Progress</div>
+                    <div class="wizard-progress"><div class="wizard-progress-bar" id="wizardProgressBar" style="width:33%"></div></div>
+                    <div class="wizard-step active" id="ws1" onclick="goStep(1)">
+                        <div class="wizard-step-num">1</div>
+                        <div><div class="wizard-step-title">Basic Info</div><div class="wizard-step-sub">Name, type, year</div></div>
+                    </div>
+                    <div class="wizard-step" id="ws2" onclick="goStep(2)">
+                        <div class="wizard-step-num">2</div>
+                        <div><div class="wizard-step-title">Exam Details</div><div class="wizard-step-sub">Class, date, marks</div></div>
+                    </div>
+                    <div class="wizard-step" id="ws3" onclick="goStep(3)">
+                        <div class="wizard-step-num">3</div>
+                        <div><div class="wizard-step-title">Review & Save</div><div class="wizard-step-sub">Confirm and submit</div></div>
+                    </div>
+                    <hr>
+                    <button class="btn btn-light w-100 rounded-pill mt-2" onclick="window.location.href='examinations.html'">
+                        <i class="bi bi-x-circle me-2"></i>Cancel
+                    </button>
+                </div>
+            </div>
+            <!-- Right: Form Panes -->
+            <div class="col-lg-9">
+                <!-- Step 1: Basic Info -->
+                <div class="form-pane active" id="pane1">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-1">Step 1: Basic Information</h5>
+                        <p class="text-muted small mb-4">Enter the exam name, type and academic year.</p>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Exam Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="fName" placeholder="e.g. Mid Term Test – Mathematics">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Exam Type <span class="text-danger">*</span></label>
+                                <select class="form-select" id="fType">
+                                    <option value="">Select type</option>
+                                    <option>Unit Test</option>
+                                    <option>Mid Term</option>
+                                    <option>Terminal</option>
+                                    <option>Annual</option>
+                                    <option>Pre-Board</option>
+                                    <option>Mock Test</option>
+                                    <option>Class Test</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Academic Year <span class="text-danger">*</span></label>
+                                <select class="form-select" id="fYear">
+                                    <option value="2024-25">2024-25</option>
+                                    <option value="2025-26" selected>2025-26</option>
+                                    <option value="2026-27">2026-27</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Description / Notes</label>
+                                <textarea class="form-control" id="fDesc" rows="3" placeholder="Optional notes or instructions for this exam..."></textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-4">
+                            <button class="btn btn-primary rounded-pill px-5 fw-bold" onclick="goStep(2)">Next <i class="bi bi-arrow-right ms-2"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 2: Exam Details -->
+                <div class="form-pane" id="pane2">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-1">Step 2: Exam Details</h5>
+                        <p class="text-muted small mb-4">Specify the class, schedule, marks and room details.</p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Class <span class="text-danger">*</span></label>
+                                <select class="form-select" id="fClass">
+                                    <option value="">Select class</option>
+                                    <option value="cls-10a">Class 10 - A</option>
+                                    <option value="cls-10b">Class 10 - B</option>
+                                    <option value="cls-9a">Class 9 - A</option>
+                                    <option value="cls-9b">Class 9 - B</option>
+                                    <option value="cls-5a">Class 5 - A</option>
+                                    <option value="cls-5b">Class 5 - B</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Subject <span class="text-danger">*</span></label>
+                                <select class="form-select" id="fSubject">
+                                    <option value="">Select subject</option>
+                                    <option>Mathematics</option>
+                                    <option>English</option>
+                                    <option>Science</option>
+                                    <option>History</option>
+                                    <option>Geography</option>
+                                    <option>Computer Science</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Exam Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="fDate">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Start Time <span class="text-danger">*</span></label>
+                                <input type="time" class="form-control" id="fTime">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Duration (minutes)</label>
+                                <input type="number" class="form-control" id="fDuration" placeholder="120" min="15">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Max Marks <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="fMax" placeholder="100" min="1" oninput="updatePassPct()">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Pass Marks <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="fPass" placeholder="40" min="0" oninput="updatePassPct()">
+                                <div class="pass-pct-hint" id="passPctHint"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Exam Room / Hall</label>
+                                <input type="text" class="form-control" id="fRoom" placeholder="e.g. Room 302 or Exam Hall A">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Invigilator</label>
+                                <input type="text" class="form-control" id="fInvigilator" placeholder="e.g. Sarah Jenkins">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Instructions for Students</label>
+                                <textarea class="form-control" id="fInstructions" rows="3" placeholder="e.g. Bring your admit card. No calculator allowed."></textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn btn-light rounded-pill px-4" onclick="goStep(1)"><i class="bi bi-arrow-left me-2"></i>Back</button>
+                            <button class="btn btn-primary rounded-pill px-5 fw-bold" onclick="goStep(3)">Next <i class="bi bi-arrow-right ms-2"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 3: Review -->
+                <div class="form-pane" id="pane3">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-1">Step 3: Review & Save</h5>
+                        <p class="text-muted small mb-4">Please review the details before saving the exam.</p>
+                        <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:1.4rem;" id="reviewCard">
+                            <!-- Filled by JS -->
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn btn-light rounded-pill px-4" onclick="goStep(2)"><i class="bi bi-arrow-left me-2"></i>Back</button>
+                            <button class="btn btn-success rounded-pill px-5 fw-bold" id="saveBtn" onclick="saveExam()">
+                                <i class="bi bi-check-circle me-2"></i><span id="saveBtnLabel">Save Exam</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="toastContainer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+<script>
+var EXAM_CLASSES=[
+    {id:'cls-10a',name:'Class 10 - A',teacher:'Sarah Jenkins'},
+    {id:'cls-10b',name:'Class 10 - B',teacher:'David Miller'},
+    {id:'cls-9a', name:'Class 9 - A', teacher:'Emily Watson'},
+    {id:'cls-9b', name:'Class 9 - B', teacher:'Arjun Mehta'},
+    {id:'cls-5a', name:'Class 5 - A', teacher:'Maria Rossi'},
+    {id:'cls-5b', name:'Class 5 - B', teacher:'Ananya Mehta'},
+];
+var editMode=false;
+var editId=null;
+var currentStep=1;
+function goStep(n){
+    if(n===2&&currentStep===1){
+        if(!document.getElementById('fName').value.trim()){alert('Please enter an exam name.');return;}
+        if(!document.getElementById('fType').value){alert('Please select an exam type.');return;}
+    }
+    if(n===3&&currentStep===2){
+        if(!document.getElementById('fClass').value){alert('Please select a class.');return;}
+        if(!document.getElementById('fSubject').value){alert('Please select a subject.');return;}
+        if(!document.getElementById('fDate').value){alert('Please select a date.');return;}
+        if(!document.getElementById('fTime').value){alert('Please select a time.');return;}
+        if(!document.getElementById('fMax').value||Number(document.getElementById('fMax').value)<=0){alert('Please enter valid max marks.');return;}
+        if(!document.getElementById('fPass').value||Number(document.getElementById('fPass').value)<0){alert('Please enter valid pass marks.');return;}
+        buildReview();
+    }
+    currentStep=n;
+    document.querySelectorAll('.form-pane').forEach(function(p){p.classList.remove('active');});
+    document.getElementById('pane'+n).classList.add('active');
+    document.querySelectorAll('.wizard-step').forEach(function(w){w.classList.remove('active','done');});
+    for(var i=1;i<n;i++)document.getElementById('ws'+i).classList.add('done');
+    document.getElementById('ws'+n).classList.add('active');
+    var pct=n===1?33:n===2?66:100;
+    document.getElementById('wizardProgressBar').style.width=pct+'%';
+}
+function updatePassPct(){
+    var max=Number(document.getElementById('fMax').value)||0;
+    var pass=Number(document.getElementById('fPass').value)||0;
+    var pct=max>0?Math.round(pass/max*100):0;
+    document.getElementById('passPctHint').textContent=pct>0?'('+pct+'% of max marks)':'';
+}
+function buildReview(){
+    var classId=document.getElementById('fClass').value;
+    var classObj=EXAM_CLASSES.find(function(c){return c.id===classId;});
+    var className=classObj?classObj.name:'N/A';
+    var data=[
+        {label:'Exam Name',val:document.getElementById('fName').value},
+        {label:'Type',val:document.getElementById('fType').value},
+        {label:'Academic Year',val:document.getElementById('fYear').value},
+        {label:'Description',val:document.getElementById('fDesc').value||'—'},
+        {label:'Class',val:className},
+        {label:'Subject',val:document.getElementById('fSubject').value},
+        {label:'Date',val:document.getElementById('fDate').value},
+        {label:'Start Time',val:document.getElementById('fTime').value},
+        {label:'Duration',val:(document.getElementById('fDuration').value||'—')+' min'},
+        {label:'Max Marks',val:document.getElementById('fMax').value},
+        {label:'Pass Marks',val:document.getElementById('fPass').value},
+        {label:'Room',val:document.getElementById('fRoom').value||'—'},
+        {label:'Invigilator',val:document.getElementById('fInvigilator').value||'—'},
+        {label:'Instructions',val:document.getElementById('fInstructions').value||'—'},
+    ];
+    var html='';
+    data.forEach(function(r){
+        html+='<div class="review-row"><div class="review-label">'+r.label+'</div><div class="review-val">'+r.val+'</div></div>';
+    });
+    document.getElementById('reviewCard').innerHTML=html;
+}
+function saveExam(){
+    var raw=localStorage.getItem('exams-db');
+    var exams=raw?JSON.parse(raw):[];
+    var classId=document.getElementById('fClass').value;
+    var classObj=EXAM_CLASSES.find(function(c){return c.id===classId;});
+    var className=classObj?classObj.name:'';
+    var obj={
+        id:editMode&&editId?editId:'EX'+('000'+(Math.floor(Math.random()*9999)+1)).slice(-3),
+        name:document.getElementById('fName').value,
+        type:document.getElementById('fType').value,
+        classId:classId,
+        className:className,
+        subject:document.getElementById('fSubject').value,
+        date:document.getElementById('fDate').value,
+        time:document.getElementById('fTime').value,
+        duration:Number(document.getElementById('fDuration').value)||120,
+        maxMarks:Number(document.getElementById('fMax').value),
+        passMarks:Number(document.getElementById('fPass').value),
+        room:document.getElementById('fRoom').value||'',
+        invigilator:document.getElementById('fInvigilator').value||'',
+        status:'upcoming',
+    };
+    if(editMode&&editId){
+        var idx=exams.findIndex(function(e){return e.id===editId;});
+        if(idx>=0)exams[idx]=obj;
+    }else{
+        exams.push(obj);
+    }
+    localStorage.setItem('exams-db',JSON.stringify(exams));
+    showToast(editMode?'Exam updated successfully!':'Exam scheduled successfully!','success');
+    setTimeout(function(){window.location.href='examinations.html';},1500);
+}
+function showToast(msg,type){
+    var color=type==='success'?'#22c55e':type==='danger'?'#ef4444':'#2563eb';
+    var icon=type==='success'?'check-circle-fill':type==='danger'?'x-circle-fill':'info-circle-fill';
+    var el=document.createElement('div');
+    el.className='toast-exam';
+    el.innerHTML='<i class="bi bi-'+icon+' fs-5" style="color:'+color+'"></i><span class="fw-semibold">'+msg+'</span>';
+    document.getElementById('toastContainer').appendChild(el);
+    setTimeout(function(){el.remove();},3000);
+}
+// ===== EDIT MODE =====
+function loadEdit(){
+    var params=new URLSearchParams(window.location.search);
+    var eid=params.get('edit');
+    if(!eid)return;
+    var raw=localStorage.getItem('exams-db');
+    if(!raw)return;
+    var exams=JSON.parse(raw);
+    var exam=exams.find(function(e){return e.id===eid;});
+    if(!exam)return;
+    editMode=true;editId=eid;
+    document.getElementById('pageTitle').textContent='Edit Exam';
+    document.getElementById('breadcrumbLabel').textContent='Edit Exam';
+    document.getElementById('saveBtnLabel').textContent='Update Exam';
+    document.getElementById('fName').value=exam.name||'';
+    document.getElementById('fType').value=exam.type||'';
+    document.getElementById('fYear').value='2025-26';
+    document.getElementById('fDesc').value='';
+    document.getElementById('fClass').value=exam.classId||'';
+    document.getElementById('fSubject').value=exam.subject||'';
+    document.getElementById('fDate').value=exam.date||'';
+    document.getElementById('fTime').value=exam.time||'';
+    document.getElementById('fDuration').value=exam.duration||'';
+    document.getElementById('fMax').value=exam.maxMarks||'';
+    document.getElementById('fPass').value=exam.passMarks||'';
+    document.getElementById('fRoom').value=exam.room||'';
+    document.getElementById('fInvigilator').value=exam.invigilator||'';
+    document.getElementById('fInstructions').value='';
+    updatePassPct();
+}
+window.addEventListener('DOMContentLoaded',loadEdit);
+</script>
+</body>
+</html>
