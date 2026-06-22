@@ -26,6 +26,103 @@
         .result-detail-row:last-child{border-bottom:none;}
         .result-detail-label{min-width:180px;font-size:.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;}
         .result-detail-val{font-size:.9rem;font-weight:600;color:#1e293b;}
+
+        /* ── Premium Result Card ── */
+        .rc-wrapper{
+            background:#fff;
+            border-radius:24px;
+            overflow:hidden;
+            box-shadow:0 8px 48px rgba(0,0,0,.1);
+            border:1px solid #e2e8f0;
+            max-width:860px; margin:0 auto;
+        }
+        /* Top banner */
+        .rc-banner{
+            background:linear-gradient(135deg,#1d4ed8 0%,#4f46e5 50%,#7c3aed 100%);
+            padding:28px 36px 80px; color:#fff; position:relative; overflow:hidden;
+        }
+        .rc-banner::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.06);}
+        .rc-banner::after{content:'';position:absolute;bottom:-80px;left:40px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.04);}
+        .rc-school-logo{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;backdrop-filter:blur(8px);}
+        /* Avatar strip overlapping banner */
+        .rc-avatar-strip{
+            padding:0 36px; margin-top:-52px; position:relative; z-index:2;
+            display:flex; align-items:flex-end; gap:20px;
+        }
+        .rc-avatar{
+            width:100px; height:100px; border-radius:22px;
+            object-fit:cover;
+            border:4px solid #fff;
+            box-shadow:0 6px 28px rgba(0,0,0,.18);
+            flex-shrink:0;
+        }
+        .rc-grade-pill{
+            display:inline-flex;align-items:center;justify-content:center;
+            width:68px;height:68px;border-radius:18px;
+            font-size:1.6rem;font-weight:900;
+            border:3px solid rgba(255,255,255,.35);
+            flex-shrink:0;
+            margin-bottom:6px;
+        }
+        /* Body */
+        .rc-body{padding:18px 36px 32px;}
+        .rc-info-grid{
+            display:grid; grid-template-columns:1fr 1fr; gap:0;
+            border:1px solid #e8edf5; border-radius:14px; overflow:hidden;
+            margin-bottom:24px;
+        }
+        .rc-info-cell{
+            padding:11px 16px;
+            border-bottom:1px solid #f1f5f9;
+            font-size:.82rem;
+        }
+        .rc-info-cell:nth-last-child(-n+2){border-bottom:none;}
+        .rc-info-cell:nth-child(odd){border-right:1px solid #f1f5f9;}
+        .rc-info-cell .rc-lbl{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;margin-bottom:2px;}
+        .rc-info-cell .rc-val{font-weight:700;color:#0f172a;}
+        /* Score strip */
+        .rc-score-strip{
+            display:grid; grid-template-columns:repeat(4,1fr);
+            gap:10px; margin-bottom:24px;
+        }
+        .rc-score-box{
+            border-radius:14px; padding:14px 10px; text-align:center;
+            border:1.5px solid #e8edf5; background:#f8fafc;
+        }
+        .rc-score-box .rcv{font-size:1.45rem;font-weight:900;line-height:1;}
+        .rc-score-box .rcl{font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;margin-top:4px;}
+        /* Remarks strip */
+        .rc-remarks{
+            background:#f8fafc; border:1.5px solid #e8edf5;
+            border-radius:12px; padding:12px 16px; margin-bottom:24px;
+            font-size:.82rem; color:#475569;
+        }
+        /* Footer seal */
+        .rc-footer{
+            display:flex; align-items:center; justify-content:space-between;
+            padding:16px 36px; border-top:1px solid #f1f5f9;
+            background:#fafafa;
+        }
+        .rc-seal{
+            width:56px;height:56px;border-radius:50%;
+            border:2.5px dashed #e2e8f0;
+            display:flex;align-items:center;justify-content:center;
+            color:#94a3b8;font-size:1.2rem;
+        }
+        @media print{
+            #sidebar,#content .main-header,.action-bar,.att-tab-nav{display:none!important;}
+            #content{margin-left:0!important;width:100%!important;}
+            .att-tab-panel{display:block!important;}
+            .rc-wrapper{box-shadow:none;border:1px solid #ccc;}
+        }
+        body.dark-theme .rc-wrapper{background:#1e293b;border-color:#334155;}
+        body.dark-theme .rc-body{background:#1e293b;}
+        body.dark-theme .rc-info-grid{border-color:#334155;}
+        body.dark-theme .rc-info-cell{border-color:#334155;background:#1e293b;}
+        body.dark-theme .rc-info-cell .rc-val{color:#f8fafc;}
+        body.dark-theme .rc-score-box{background:#0f172a;border-color:#334155;}
+        body.dark-theme .rc-remarks{background:#0f172a;border-color:#334155;color:#94a3b8;}
+        body.dark-theme .rc-footer{background:#0f172a;border-color:#334155;}
         .chart-card{background:var(--card-bg,#fff);border:1.5px solid var(--border-color,#e8edf5);border-radius:18px;padding:1.4rem;height:100%;}
         .chart-card .chart-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted,#94a3b8);margin-bottom:1rem;display:flex;align-items:center;gap:6px;}
         .grade-visual{border-radius:20px;padding:2.5rem;text-align:center;background:linear-gradient(135deg,#f8fafc,#eff6ff);border:1.5px solid #e2e8f0;}
@@ -146,58 +243,72 @@
         </div>
         <!-- Tab: Result Card -->
         <div class="att-tab-panel active" id="tab-card">
-            <div class="result-card" id="printableCard">
-                <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-                    <div class="d-flex align-items-center gap-3">
-                        <img src="https://img.icons8.com/color/96/graduation-cap.png" style="width:48px;">
+            <div class="rc-wrapper" id="printableCard">
+                <!-- Banner -->
+                <div class="rc-banner">
+                    <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;position:relative;z-index:1;">
+                        <div class="rc-school-logo">
+                            <img src="https://img.icons8.com/color/96/graduation-cap.png" style="width:28px;">
+                        </div>
                         <div>
-                            <div class="fw-bold fs-5">Bright Future School</div>
-                            <div style="font-size:.78rem;color:#94a3b8;">Official Examination Result</div>
+                            <div style="font-size:1rem;font-weight:800;">Bright Future School</div>
+                            <div style="font-size:.7rem;opacity:.7;">Official Examination Result Card</div>
+                        </div>
+                        <div class="ms-auto">
+                            <button class="btn btn-sm fw-semibold" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:9px;backdrop-filter:blur(8px);" onclick="window.print()">
+                                <i class="bi bi-printer-fill me-1"></i>Print
+                            </button>
                         </div>
                     </div>
-                    <button class="btn btn-outline-primary rounded-pill" onclick="window.print()">
-                        <i class="bi bi-printer me-2"></i>Print Report Card
-                    </button>
+                    <div style="position:relative;z-index:1;">
+                        <div style="font-size:1.3rem;font-weight:800;opacity:.9;margin-bottom:4px;" id="bannerExamName">—</div>
+                        <div style="font-size:.8rem;opacity:.7;" id="bannerExamMeta">—</div>
+                    </div>
                 </div>
-                <div class="row g-4">
-                    <div class="col-lg-7">
-                        <div style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:.75rem;">Student Information</div>
-                        <div id="studentDetailsTable"></div>
-                        <div style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin:1.25rem 0 .75rem;">Exam Information</div>
-                        <div id="examDetailsTable"></div>
+                <!-- Avatar + Name strip -->
+                <div class="rc-avatar-strip">
+                    <img id="rcAvatar" src="" class="rc-avatar" alt="">
+                    <div style="flex:1;padding-bottom:10px;">
+                        <div style="font-size:1.3rem;font-weight:900;color:#0f172a;line-height:1.2;" id="rcName">—</div>
+                        <div style="font-size:.8rem;color:#64748b;margin-top:3px;" id="rcSubMeta">—</div>
+                        <div id="rcPassStatusBanner" style="margin-top:8px;"></div>
                     </div>
-                    <div class="col-lg-5">
-                        <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center p-3 rounded-3" style="background:#f8fafc;border:1.5px solid #e2e8f0;">
-                            <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:1rem;">Final Result</div>
-                            <div id="cardGradeDisplay" style="font-size:4rem;font-weight:900;line-height:1;margin-bottom:.5rem;">—</div>
-                            <div id="cardPassStatus" class="mb-3"></div>
-                            <div class="row g-2 w-100">
-                                <div class="col-6">
-                                    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;">
-                                        <div class="fw-bold fs-5" id="cardScore">—</div>
-                                        <div style="font-size:.7rem;color:#94a3b8;">Marks Obtained</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;">
-                                        <div class="fw-bold fs-5" id="cardPct">—</div>
-                                        <div style="font-size:.7rem;color:#94a3b8;">Percentage</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;">
-                                        <div class="fw-bold fs-5" id="cardRank">—</div>
-                                        <div style="font-size:.7rem;color:#94a3b8;">Class Rank</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;">
-                                        <div class="fw-bold fs-5" id="cardPass">—</div>
-                                        <div style="font-size:.7rem;color:#94a3b8;">Pass Marks</div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div style="padding-bottom:10px;">
+                        <div class="rc-grade-pill" id="rcGradePill">—</div>
+                        <div style="font-size:.62rem;text-align:center;color:#94a3b8;margin-top:3px;text-transform:uppercase;letter-spacing:.06em;">Grade</div>
+                    </div>
+                </div>
+                <!-- Body -->
+                <div class="rc-body">
+                    <!-- Score strip -->
+                    <div class="rc-score-strip" id="rcScoreStrip"></div>
+                    <!-- Info grid: student + exam side by side -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-lg-6">
+                            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:8px;">Student Details</div>
+                            <div class="rc-info-grid" id="rcStudentGrid"></div>
                         </div>
+                        <div class="col-lg-6">
+                            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:8px;">Exam Details</div>
+                            <div class="rc-info-grid" id="rcExamGrid"></div>
+                        </div>
+                    </div>
+                    <!-- Remarks -->
+                    <div id="rcRemarks" class="rc-remarks" style="display:none;"></div>
+                </div>
+                <!-- Footer -->
+                <div class="rc-footer">
+                    <div style="font-size:.72rem;color:#94a3b8;">
+                        <div>Generated: <span id="rcGeneratedDate">—</span></div>
+                        <div>Bright Future School Management System</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="rc-seal"><i class="bi bi-patch-check-fill" style="color:#2563eb;"></i></div>
+                        <div style="font-size:.6rem;color:#94a3b8;margin-top:4px;">Official Seal</div>
+                    </div>
+                    <div style="text-align:right;font-size:.72rem;color:#94a3b8;">
+                        <div>Exam ID: <span id="rcExamId">—</span></div>
+                        <div>Student ID: <span id="rcStudentId">—</span></div>
                     </div>
                 </div>
             </div>
@@ -382,27 +493,86 @@ function init(){
 }
 function renderResultCard(){
     var d=pageData;
-    var stHtml=makeDetailRow('Student Name',d.student.name)
-        +makeDetailRow('Student ID',d.student.id)
-        +makeDetailRow('Roll Number',d.student.roll)
-        +makeDetailRow('Class',d.exam.className);
-    document.getElementById('studentDetailsTable').innerHTML=stHtml;
-    var exHtml=makeDetailRow('Exam Name',d.exam.name)
-        +makeDetailRow('Exam Type',d.exam.type)
-        +makeDetailRow('Subject',d.exam.subject)
-        +makeDetailRow('Date',d.exam.date+' '+d.exam.time)
-        +makeDetailRow('Venue',d.exam.room)
-        +makeDetailRow('Invigilator',d.exam.invigilator)
-        +makeDetailRow('Duration',d.exam.duration+' minutes');
-    document.getElementById('examDetailsTable').innerHTML=exHtml;
-    document.getElementById('cardGradeDisplay').textContent=d.grade;
-    document.getElementById('cardGradeDisplay').style.color=gradeColor(d.grade);
-    var passClass=d.pass?'pass-badge':'fail-badge';
-    document.getElementById('cardPassStatus').innerHTML='<span class="pass-status-badge '+passClass+'">'+(d.pass?'PASSED':'FAILED')+'</span>';
-    document.getElementById('cardScore').textContent=d.marks+'/'+d.exam.maxMarks;
-    document.getElementById('cardPct').textContent=d.pct+'%';
-    document.getElementById('cardRank').textContent='#'+d.rank+' of '+d.totalStudents;
-    document.getElementById('cardPass').textContent=d.exam.passMarks+'/'+d.exam.maxMarks;
+    var gc = gradeColor(d.grade);
+    var gcBg = gradeBg(d.grade);
+
+    // Banner
+    document.getElementById('bannerExamName').textContent = d.exam.name + ' — ' + d.exam.type;
+    document.getElementById('bannerExamMeta').textContent = d.exam.className + '  ·  ' + d.exam.subject + '  ·  ' + d.exam.date + ' at ' + d.exam.time;
+
+    // Avatar + name strip
+    document.getElementById('rcAvatar').src = d.student.photo;
+    document.getElementById('rcAvatar').onerror = function(){ this.src='https://i.pravatar.cc/150?u='+d.student.id; };
+    document.getElementById('rcName').textContent = d.student.name;
+    document.getElementById('rcSubMeta').textContent = 'Roll No: ' + d.student.roll + '  ·  ' + d.exam.className;
+
+    var passClass = d.pass ? 'pass-badge' : 'fail-badge';
+    document.getElementById('rcPassStatusBanner').innerHTML = '<span class="pass-status-badge ' + passClass + '">'
+        + (d.pass ? '<i class="bi bi-patch-check-fill me-2"></i>PASSED' : '<i class="bi bi-x-circle-fill me-2"></i>FAILED')
+        + '</span>';
+
+    // Grade pill
+    var gpEl = document.getElementById('rcGradePill');
+    gpEl.textContent = d.grade;
+    gpEl.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:68px;height:68px;border-radius:18px;font-size:1.6rem;font-weight:900;background:' + gcBg + ';color:' + gc + ';border:3px solid ' + gc + '40;';
+
+    // Score strip
+    var scores = [
+        { v: d.marks + '/' + d.exam.maxMarks, l: 'Marks Obtained', c: gc },
+        { v: d.pct + '%',                       l: 'Percentage',    c: d.pct>=75?'#16a34a':d.pct>=45?'#f59e0b':'#ef4444' },
+        { v: '#' + d.rank + ' / ' + d.totalStudents, l: 'Class Rank', c: '#f59e0b' },
+        { v: d.exam.passMarks + '/' + d.exam.maxMarks, l: 'Pass Marks', c: '#2563eb' },
+    ];
+    document.getElementById('rcScoreStrip').innerHTML = scores.map(function(s){
+        return '<div class="rc-score-box" style="border-color:' + s.c + '22;">'
+            + '<div class="rcv" style="color:' + s.c + ';">' + s.v + '</div>'
+            + '<div class="rcl">' + s.l + '</div>'
+            + '</div>';
+    }).join('');
+
+    // Student info grid
+    var stCells = [
+        ['Student Name', d.student.name],
+        ['Student ID',   d.student.id],
+        ['Roll Number',  d.student.roll],
+        ['Class',        d.exam.className],
+    ];
+    document.getElementById('rcStudentGrid').innerHTML = stCells.map(function(c){
+        return '<div class="rc-info-cell"><div class="rc-lbl">' + c[0] + '</div><div class="rc-val">' + c[1] + '</div></div>';
+    }).join('');
+
+    // Exam info grid
+    var exCells = [
+        ['Exam Name',   d.exam.name],
+        ['Exam Type',   d.exam.type],
+        ['Subject',     d.exam.subject],
+        ['Date & Time', d.exam.date + ' ' + d.exam.time],
+        ['Venue',       d.exam.room],
+        ['Invigilator', d.exam.invigilator],
+    ];
+    document.getElementById('rcExamGrid').innerHTML = exCells.map(function(c){
+        return '<div class="rc-info-cell"><div class="rc-lbl">' + c[0] + '</div><div class="rc-val">' + c[1] + '</div></div>';
+    }).join('');
+
+    // Remarks
+    var studentMark = d.saved && d.saved[d.student.id];
+    var remarks = studentMark ? studentMark.remarks : '';
+    var remEl = document.getElementById('rcRemarks');
+    if (remarks && remarks.trim() && remarks !== 'Auto-generated') {
+        remEl.style.display = '';
+        remEl.innerHTML = '<strong>Teacher Remarks:</strong> ' + remarks;
+    } else {
+        remEl.style.display = 'none';
+    }
+
+    // Footer
+    document.getElementById('rcGeneratedDate').textContent = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('rcExamId').textContent = d.exam.id;
+    document.getElementById('rcStudentId').textContent = d.student.id;
+
+    // Keep backward-compat with old IDs used elsewhere
+    var old = [['cardScore', d.marks+'/'+d.exam.maxMarks],['cardPct',d.pct+'%'],['cardRank','#'+d.rank],['cardPass',d.exam.passMarks+'/'+d.exam.maxMarks],['cardGradeDisplay',d.grade],['studentDetailsTable',''],['examDetailsTable',''],['cardPassStatus','']];
+    old.forEach(function(p){ var el=document.getElementById(p[0]); if(el) el.innerHTML = p[1]; });
 }
 function renderPerformanceAnalysis(){
     var d=pageData;

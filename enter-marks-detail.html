@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Marks — Bright Future School</title>
+    <meta name="description" content="Full-page marks entry for exams at Bright Future School.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+    --em-blue:#2563eb; --em-violet:#7c3aed; --em-teal:#0d9488;
+    --em-green:#16a34a; --em-amber:#f59e0b; --em-rose:#e11d48;
+}
+*{box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f8fafc;color:#1e293b;margin:0;overflow-x:hidden;}
+
+/* ── Top header ── */
+.em-header{
+    background:linear-gradient(135deg,#1d4ed8 0%,#7c3aed 55%,#0d9488 100%);
+    padding:0;position:sticky;top:0;z-index:200;
+    box-shadow:0 4px 24px rgba(0,0,0,.15);
+}
+.em-header-inner{
+    display:flex;align-items:center;gap:16px;padding:14px 28px;flex-wrap:wrap;
+}
+.em-header-back{
+    width:40px;height:40px;border-radius:11px;border:1.5px solid rgba(255,255,255,.3);
+    background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;
+    justify-content:center;cursor:pointer;transition:all .18s;text-decoration:none;flex-shrink:0;
+}
+.em-header-back:hover{background:rgba(255,255,255,.25);color:#fff;}
+.em-header-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.em-header-brand img{width:32px;height:32px;}
+.em-exam-info{flex:1;min-width:0;}
+.em-exam-info h5{margin:0;font-weight:800;font-size:.98rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.em-exam-info small{color:rgba(255,255,255,.72);font-size:.72rem;}
+.em-header-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap;}
+.em-btn{padding:7px 18px;border-radius:10px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.14);color:#fff;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;text-decoration:none;}
+.em-btn:hover{background:rgba(255,255,255,.28);color:#fff;}
+.em-btn-primary{background:#fff;color:#2563eb;border-color:#fff;}
+.em-btn-primary:hover{background:#eff6ff;color:#2563eb;}
+
+/* ── Hero KPI bar ── */
+.em-kpi-bar{
+    display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.12);
+    padding:0 28px;overflow-x:auto;
+}
+.em-kpi-item{
+    padding:10px 20px;text-align:center;flex:1;min-width:80px;
+    border-right:1px solid rgba(255,255,255,.12);
+}
+.em-kpi-item:last-child{border-right:none;}
+.em-kpi-v{font-size:1.1rem;font-weight:900;color:#fff;line-height:1;}
+.em-kpi-l{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.65);margin-top:3px;}
+
+/* ── Progress banner ── */
+.em-progress-banner{
+    background:#fff;border-bottom:1.5px solid #e2e8f0;padding:12px 28px;
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:120px;z-index:100;
+}
+.em-progress-wrap{flex:1;min-width:200px;}
+.em-progress-track{height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden;}
+.em-progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#2563eb,#7c3aed);transition:width .4s ease;}
+.em-auto-save{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:20px;background:#dcfce7;color:#16a34a;transition:all .3s;}
+.em-auto-save.saving{background:#fef9c3;color:#a16207;}
+
+/* ── Layout ── */
+.em-layout{display:grid;grid-template-columns:1fr 340px;gap:0;min-height:calc(100vh - 180px);}
+@media(max-width:992px){.em-layout{grid-template-columns:1fr;}}
+.em-main{padding:24px 28px;overflow-y:auto;}
+.em-sidebar{padding:20px;background:#fff;border-left:1.5px solid #e2e8f0;overflow-y:auto;position:sticky;top:160px;height:calc(100vh - 160px);}
+@media(max-width:992px){.em-sidebar{position:static;height:auto;border-left:none;border-top:1.5px solid #e2e8f0;}}
+
+/* ── Toolbar ── */
+.em-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+.em-toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.em-tool-btn{padding:6px 14px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;font-size:.73rem;font-weight:700;cursor:pointer;transition:all .18s;color:#475569;display:inline-flex;align-items:center;gap:5px;}
+.em-tool-btn:hover{border-color:#2563eb;color:#2563eb;background:#eff6ff;}
+.em-tool-btn.active{background:#2563eb;color:#fff;border-color:#2563eb;}
+
+/* ── Search bar ── */
+.em-search-wrap{display:flex;align-items:center;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:7px 12px;gap:8px;min-width:220px;}
+.em-search-wrap input{border:none;background:transparent;outline:none;font-size:.82rem;font-family:'Inter',sans-serif;width:100%;color:#0f172a;}
+
+/* ── Student card ── */
+.student-mark-card{
+    background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:18px 20px;
+    margin-bottom:10px;display:flex;align-items:center;gap:16px;
+    transition:all .2s;position:relative;overflow:hidden;
+}
+.student-mark-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:0 3px 3px 0;background:#e2e8f0;transition:background .2s;}
+.student-mark-card.card-pass::before{background:#22c55e;}
+.student-mark-card.card-fail::before{background:#ef4444;}
+.student-mark-card.card-absent::before{background:#94a3b8;}
+.student-mark-card:hover{box-shadow:0 6px 24px rgba(37,99,235,.09);border-color:rgba(37,99,235,.2);}
+.student-mark-card.card-pass{background:linear-gradient(135deg,#f0fdf4,#fff);border-color:#86efac;}
+.student-mark-card.card-fail{background:linear-gradient(135deg,#fef2f2,#fff);border-color:#fca5a5;}
+.student-mark-card.card-absent{background:#f8fafc;opacity:.75;}
+
+.student-rank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;flex-shrink:0;background:#f1f5f9;color:#64748b;}
+.student-photo{width:52px;height:52px;border-radius:14px;object-fit:cover;flex-shrink:0;border:2px solid #e2e8f0;transition:border-color .2s;}
+.student-mark-card.card-pass .student-photo{border-color:#86efac;}
+.student-mark-card.card-fail .student-photo{border-color:#fca5a5;}
+
+.student-info{flex:1;min-width:0;}
+.student-name{font-weight:800;font-size:.9rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.student-meta{font-size:.68rem;color:#94a3b8;}
+
+.absent-toggle{
+    width:28px;height:28px;border-radius:8px;border:1.5px solid #e2e8f0;
+    background:#fff;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all .18s;flex-shrink:0;font-size:.8rem;color:#94a3b8;
+}
+.absent-toggle.checked{background:#94a3b8;border-color:#94a3b8;color:#fff;}
+.absent-toggle:hover:not(.checked){border-color:#94a3b8;color:#64748b;}
+
+.mark-input-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;}
+.mark-input{
+    width:80px;height:44px;border-radius:10px;border:2px solid #e2e8f0;
+    text-align:center;font-size:1.1rem;font-weight:800;font-family:'Inter',sans-serif;
+    background:#f8fafc;color:#0f172a;outline:none;transition:all .2s;
+}
+.mark-input:focus{border-color:#2563eb;background:#eff6ff;box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+.mark-input.inp-pass{border-color:#22c55e;background:#f0fdf4;color:#15803d;}
+.mark-input.inp-fail{border-color:#ef4444;background:#fef2f2;color:#b91c1c;}
+.mark-input:disabled{background:#f1f5f9;color:#94a3b8;border-color:#e2e8f0;cursor:not-allowed;}
+.mark-input-max{font-size:.62rem;color:#94a3b8;font-weight:600;}
+
+.grade-display{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:900;flex-shrink:0;transition:all .2s;}
+.pf-display{font-size:.72rem;font-weight:800;min-width:40px;text-align:center;flex-shrink:0;}
+
+.remarks-select{border:1.5px solid #e2e8f0;border-radius:8px;padding:5px 8px;font-size:.72rem;font-family:'Inter',sans-serif;color:#475569;background:#fff;cursor:pointer;min-width:130px;flex-shrink:0;}
+.remarks-select:focus{border-color:#2563eb;outline:none;}
+
+/* ── Sidebar widgets ── */
+.sidebar-section{margin-bottom:20px;}
+.sidebar-section-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:#94a3b8;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.chart-card{background:#f8fafc;border:1.5px solid #e8edf5;border-radius:14px;padding:14px;margin-bottom:12px;}
+.chart-card-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:10px;}
+
+/* stat boxes */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.stat-box{background:#fff;border:1.5px solid #e8edf5;border-radius:10px;padding:10px;text-align:center;}
+.stat-box .sv{font-size:1.2rem;font-weight:900;line-height:1;}
+.stat-box .sl{font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;margin-top:3px;}
+
+/* keyboard shortcuts */
+.shortcut-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.72rem;}
+.kbd{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:5px;padding:2px 6px;font-family:monospace;font-size:.7rem;font-weight:700;color:#475569;}
+
+/* grade legend */
+.grade-legend{display:flex;flex-direction:column;gap:4px;}
+.grade-legend-row{display:flex;align-items:center;gap:8px;font-size:.72rem;}
+.grade-chip{display:inline-block;border-radius:7px;padding:2px 9px;font-size:.7rem;font-weight:800;}
+.grade-aplus{background:#dcfce7;color:#15803d;}
+.grade-a{background:#dbeafe;color:#1e40af;}
+.grade-bplus{background:#f3e8ff;color:#7e22ce;}
+.grade-b{background:#ffedd5;color:#c2410c;}
+.grade-cplus{background:#fef9c3;color:#a16207;}
+.grade-c{background:#fee2e2;color:#dc2626;}
+.grade-f{background:#fecaca;color:#7f1d1d;}
+
+/* ── Toast ── */
+.toast-em{position:fixed;bottom:28px;right:28px;z-index:9999;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 20px;box-shadow:0 8px 32px rgba(0,0,0,.12);display:flex;align-items:center;gap:10px;animation:slideInToast .3s ease;min-width:260px;max-width:360px;}
+@keyframes slideInToast{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── Empty state ── */
+.em-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:40px;}
+.em-empty-icon{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#eff6ff,#f5f3ff);display:flex;align-items:center;justify-content:center;font-size:2.4rem;margin:0 auto 20px;}
+.em-empty h4{font-weight:800;color:#1e293b;margin-bottom:8px;}
+.em-empty p{color:#94a3b8;font-size:.88rem;max-width:320px;}
+
+/* ── Review panel ── */
+.review-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:400;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s;}
+.review-overlay.open{opacity:1;pointer-events:all;}
+.review-modal{background:#fff;border-radius:22px;width:90%;max-width:700px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.2);transform:scale(.96);transition:transform .22s;}
+.review-overlay.open .review-modal{transform:scale(1);}
+.review-header{padding:22px 26px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;}
+.review-body{padding:22px 26px;}
+
+/* Floating save bar */
+.float-save{
+    position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid #e2e8f0;
+    padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    box-shadow:0 -4px 20px rgba(0,0,0,.08);z-index:150;flex-wrap:wrap;
+}
+
+/* Scroll transition */
+.student-mark-card{animation:fadeUp .18s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+body.dark-theme .student-mark-card{background:#1e293b;border-color:#334155;}
+body.dark-theme .em-sidebar{background:#0f172a;border-color:#334155;}
+body.dark-theme .chart-card{background:#1e293b;border-color:#334155;}
+body.dark-theme .stat-box{background:#1e293b;border-color:#334155;}
+body.dark-theme .mark-input{background:#1e293b;color:#f8fafc;border-color:#334155;}
+body.dark-theme .mark-input:focus{background:#172554;}
+body.dark-theme .em-progress-banner{background:#0f172a;border-color:#334155;}
+body.dark-theme .float-save{background:#0f172a;border-color:#334155;}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="em-header">
+    <div class="em-header-inner">
+        <a href="examinations.html#marks" class="em-header-back" title="Back to Examinations">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div class="em-header-brand">
+            <img src="https://img.icons8.com/color/96/graduation-cap.png" alt="Logo">
+            <div style="color:#fff;font-weight:800;font-size:.82rem;line-height:1.2;">Bright Future<br><span style="opacity:.65;font-weight:400;font-size:.68rem;">School SMS</span></div>
+        </div>
+        <div class="em-exam-info">
+            <h5 id="pageExamName">Loading exam...</h5>
+            <small id="pageExamMeta">—</small>
+        </div>
+        <div class="em-header-actions">
+            <span class="em-auto-save em-btn" id="autoSaveBadge" style="border-color:rgba(255,255,255,.3);">
+                <i class="bi bi-check-circle-fill"></i> Saved
+            </span>
+            <button class="em-btn" onclick="showReview()"><i class="bi bi-eye"></i> Review</button>
+            <button class="em-btn em-btn-primary" onclick="finalSave()"><i class="bi bi-floppy-fill"></i> Save All</button>
+        </div>
+    </div>
+
+    <!-- KPI bar -->
+    <div class="em-kpi-bar" id="kpiBar"></div>
+</div>
+
+<!-- ═══ PROGRESS BANNER ═══ -->
+<div class="em-progress-banner">
+    <div style="flex-shrink:0;min-width:140px;">
+        <div style="font-size:.7rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Marking Progress</div>
+        <div style="font-weight:900;font-size:.95rem;color:#2563eb;" id="progressLabel">0 / 0 marked</div>
+    </div>
+    <div class="em-progress-wrap">
+        <div class="em-progress-track"><div class="em-progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <span style="font-size:.72rem;font-weight:700;color:#94a3b8;" id="passFailMini">—</span>
+    </div>
+</div>
+
+<!-- ═══ MAIN LAYOUT ═══ -->
+<div class="em-layout">
+
+    <!-- ── LEFT: Student cards ── -->
+    <div class="em-main">
+
+        <!-- Toolbar -->
+        <div class="em-toolbar">
+            <div class="em-search-wrap">
+                <i class="bi bi-search" style="color:#94a3b8;font-size:.85rem;"></i>
+                <input type="text" id="studentSearch" placeholder="Search students..." oninput="filterStudents()">
+            </div>
+            <div class="em-toolbar-actions">
+                <button class="em-tool-btn" onclick="bulkFill('max')" title="Set all marks to maximum">
+                    <i class="bi bi-arrow-up-circle-fill"></i> Set Max
+                </button>
+                <button class="em-tool-btn" onclick="bulkFill('pass')" title="Set all marks to pass mark">
+                    <i class="bi bi-check-circle"></i> Set Pass
+                </button>
+                <button class="em-tool-btn" onclick="bulkFill('absent')" title="Mark all absent">
+                    <i class="bi bi-person-x-fill"></i> All Absent
+                </button>
+                <button class="em-tool-btn" onclick="bulkFill('clear')" title="Clear all marks">
+                    <i class="bi bi-eraser-fill"></i> Clear
+                </button>
+                <select class="em-tool-btn" id="sortSelect" onchange="sortStudents()" style="cursor:pointer;">
+                    <option value="roll">Sort: Roll No.</option>
+                    <option value="name">Sort: Name</option>
+                    <option value="marks">Sort: Marks</option>
+                    <option value="grade">Sort: Grade</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Student cards container -->
+        <div id="studentCards"></div>
+
+        <!-- No exam selected empty state -->
+        <div id="emptyState" class="em-empty" style="display:none;">
+            <div class="em-empty-icon"><i class="bi bi-pencil-square"></i></div>
+            <h4>No Exam Selected</h4>
+            <p>Please go back and select an exam to enter marks, or use the exam selector below.</p>
+            <a href="examinations.html" class="em-btn em-btn-primary mt-3" style="color:#2563eb;border-color:#2563eb;background:#eff6ff;padding:10px 24px;border-radius:12px;font-size:.84rem;font-weight:700;">
+                <i class="bi bi-arrow-left me-2"></i> Back to Examinations
+            </a>
+        </div>
+    </div>
+
+    <!-- ── RIGHT: Sidebar ── -->
+    <div class="em-sidebar">
+
+        <!-- Exam Details -->
+        <div class="sidebar-section">
+            <div class="sidebar-section-label"><i class="bi bi-info-circle-fill"></i> Exam Details</div>
+            <div id="examDetailWidget"></div>
+        </div>
+
+        <!-- Live Score Histogram -->
+        <div class="sidebar-section">
+            <div class="sidebar-section-label"><i class="bi bi-bar-chart-fill"></i> Score Distribution</div>
+            <div class="chart-card" style="padding:10px;">
+                <canvas id="histChart" height="150"></canvas>
+            </div>
+        </div>
+
+        <!-- Live Stats -->
+        <div class="sidebar-section">
+            <div class="sidebar-section-label"><i class="bi bi-activity"></i> Live Statistics</div>
+            <div class="stat-grid" id="liveStatGrid"></div>
+        </div>
+
+        <!-- Grade Legend -->
+        <div class="sidebar-section">
+            <div class="sidebar-section-label"><i class="bi bi-bookmark-fill"></i> Grade Scale</div>
+            <div class="grade-legend" id="gradeLegend"></div>
+        </div>
+
+        <!-- Keyboard Shortcuts -->
+        <div class="sidebar-section">
+            <div class="sidebar-section-label"><i class="bi bi-keyboard"></i> Keyboard Shortcuts</div>
+            <div class="shortcut-row"><span class="kbd">Tab</span> <span>Next student</span></div>
+            <div class="shortcut-row"><span class="kbd">Shift+Tab</span> <span>Previous student</span></div>
+            <div class="shortcut-row"><span class="kbd">Enter</span> <span>Confirm mark</span></div>
+            <div class="shortcut-row"><span class="kbd">0</span> <span>Mark absent</span></div>
+            <div class="shortcut-row"><span class="kbd">Ctrl+S</span> <span>Save all marks</span></div>
+            <div class="shortcut-row"><span class="kbd">Ctrl+R</span> <span>Review summary</span></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ═══ FLOATING SAVE BAR ═══ -->
+<div class="float-save" id="floatSave" style="display:none;">
+    <div>
+        <div class="fw-bold" style="font-size:.85rem;" id="floatTitle">Gradebook</div>
+        <div style="font-size:.72rem;color:#94a3b8;" id="floatSubtitle">—</div>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <span style="font-size:.78rem;color:#94a3b8;" id="floatProgress">0 / 0</span>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="showReview()"><i class="bi bi-eye me-1"></i>Review</button>
+        <button class="btn btn-success btn-sm rounded-pill fw-bold px-4" onclick="finalSave()"><i class="bi bi-floppy-fill me-1"></i>Save All Marks</button>
+    </div>
+</div>
+
+<!-- ═══ REVIEW MODAL ═══ -->
+<div class="review-overlay" id="reviewOverlay">
+    <div class="review-modal">
+        <div class="review-header">
+            <h5 class="fw-bold mb-0"><i class="bi bi-clipboard2-check me-2"></i>Review Before Saving</h5>
+            <button class="btn btn-sm btn-outline-secondary rounded-2" onclick="closeReview()"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="review-body" id="reviewBody"></div>
+        <div style="padding:16px 26px;border-top:1px solid #f1f5f9;display:flex;gap:10px;justify-content:flex-end;">
+            <button class="btn btn-outline-secondary rounded-pill px-4" onclick="closeReview()">Keep Editing</button>
+            <button class="btn btn-success rounded-pill px-5 fw-bold" onclick="finalSave();closeReview()"><i class="bi bi-floppy-fill me-2"></i>Save All Marks</button>
+        </div>
+    </div>
+</div>
+
+<div id="toastWrap"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+<script>
+// ══════════════════════════════════════════════
+//  DATA (same seed as examinations.html)
+// ══════════════════════════════════════════════
+var EXAM_CLASSES=[
+    {id:'cls-10a',name:'Class 10 - A',teacher:'Sarah Jenkins'},
+    {id:'cls-10b',name:'Class 10 - B',teacher:'David Miller'},
+    {id:'cls-9a', name:'Class 9 - A', teacher:'Emily Watson'},
+    {id:'cls-9b', name:'Class 9 - B', teacher:'Arjun Mehta'},
+    {id:'cls-5a', name:'Class 5 - A', teacher:'Maria Rossi'},
+    {id:'cls-5b', name:'Class 5 - B', teacher:'Ananya Mehta'},
+];
+var EXAM_STUDENTS={
+    'cls-10a':[
+        {id:'S10001',name:'Aiden Clarke',  roll:'01',photo:'https://i.pravatar.cc/150?img=8',  dob:'2010-03-14',guardian:'Robert Clarke'},
+        {id:'S10002',name:'Priya Sharma',  roll:'02',photo:'https://i.pravatar.cc/150?img=47', dob:'2010-07-22',guardian:'Raj Sharma'},
+        {id:'S10003',name:'Luca Ferrari',  roll:'03',photo:'https://i.pravatar.cc/150?img=15', dob:'2010-01-08',guardian:'Marco Ferrari'},
+        {id:'S10004',name:'Sofia Garcia',  roll:'04',photo:'https://i.pravatar.cc/150?img=45', dob:'2010-09-30',guardian:'Carlos Garcia'},
+        {id:'S10005',name:'Yuki Tanaka',   roll:'05',photo:'https://i.pravatar.cc/150?img=49', dob:'2010-05-16',guardian:'Kenji Tanaka'},
+        {id:'S10006',name:'Ethan Moore',   roll:'06',photo:'https://i.pravatar.cc/150?img=18', dob:'2010-11-02',guardian:'James Moore'},
+    ],
+    'cls-10b':[
+        {id:'S10007',name:'Amara Osei',   roll:'01',photo:'https://i.pravatar.cc/150?img=44', dob:'2010-06-18',guardian:'Kwame Osei'},
+        {id:'S10008',name:"Finn O'Brien", roll:'02',photo:'https://i.pravatar.cc/150?img=12', dob:'2010-02-25',guardian:"Patrick O'Brien"},
+        {id:'S10009',name:'Mei Ling',     roll:'03',photo:'https://i.pravatar.cc/150?img=43', dob:'2010-08-10',guardian:'Wei Ling'},
+    ],
+    'cls-9a':[
+        {id:'S09001',name:'Carlos Rivera',roll:'01',photo:'https://i.pravatar.cc/150?img=7',  dob:'2011-04-12',guardian:'Miguel Rivera'},
+        {id:'S09002',name:'Anya Patel',   roll:'02',photo:'https://i.pravatar.cc/150?img=48', dob:'2011-10-05',guardian:'Suresh Patel'},
+        {id:'S09003',name:'Jack Thompson',roll:'03',photo:'https://i.pravatar.cc/150?img=11', dob:'2011-07-20',guardian:'Tom Thompson'},
+        {id:'S09004',name:'Nina Volkov',  roll:'04',photo:'https://i.pravatar.cc/150?img=46', dob:'2011-12-15',guardian:'Igor Volkov'},
+    ],
+    'cls-9b':[
+        {id:'S09005',name:'Omar Hassan',  roll:'01',photo:'https://i.pravatar.cc/150?img=6',  dob:'2011-03-07',guardian:'Ali Hassan'},
+        {id:'S09006',name:'Elena Cruz',   roll:'02',photo:'https://i.pravatar.cc/150?img=41', dob:'2011-09-28',guardian:'Maria Cruz'},
+        {id:'S09007',name:'Ravi Kumar',   roll:'03',photo:'https://i.pravatar.cc/150?img=14', dob:'2011-06-14',guardian:'Sunil Kumar'},
+    ],
+    'cls-5a':[
+        {id:'S05001',name:'Lily Johnson', roll:'01',photo:'https://i.pravatar.cc/150?img=50', dob:'2015-02-18',guardian:'Anna Johnson'},
+        {id:'S05002',name:'Noah Williams',roll:'02',photo:'https://i.pravatar.cc/150?img=3',  dob:'2015-08-31',guardian:'Mike Williams'},
+        {id:'S05003',name:'Zara Ahmed',   roll:'03',photo:'https://i.pravatar.cc/150?img=42', dob:'2015-05-09',guardian:'Tariq Ahmed'},
+    ],
+    'cls-5b':[
+        {id:'S05004',name:'Leo Nguyen',   roll:'01',photo:'https://i.pravatar.cc/150?img=4',  dob:'2015-01-23',guardian:'Thanh Nguyen'},
+        {id:'S05005',name:'Grace Kim',    roll:'02',photo:'https://i.pravatar.cc/150?img=51', dob:'2015-11-04',guardian:'Min Kim'},
+        {id:'S05006',name:'Adam Okafor',  roll:'03',photo:'https://i.pravatar.cc/150?img=5',  dob:'2015-07-17',guardian:'Emeka Okafor'},
+    ],
+};
+var DEFAULT_EXAMS=[
+    {id:'EX001',name:'Mid Term Test',  type:'Mid Term', classId:'cls-10a',className:'Class 10 - A',subject:'Mathematics',  date:'2026-05-24',time:'09:00',room:'Room 302',   maxMarks:100,passMarks:40,duration:180,status:'completed',invigilator:'Sarah Jenkins'},
+    {id:'EX002',name:'Annual Exam',    type:'Annual',   classId:'cls-10a',className:'Class 10 - A',subject:'Science',       date:'2026-06-26',time:'10:00',room:'Exam Hall B',maxMarks:100,passMarks:35,duration:180,status:'upcoming', invigilator:'Emily Watson'},
+    {id:'EX003',name:'Unit Test 1',    type:'Unit Test',classId:'cls-9a', className:'Class 9 - A', subject:'English',       date:'2026-06-28',time:'09:00',room:'Room 201',   maxMarks:50, passMarks:20,duration:90, status:'upcoming', invigilator:'David Miller'},
+    {id:'EX004',name:'Pre-Board Exam', type:'Pre-Board',classId:'cls-10b',className:'Class 10 - B',subject:'History',       date:'2026-07-10',time:'10:00',room:'Exam Hall A',maxMarks:100,passMarks:40,duration:180,status:'upcoming', invigilator:'Arjun Mehta'},
+    {id:'EX005',name:'Class Test',     type:'Unit Test',classId:'cls-9b', className:'Class 9 - B', subject:'Geography',     date:'2026-05-15',time:'11:00',room:'Room 203',   maxMarks:50, passMarks:20,duration:60, status:'completed',invigilator:'Maria Rossi'},
+    {id:'EX006',name:'Terminal Exam',  type:'Terminal', classId:'cls-5a', className:'Class 5 - A', subject:'Computer Sci.', date:'2026-06-05',time:'09:30',room:'Room 105',   maxMarks:100,passMarks:40,duration:120,status:'completed',invigilator:'Ananya Mehta'},
+    {id:'EX007',name:'Mock Test',      type:'Mock Test',classId:'cls-10b',className:'Class 10 - B',subject:'Mathematics',   date:'2026-06-22',time:'08:00',room:'Room 301',   maxMarks:50, passMarks:20,duration:90, status:'active',  invigilator:'Sarah Jenkins'},
+    {id:'EX008',name:'Unit Test 2',    type:'Unit Test',classId:'cls-5b', className:'Class 5 - B', subject:'English',       date:'2026-07-15',time:'10:00',room:'Room 106',   maxMarks:50, passMarks:20,duration:60, status:'upcoming', invigilator:'David Miller'},
+];
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function loadExams(){var r=localStorage.getItem('exams-db');if(!r){localStorage.setItem('exams-db',JSON.stringify(DEFAULT_EXAMS));return DEFAULT_EXAMS;}return JSON.parse(r);}
+function loadMarks(id){var r=localStorage.getItem('exam-marks-'+id);return r?JSON.parse(r):{};}
+function saveMarks(id,d){localStorage.setItem('exam-marks-'+id,JSON.stringify(d));}
+function calcGrade(m,mx){var p=m/mx*100;if(p>=95)return 'A+';if(p>=85)return 'A';if(p>=75)return 'B+';if(p>=65)return 'B';if(p>=55)return 'C+';if(p>=45)return 'C';return 'F';}
+function gradeClass(g){var m={'A+':'grade-aplus','A':'grade-a','B+':'grade-bplus','B':'grade-b','C+':'grade-cplus','C':'grade-c','F':'grade-f'};return m[g]||'grade-f';}
+function gradeColor(g){var m={'A+':'#15803d','A':'#1e40af','B+':'#7e22ce','B':'#c2410c','C+':'#a16207','C':'#dc2626','F':'#7f1d1d'};return m[g]||'#94a3b8';}
+function gradeBg(g){var m={'A+':'#dcfce7','A':'#dbeafe','B+':'#f3e8ff','B':'#ffedd5','C+':'#fef9c3','C':'#fee2e2','F':'#fecaca'};return m[g]||'#f1f5f9';}
+function fmtDate(d){if(!d)return '';return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+function showToast(msg,type){
+    var c={success:'#22c55e',danger:'#ef4444',info:'#2563eb',warning:'#f59e0b'};
+    var ic={success:'check-circle-fill',danger:'x-circle-fill',info:'info-circle-fill',warning:'exclamation-triangle-fill'};
+    var col=c[type]||c.info;var icon=ic[type]||ic.info;
+    var el=document.createElement('div');el.className='toast-em';
+    el.innerHTML='<i class="bi bi-'+icon+' fs-5" style="color:'+col+'"></i><div class="fw-semibold" style="flex:1;font-size:.84rem;">'+msg+'</div><button onclick="this.parentElement.remove()" class="btn btn-sm btn-link p-0 ms-2 text-muted"><i class="bi bi-x-lg"></i></button>';
+    document.getElementById('toastWrap').appendChild(el);
+    setTimeout(function(){if(el.parentElement)el.remove();},4000);
+}
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+var currentExam=null,currentStudents=[],currentSort='roll';
+var autoSaveTimer=null,histChart=null;
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+(function init(){
+    var params=new URLSearchParams(window.location.search);
+    var examId=params.get('exam');
+    if(!examId){showEmptyState();return;}
+    var exams=loadExams();
+    currentExam=exams.find(function(e){return e.id===examId;});
+    if(!currentExam){showEmptyState();return;}
+    currentStudents=(EXAM_STUDENTS[currentExam.classId]||[]).slice();
+    loadPage();
+}());
+
+function showEmptyState(){
+    document.getElementById('emptyState').style.display='';
+    document.getElementById('studentCards').style.display='none';
+    document.getElementById('floatSave').style.display='none';
+    document.getElementById('pageExamName').textContent='No Exam Selected';
+    document.getElementById('pageExamMeta').textContent='Use the link from Examinations page';
+}
+
+function loadPage(){
+    var ex=currentExam;
+    document.getElementById('pageExamName').textContent=ex.name+' — '+ex.className;
+    document.getElementById('pageExamMeta').textContent=ex.subject+' · '+fmtDate(ex.date)+' at '+ex.time+' · '+ex.room+' · Max: '+ex.maxMarks+' | Pass: '+ex.passMarks;
+    document.title='Enter Marks: '+ex.name+' — Bright Future School';
+    document.getElementById('floatSave').style.display='';
+    document.getElementById('floatTitle').textContent=ex.name;
+    document.getElementById('floatSubtitle').textContent=ex.className+' · '+ex.subject;
+    renderExamDetailWidget();
+    renderGradeLegend();
+    renderStudentCards();
+    setTimeout(updateAllStats,100);
+}
+
+// ══════════════════════════════════════════════
+//  EXAM DETAIL WIDGET
+// ══════════════════════════════════════════════
+function renderExamDetailWidget(){
+    var ex=currentExam;
+    var typeColors={'Unit Test':'#3b82f6','Mid Term':'#7c3aed','Annual':'#16a34a','Terminal':'#0d9488','Pre-Board':'#ea580c','Mock Test':'#db2777','Class Test':'#2563eb'};
+    var col=typeColors[ex.type]||'#2563eb';
+    var pct=Math.round(ex.passMarks/ex.maxMarks*100);
+    var html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'
+        +[{l:'Type',v:ex.type},{l:'Date',v:fmtDate(ex.date)},{l:'Time',v:ex.time},{l:'Room',v:ex.room},
+          {l:'Duration',v:ex.duration+' min'},{l:'Max Marks',v:ex.maxMarks},
+          {l:'Pass Marks',v:ex.passMarks+' ('+pct+'%)'},{l:'Invigilator',v:ex.invigilator}
+        ].map(function(item){return '<div class="stat-box" style="text-align:left;"><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:2px;">'+item.l+'</div><div style="font-weight:700;font-size:.82rem;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.v+'</div></div>';}).join('')
+        +'</div>'
+        +'<div style="height:6px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:10px;"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:99px;"></div></div>'
+        +'<div style="font-size:.65rem;color:#94a3b8;margin-top:4px;text-align:center;">Pass threshold: '+pct+'%</div>';
+    document.getElementById('examDetailWidget').innerHTML=html;
+}
+
+// ══════════════════════════════════════════════
+//  GRADE LEGEND
+// ══════════════════════════════════════════════
+function renderGradeLegend(){
+    var grades=[
+        {g:'A+',range:'95–100%'},{g:'A',range:'85–94%'},{g:'B+',range:'75–84%'},
+        {g:'B',range:'65–74%'},{g:'C+',range:'55–64%'},{g:'C',range:'45–54%'},{g:'F',range:'<45%'}
+    ];
+    document.getElementById('gradeLegend').innerHTML=grades.map(function(item){
+        return '<div class="grade-legend-row"><span class="grade-chip '+gradeClass(item.g)+'">'+item.g+'</span><span style="color:#64748b;">'+item.range+'</span></div>';
+    }).join('');
+}
+
+// ══════════════════════════════════════════════
+//  RENDER STUDENT CARDS
+// ══════════════════════════════════════════════
+function renderStudentCards(){
+    var saved=loadMarks(currentExam.id);
+    var sorted=sortedStudents();
+    var html=sorted.map(function(st,i){
+        var m=saved[st.id];
+        var val=m&&m.marks!==null?m.marks:'';
+        var rem=m?m.remarks:'';
+        var isAbsent=m&&m.absent;
+        var grade=val!==''?calcGrade(Number(val),currentExam.maxMarks):'—';
+        var pass=val!==''?(Number(val)>=currentExam.passMarks):'—';
+        var passText=isAbsent?'Absent':(pass===true?'Pass':pass===false?'Fail':'—');
+        var passColor=pass===true?'#22c55e':pass===false?'#ef4444':'#94a3b8';
+        if(isAbsent)passColor='#94a3b8';
+        var cardClass=isAbsent?'card-absent':(val!==''?(Number(val)>=currentExam.passMarks?'card-pass':'card-fail'):'');
+        var gcBg=grade!=='—'?gradeBg(grade):'#f1f5f9';
+        var gcFg=grade!=='—'?gradeColor(grade):'#94a3b8';
+
+        return '<div class="student-mark-card '+cardClass+'" id="card-'+st.id+'" style="animation-delay:'+i*0.03+'s">'
+            +'<div class="student-rank">'+(i+1)+'</div>'
+            +'<img src="'+st.photo+'" class="student-photo" id="photo-'+st.id+'" onerror="this.src=\'https://i.pravatar.cc/60?u='+st.id+'\'" alt="'+st.name+'">'
+            +'<div class="student-info">'
+            +'<div class="student-name">'+st.name+'</div>'
+            +'<div class="student-meta">Roll: '+st.roll+' &nbsp;·&nbsp; ID: '+st.id+'&nbsp;·&nbsp; '+st.dob+' &nbsp;·&nbsp; Guardian: '+st.guardian+'</div>'
+            +'</div>'
+            +'<div class="absent-toggle'+(isAbsent?' checked':'')+'" id="abs-'+st.id+'" title="Toggle Absent" onclick="toggleAbsent(\''+st.id+'\')">'
+            +'<i class="bi bi-person-x-fill"></i>'
+            +'</div>'
+            +'<div class="mark-input-wrap">'
+            +'<input type="number" class="mark-input'+(val!==''?(Number(val)>=currentExam.passMarks?' inp-pass':' inp-fail'):'')+(isAbsent?' disabled':'')+'" '
+            +'id="inp-'+st.id+'" min="0" max="'+currentExam.maxMarks+'" value="'+val+'" '
+            +'data-sid="'+st.id+'" data-pass="'+currentExam.passMarks+'" data-max="'+currentExam.maxMarks+'" '
+            +(isAbsent?'disabled':'')+' '
+            +'oninput="onMarkInput(this)" onkeydown="handleKeyDown(event,\''+st.id+'\')">'
+            +'<div class="mark-input-max">/ '+currentExam.maxMarks+'</div>'
+            +'</div>'
+            +'<div class="grade-display" id="gdis-'+st.id+'" style="background:'+gcBg+';color:'+gcFg+';">'+grade+'</div>'
+            +'<div class="pf-display" id="pf-'+st.id+'" style="color:'+passColor+';">'+passText+'</div>'
+            +'<select class="remarks-select" id="rem-'+st.id+'" onchange="startAutoSave()">'
+            +'<option value="">Remarks...</option>'
+            +'<option value="Excellent"'+(rem==='Excellent'?' selected':'')+'>Excellent</option>'
+            +'<option value="Good"'+(rem==='Good'?' selected':'')+'>Good</option>'
+            +'<option value="Satisfactory"'+(rem==='Satisfactory'?' selected':'')+'>Satisfactory</option>'
+            +'<option value="Needs Improvement"'+(rem==='Needs Improvement'?' selected':'')+'>Needs Improvement</option>'
+            +'<option value="Absent"'+(rem==='Absent'?' selected':'')+'>Absent</option>'
+            +'<option value="Distinction"'+(rem==='Distinction'?' selected':'')+'>Distinction</option>'
+            +'</select>'
+            +'</div>';
+    }).join('');
+    document.getElementById('studentCards').innerHTML=html;
+    updateKpiBar();
+    updateProgress();
+    updateLiveStats();
+    updateHistogram();
+}
+
+function sortedStudents(){
+    var s=currentStudents.slice();
+    var saved=loadMarks(currentExam.id);
+    if(currentSort==='name')s.sort(function(a,b){return a.name.localeCompare(b.name);});
+    else if(currentSort==='roll')s.sort(function(a,b){return a.roll.localeCompare(b.roll);});
+    else if(currentSort==='marks'){s.sort(function(a,b){var ma=saved[a.id],mb=saved[b.id];var va=ma&&ma.marks!==null?ma.marks:-1;var vb=mb&&mb.marks!==null?mb.marks:-1;return vb-va;});}
+    else if(currentSort==='grade'){s.sort(function(a,b){var ma=saved[a.id],mb=saved[b.id];var va=ma&&ma.marks!==null?calcGrade(ma.marks,currentExam.maxMarks):'ZZ';var vb=mb&&mb.marks!==null?calcGrade(mb.marks,currentExam.maxMarks):'ZZ';var order=['A+','A','B+','B','C+','C','F','ZZ'];return order.indexOf(va)-order.indexOf(vb);});}
+    return s;
+}
+function sortStudents(){currentSort=document.getElementById('sortSelect').value;renderStudentCards();}
+
+function filterStudents(){
+    var q=(document.getElementById('studentSearch').value||'').toLowerCase();
+    document.querySelectorAll('.student-mark-card').forEach(function(card){
+        var name=card.querySelector('.student-name');
+        var meta=card.querySelector('.student-meta');
+        var visible=!q||(name&&name.textContent.toLowerCase().includes(q))||(meta&&meta.textContent.toLowerCase().includes(q));
+        card.style.display=visible?'':'none';
+    });
+}
+
+// ══════════════════════════════════════════════
+//  MARK INPUT EVENTS
+// ══════════════════════════════════════════════
+function onMarkInput(inp){
+    var sid=inp.dataset.sid,pass=Number(inp.dataset.pass),max=Number(inp.dataset.max);
+    var v=inp.value.trim()!==''?Math.min(max,Math.max(0,Number(inp.value))):'';
+    if(v!==''&&inp.value!==String(v))inp.value=v;
+    inp.classList.toggle('inp-pass',v!==''&&v>=pass);
+    inp.classList.toggle('inp-fail',v!==''&&v<pass);
+    var grade=v!==''?calcGrade(v,max):'—';
+    var gcEl=document.getElementById('gdis-'+sid);
+    var pfEl=document.getElementById('pf-'+sid);
+    if(gcEl){gcEl.textContent=grade;gcEl.style.background=grade!=='—'?gradeBg(grade):'#f1f5f9';gcEl.style.color=grade!=='—'?gradeColor(grade):'#94a3b8';}
+    if(pfEl){
+        var pt=v===''?'—':(v>=pass?'Pass':'Fail');
+        pfEl.textContent=pt;pfEl.style.color=v===''?'#94a3b8':(v>=pass?'#22c55e':'#ef4444');
+    }
+    var card=document.getElementById('card-'+sid);
+    if(card&&!card.classList.contains('card-absent')){
+        card.className='student-mark-card'+(v===''?'':(v>=pass?' card-pass':' card-fail'));
+    }
+    var photo=document.getElementById('photo-'+sid);
+    if(photo){photo.style.borderColor=v===''?'#e2e8f0':(v>=pass?'#86efac':'#fca5a5');}
+    updateProgress();updateLiveStats();updateHistogram();startAutoSave();
+}
+
+function handleKeyDown(event,sid){
+    if(event.ctrlKey&&event.key==='s'){event.preventDefault();finalSave();return;}
+    if(event.ctrlKey&&event.key==='r'){event.preventDefault();showReview();return;}
+    if(event.key==='Enter'){
+        event.preventDefault();
+        var inputs=Array.from(document.querySelectorAll('.mark-input:not([disabled])'));
+        var idx=inputs.findIndex(function(i){return i.id==='inp-'+sid;});
+        if(idx<inputs.length-1)inputs[idx+1].focus();
+    }
+}
+
+function toggleAbsent(sid){
+    var abs=document.getElementById('abs-'+sid);
+    var inp=document.getElementById('inp-'+sid);
+    var card=document.getElementById('card-'+sid);
+    var pf=document.getElementById('pf-'+sid);
+    var gd=document.getElementById('gdis-'+sid);
+    var rem=document.getElementById('rem-'+sid);
+    var photo=document.getElementById('photo-'+sid);
+    var isNowAbsent=abs.classList.toggle('checked');
+    if(isNowAbsent){
+        inp.value='';inp.setAttribute('disabled','disabled');
+        if(card)card.className='student-mark-card card-absent';
+        if(pf){pf.textContent='Absent';pf.style.color='#94a3b8';}
+        if(gd){gd.textContent='—';gd.style.background='#f1f5f9';gd.style.color='#94a3b8';}
+        if(rem)rem.value='Absent';
+        if(photo)photo.style.borderColor='#e2e8f0';
+    } else {
+        inp.removeAttribute('disabled');
+        if(card)card.className='student-mark-card';
+        if(rem&&rem.value==='Absent')rem.value='';
+    }
+    updateProgress();updateLiveStats();updateHistogram();startAutoSave();
+}
+
+// ══════════════════════════════════════════════
+//  BULK FILL
+// ══════════════════════════════════════════════
+function bulkFill(mode){
+    currentStudents.forEach(function(st){
+        var inp=document.getElementById('inp-'+st.id);
+        var abs=document.getElementById('abs-'+st.id);
+        if(mode==='absent'){
+            if(abs&&!abs.classList.contains('checked'))toggleAbsent(st.id);
+        } else {
+            if(abs&&abs.classList.contains('checked')){abs.classList.remove('checked');if(inp)inp.removeAttribute('disabled');var card=document.getElementById('card-'+st.id);if(card)card.className='student-mark-card';}
+            if(!inp)return;
+            if(mode==='max')inp.value=currentExam.maxMarks;
+            else if(mode==='pass')inp.value=currentExam.passMarks;
+            else if(mode==='clear')inp.value='';
+            onMarkInput(inp);
+        }
+    });
+    showToast(mode==='max'?'All marks set to max':mode==='pass'?'All marks set to pass threshold':mode==='absent'?'All students marked absent':'All marks cleared','info');
+}
+
+// ══════════════════════════════════════════════
+//  STATS & CHARTS
+// ══════════════════════════════════════════════
+function collectCurrentData(){
+    var total=currentStudents.length,marked=0,passed=0,failed=0,absent=0,sum=0,topS=0;
+    currentStudents.forEach(function(st){
+        var abs=document.getElementById('abs-'+st.id);
+        if(abs&&abs.classList.contains('checked')){absent++;return;}
+        var inp=document.getElementById('inp-'+st.id);
+        if(inp&&inp.value!==''){marked++;var n=Number(inp.value);sum+=n;if(n>topS)topS=n;if(n>=currentExam.passMarks)passed++;else failed++;}
+    });
+    var avg=marked?Math.round(sum/marked):0;
+    var passRate=marked?Math.round(passed/marked*100):0;
+    return{total:total,marked:marked,passed:passed,failed:failed,absent:absent,avg:avg,passRate:passRate,topScore:topS};
+}
+function updateKpiBar(){
+    var d=collectCurrentData();
+    var items=[{v:d.total,l:'Total Students'},{v:d.marked,l:'Marked'},{v:d.passed,l:'Passed'},{v:d.failed,l:'Failed'},{v:d.absent,l:'Absent'},{v:d.avg,l:'Avg Score'},{v:d.passRate+'%',l:'Pass Rate'}];
+    document.getElementById('kpiBar').innerHTML=items.map(function(k){return '<div class="em-kpi-item"><div class="em-kpi-v">'+k.v+'</div><div class="em-kpi-l">'+k.l+'</div></div>';}).join('');
+}
+function updateProgress(){
+    var d=collectCurrentData();
+    var tot=d.total,done=d.marked+d.absent;
+    var pct=tot?Math.round(done/tot*100):0;
+    document.getElementById('progressFill').style.width=pct+'%';
+    document.getElementById('progressLabel').textContent=done+' / '+tot+' marked ('+pct+'%)';
+    document.getElementById('passFailMini').textContent='✓ '+d.passed+' Pass &nbsp; ✗ '+d.failed+' Fail &nbsp; ⊘ '+d.absent+' Absent';
+    document.getElementById('floatProgress').textContent=done+' / '+tot;
+    updateKpiBar();
+}
+function updateLiveStats(){
+    var d=collectCurrentData();
+    var items=[{v:d.passed,l:'Passed',c:'#22c55e'},{v:d.failed,l:'Failed',c:'#ef4444'},{v:d.absent,l:'Absent',c:'#94a3b8'},{v:d.avg,l:'Avg Score',c:'#2563eb'},{v:d.topScore,l:'Top Score',c:'#7c3aed'},{v:d.passRate+'%',l:'Pass Rate',c:'#0d9488'}];
+    document.getElementById('liveStatGrid').innerHTML=items.map(function(k){return '<div class="stat-box"><div class="sv" style="color:'+k.c+';">'+k.v+'</div><div class="sl">'+k.l+'</div></div>';}).join('');
+}
+function updateHistogram(){
+    var buckets=new Array(10).fill(0);
+    currentStudents.forEach(function(st){
+        var inp=document.getElementById('inp-'+st.id);
+        if(inp&&inp.value!==''){var b=Math.min(9,Math.floor(Number(inp.value)/currentExam.maxMarks*10));buckets[b]++;}
+    });
+    var ctx=document.getElementById('histChart');
+    if(histChart){histChart.destroy();histChart=null;}
+    histChart=new Chart(ctx,{
+        type:'bar',
+        data:{
+            labels:['0-10%','11-20%','21-30%','31-40%','41-50%','51-60%','61-70%','71-80%','81-90%','91-100%'],
+            datasets:[{data:buckets,backgroundColor:['#fecaca','#fecaca','#fecaca','#fecaca','#fed7aa','#fde68a','#bfdbfe','#a7f3d0','#6ee7b7','#34d399'],borderRadius:5,borderSkipped:false}]
+        },
+        options:{responsive:true,animation:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:8},maxRotation:45}},y:{ticks:{stepSize:1}}}}
+    });
+}
+function updateAllStats(){updateProgress();updateLiveStats();updateHistogram();}
+
+// ══════════════════════════════════════════════
+//  AUTO-SAVE
+// ══════════════════════════════════════════════
+function startAutoSave(){
+    clearTimeout(autoSaveTimer);
+    var badge=document.getElementById('autoSaveBadge');
+    badge.className='em-btn em-auto-save saving';badge.innerHTML='<i class="bi bi-arrow-repeat"></i> Saving...';
+    autoSaveTimer=setTimeout(function(){doAutoSave();badge.className='em-btn em-auto-save';badge.innerHTML='<i class="bi bi-check-circle-fill"></i> Saved';},2000);
+}
+function doAutoSave(){
+    if(!currentExam)return;
+    var data={};
+    currentStudents.forEach(function(st){
+        var inp=document.getElementById('inp-'+st.id);
+        var abs=document.getElementById('abs-'+st.id);
+        var rem=document.getElementById('rem-'+st.id);
+        var isAbsent=abs&&abs.classList.contains('checked');
+        data[st.id]={marks:isAbsent?null:(inp&&inp.value!==''?Number(inp.value):null),grade:isAbsent?'—':(inp&&inp.value!==''?calcGrade(Number(inp.value),currentExam.maxMarks):'—'),remarks:rem?rem.value:'',absent:isAbsent};
+    });
+    saveMarks(currentExam.id,data);
+}
+function finalSave(){
+    doAutoSave();
+    var d=collectCurrentData();
+    showToast('Marks saved! '+d.passed+' passed, '+d.failed+' failed, '+d.absent+' absent.','success');
+    var badge=document.getElementById('autoSaveBadge');
+    badge.className='em-btn em-auto-save';badge.innerHTML='<i class="bi bi-check-circle-fill"></i> Saved';
+}
+
+// ══════════════════════════════════════════════
+//  REVIEW MODAL
+// ══════════════════════════════════════════════
+function showReview(){
+    doAutoSave();
+    var data=loadMarks(currentExam.id);
+    var ex=currentExam;
+    var d=collectCurrentData();
+    var html='<div class="row g-3 mb-4">'
+        +[{v:d.total,l:'Total',c:'#2563eb'},{v:d.marked,l:'Marked',c:'#7c3aed'},{v:d.passed,l:'Passed',c:'#22c55e'},{v:d.failed,l:'Failed',c:'#ef4444'},{v:d.absent,l:'Absent',c:'#94a3b8'},{v:d.passRate+'%',l:'Pass Rate',c:'#0d9488'}].map(function(k){
+            return '<div class="col-4 col-md-2"><div class="text-center p-3 rounded-3" style="background:'+k.c+'12;border:1px solid '+k.c+'30;"><div class="fw-bold fs-5" style="color:'+k.c+';">'+k.v+'</div><div style="font-size:.62rem;text-transform:uppercase;color:#94a3b8;letter-spacing:.07em;">'+k.l+'</div></div></div>';
+        }).join('')
+        +'</div>'
+        +'<div class="table-responsive"><table class="table table-hover table-sm"><thead class="table-light"><tr><th>#</th><th>Student</th><th>Marks</th><th>/ Max</th><th>%</th><th>Grade</th><th>Status</th><th>Remarks</th></tr></thead><tbody>';
+    currentStudents.forEach(function(st,i){
+        var m=data[st.id];
+        var marks=m&&m.marks!==null?m.marks:'—';
+        var pct=m&&m.marks!==null?Math.round(m.marks/ex.maxMarks*100)+'%':'—';
+        var grade=m&&m.marks!==null?calcGrade(m.marks,ex.maxMarks):'—';
+        var status=m&&m.absent?'<span style="color:#94a3b8;font-weight:700;">Absent</span>':(m&&m.marks!==null?(m.marks>=ex.passMarks?'<span style="color:#22c55e;font-weight:700;">✓ Pass</span>':'<span style="color:#ef4444;font-weight:700;">✗ Fail</span>'):'<span style="color:#cbd5e1;">—</span>');
+        html+='<tr><td class="text-muted fw-bold">'+(i+1)+'</td><td><div class="d-flex align-items-center gap-2"><img src="'+st.photo+'" style="width:26px;height:26px;border-radius:50%;object-fit:cover;"><span class="fw-semibold" style="font-size:.82rem;">'+st.name+'</span></div></td>'
+            +'<td class="fw-bold">'+marks+'</td><td style="color:#94a3b8;">'+ex.maxMarks+'</td><td class="fw-semibold">'+pct+'</td>'
+            +'<td>'+(grade!=='—'?'<span class="grade-chip '+gradeClass(grade)+'">'+grade+'</span>':'<span style="color:#94a3b8;">—</span>')+'</td>'
+            +'<td>'+status+'</td>'
+            +'<td style="font-size:.78rem;color:#64748b;">'+(m&&m.remarks?m.remarks:'—')+'</td></tr>';
+    });
+    html+='</tbody></table></div>';
+    document.getElementById('reviewBody').innerHTML=html;
+    document.getElementById('reviewOverlay').classList.add('open');
+}
+function closeReview(){document.getElementById('reviewOverlay').classList.remove('open');}
+
+// ══════════════════════════════════════════════
+//  KEYBOARD GLOBAL
+// ══════════════════════════════════════════════
+document.addEventListener('keydown',function(e){
+    if(e.ctrlKey&&e.key==='s'){e.preventDefault();finalSave();}
+    if(e.ctrlKey&&e.key==='r'){e.preventDefault();showReview();}
+});
+</script>
+</body>
+</html>
